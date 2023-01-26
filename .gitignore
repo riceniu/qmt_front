@@ -9,7 +9,8 @@ yarn-error.log*
 tests/**/coverage/
 tests/e2e/reports
 selenium-debug.log
-
+Z_Notes/*
+.history/*
 # Editor directories and files
 .idea
 .vscode
