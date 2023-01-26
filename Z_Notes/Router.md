@@ -8,6 +8,7 @@
 path: '/redirect/:path(.*)',        
 component: () => import('@/views/redirect/index')
 ```
+
 #### /login
 #### /auth-redirect
 #### /404
