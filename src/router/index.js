@@ -74,54 +74,109 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: 'Home page', icon: 'dashboard' }
+    }]
+  },
+
+  {
+    path: '/quote',
+    component: Layout,
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+        path: '',
+        name: 'Quote',
+        component: null,//() => import('@/views/qh/quote/index'),
+        meta: { title: 'Quote', icon: 'el-icon-document' }
+      }
+    ]
+  },
+
+  {
+    path: '/customer',
+    component: Layout,
+    name: 'Customer',
+    meta: { title: 'Customer', icon: 'el-icon-connection' },
+    alwaysShow:true,
+    children: [
+      {
+        path: 'customer',
+        name: 'Customer',
+        component: null,//() => import('@/views/qh/customer/index'),
+        meta: { title: 'Customer', icon: 'el-icon-connection' },
+        hidden: true
+      },
+      {
+        path: 'company',
+        name: 'Company',
+        component: null,// () => import('@/views/qh/customer/company/index'),
+        meta: { title: 'Company', icon: 'el-icon-office-building' }
+      },
+      {
+        path: 'contact',
+        name: 'Contact',
+        component: null,//() => import('@/views/qh/customer/contact/index'),
+        meta: { title: 'Contact', icon: 'el-icon-user' }
+      }
+    ]
+  },
+
+  {
+    path: '',
+    component: Layout,
+    children: [{
+      path: 'user',
+      name: 'User',
+      component: null,//() => import('@/views/qh/user/index'),
+      meta: { title: 'User Management', icon: 'el-icon-service' }
+    }]
+  },
+  {
+    path: '',
+    component: Layout,
+    children: [
+      {
+        path: 'product',
+        name: 'Product',
+        component: null,//() => import('@/views/qh/product/index'),
+        meta: { title: 'Product Management', icon: 'el-icon-collection' }
       }
     ]
   },
   {
-    path: '/documentation',
+    path: '/product',
     component: Layout,
+    redirect: '/product/list',
+    name: 'Product',
+    meta: {
+      title: 'Product Management',
+      icon: 'el-icon-collection'
+    },
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: true }
+        path: 'create',
+        component: () => import('@/views/product/create'),
+        name: 'CreateProduct',
+        meta: { title: 'Create Product', icon: 'edit' }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/product/edit'),
+        name: 'EditProduct',
+        meta: { title: 'Edit Product', noCache: true, activeMenu: '/prodcut/list' },
+        hidden: true
+      },
+      {
+        path: 'list',
+        component: () => import('@/views/product/list'),
+        name: 'ProductList',
+        meta: { title: 'Product List', icon: 'list' }
       }
     ]
   },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'Guide', icon: 'guide', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
-      }
-    ]
-  }
 ]
 
 /**
@@ -133,7 +188,7 @@ export const asyncRoutes = [
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
-    alwaysShow: true, // will always show the root menu
+    alwaysShow: false, // will always show the root menu
     name: 'Permission',
     meta: {
       title: 'Permission',

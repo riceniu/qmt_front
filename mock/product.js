@@ -1,12 +1,12 @@
 const Mock = require('mockjs')
 
 const List = []
-const count = 30
+const count = 100
 
-const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
-const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
+const baseContent = '<p>Product test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
+const image_uri = 'C:\Users\zhan_\Pictures\wallpaper\big-ben-bridge-castle-460672.jpg'
 
-//Create a List which contains all mocked artical data
+//Create a List which contains all mocked article data
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock(
     {
@@ -25,14 +25,18 @@ for (let i = 0; i < count; i++) {
     comment_disabled: true,
     pageviews: '@integer(300, 5000)',
     image_uri,
-    platforms: ['a-platform']
+    platforms: ['a-platform'],
+    'currency|1':['CNY', 'USD', 'GBP', 'EUR'],
+    'category|1':['Type-A','Type-B','Type-C'],
+    price: '@float(100, 50000, 0, 0)',
+    productname:'@upper(@word(1)'+'-'+'@integer(1,1000)'
   }
   ))
 }
 
 module.exports = [
   {
-    url: '/vue-element-admin/article/list',
+    url: '/vue-element-admin/product/list',
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
@@ -61,15 +65,15 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/article/detail',
+    url: '/vue-element-admin/product/detail',
     type: 'get',
     response: config => {
       const { id } = config.query
-      for (const article of List) {
-        if (article.id === +id) {
+      for (const product of List) {
+        if (product.id === +id) {
           return {
             code: 20000,
-            data: article
+            data: product
           }
         }
       }
@@ -77,7 +81,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/article/pv',
+    url: '/vue-element-admin/product/pv',
     type: 'get',
     response: _ => {
       return {
@@ -95,7 +99,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/article/create',
+    url: '/vue-element-admin/product/create',
     type: 'post',
     response: _ => {
       return {
@@ -106,7 +110,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/article/update',
+    url: '/vue-element-admin/product/update',
     type: 'post',
     response: _ => {
       return {
