@@ -7,7 +7,7 @@
     "dev0": "vue-cli-service serve",
     "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve",
     "lint": "eslint --ext .js,.vue src",
-    "build:prod": "vue-cli-service build",
+    "build:prod": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
     "new": "plop",

@@ -1,42 +1,26 @@
 const Mock = require('mockjs')
 
 const List = []
-const count = 5
+const count = 30
 
-const baseContent = '<p>Product test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
-const image_uri = 'C:\Users\zhan_\Pictures\wallpaper\big-ben-bridge-castle-460672.jpg'
+const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
+const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
 
-//Create a List which contains all mocked article data
+//Create a List which contains all mocked artical data
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock(
     {
-    id: '@increment',
-    timestamp: +Mock.Random.date('T'),
-    author: '@first',
-    reviewer: '@first',
-    title: '@title(5, 10)',
-    content_short: 'mock data',
-    content: baseContent,
-    forecast: '@float(0, 100, 2, 2)',
-    importance: '@integer(1, 3)',
-    'type|1': ['CN', 'US', 'JP', 'EU'],
-    'status|1': ['published', 'draft'],
-    display_time: '@datetime',
-    comment_disabled: true,
-    pageviews: '@integer(300, 5000)',
-    image_uri,
-    platforms: ['a-platform'],
-    'currency|1':['CNY', 'USD', 'GBP', 'EUR'],
-    'category|1':['Type-A','Type-B','Type-C'],
+    No: '@increment',
     price: '@float(100, 50000, 0, 0)',
-    productname:'@upper(@word(1)'+'-'+'@integer(1,1000)'
+    item:'@word(1)'+'@integer(1,1000)',
+    quantity:'@float(1,10,0,0)'
   }
   ))
 }
 
 module.exports = [
   {
-    url: '/vue-element-admin/product/list',
+    url: '/vue-element-admin/quote/list',
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
@@ -65,15 +49,15 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/product/detail',
+    url: '/vue-element-admin/quote/detail',
     type: 'get',
     response: config => {
       const { id } = config.query
-      for (const product of List) {
-        if (product.id === +id) {
+      for (const article of List) {
+        if (article.id === +id) {
           return {
             code: 20000,
-            data: product
+            data: article
           }
         }
       }
@@ -81,7 +65,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/product/pv',
+    url: '/vue-element-admin/quote/pv',
     type: 'get',
     response: _ => {
       return {
@@ -99,7 +83,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/product/create',
+    url: '/vue-element-admin/quote/create',
     type: 'post',
     response: _ => {
       return {
@@ -110,7 +94,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/product/update',
+    url: '/vue-element-admin/quote/update',
     type: 'post',
     response: _ => {
       return {

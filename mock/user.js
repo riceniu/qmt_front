@@ -5,6 +5,9 @@ const tokens = {
   },
   editor: {
     token: 'editor-token'
+  },
+  nz: {
+    token: 'admin-token'
   }
 }
 
@@ -20,6 +23,12 @@ const users = {
     introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Normal Editor'
+  },
+  'nz-token':{
+    roles:['nz'],
+    introduction:'Special auth for coding',
+    avatar:'https://avatars.githubusercontent.com/u/61968632?v=4',
+    name:'nz'
   }
 }
 
@@ -31,6 +40,9 @@ module.exports = [
     response: config => {
       const { username } = config.body
       const token = tokens[username]
+
+      console.log("mock/user.js")
+      console.log(config)
 
       // mock error
       if (!token) {
@@ -54,6 +66,7 @@ module.exports = [
     response: config => {
       const { token } = config.query
       const info = users[token]
+      console.log("mkck/user.js")
       console.log(info)
       // mock error
       if (!info) {
