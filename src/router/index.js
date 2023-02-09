@@ -140,23 +140,10 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'create',
-        component: () => import('@/views/product/create'),
-        name: 'CreateProduct',
-        meta: { title: 'Create Product', icon: 'edit' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/product/edit'),
-        name: 'EditProduct',
-        meta: { title: 'Edit Product', noCache: true, activeMenu: '/prodcut/list' },
-        hidden: true
-      },
-      {
         path: 'list',
         component: () => import('@/views/product/list'),
         name: 'ProductList',
-        meta: { title: 'Product List', icon: 'list' }
+        meta: { title: 'Product list', icon: 'el-icon-collection' }
       }
     ]
   },
@@ -171,28 +158,27 @@ export const asyncRoutes = [
     path: '/user',
     component: Layout,
     roles:['admin'],
-    name:'User',
-    meta:{title:'User', icon: 'el-icon-service'},
     children: [
-      {
-        path: 'create',
-        component: () => import('@/views/user/create'),
-        name: 'CreateProduct',
-        meta: { title: 'Add user', icon: 'edit' }
-      },
-      {
-        path: 'edit/:id(\\d+)',
-        component: () => import('@/views/user/edit'),
-        name: 'EditProduct',
-        meta: { title: 'Edit User', noCache: true, activeMenu: '/prodcut/list' },
-        hidden: true
-      },
       {
         path: 'list',
         component: () => import('@/views/user/list'),
-        name: 'ProductList',
-        meta: { title: 'User List', icon: 'list' }
-      }
+        name: 'UserLIst',
+        meta: { title: 'User List', icon: 'el-icon-service' },
+        roles:['admin']
+       }
+      // {
+      //   path: 'edit/:id(\\d+)',
+      //   component: () => import('@/views/user/edit'),
+      //   name: 'EditUser',
+      //   meta: { title: 'Edit User', noCache: true, activeMenu: '/prodcut/list' },
+      //   hidden: true
+      // },
+      // {
+      //   path: 'list',
+      //   component: () => import('@/views/user/list'),
+      //   name: 'UserList',
+      //   meta: { title: 'User List', icon: 'list' }
+      // }
     ]
   },
 
