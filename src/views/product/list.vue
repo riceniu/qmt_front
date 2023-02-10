@@ -13,12 +13,6 @@
         </template>
       </el-table-column>
 
-      <!-- <el-table-column width="180px" align="center" label="Date">
-        <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-        </template>
-      </el-table-column> -->
-
       <el-table-column width="120px" align="center" label="Product">
         <template slot-scope="scope">
           <span>{{ scope.row.productname }}</span>
@@ -48,7 +42,7 @@
       <el-table-column min-width="300px" label="Quote text">
         <template slot-scope="{row}">
           <router-link :to="'/product/edit/'+row.id" class="link-type">
-            <span>{{ row.title }}</span>
+            <span>{{ row.quote_text }}</span>
           </router-link>
         </template>
       </el-table-column>
@@ -56,9 +50,8 @@
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
           <router-link :to="'/product/edit/'+scope.row.id">
-            <el-button type="primary" size="small" icon="el-icon-edit">
-              Edit
-            </el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(row)"/>
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleUpdate(row)"/>
           </router-link>
         </template>
       </el-table-column>
@@ -66,6 +59,7 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
+  
 </template>
 
 <script>
@@ -92,7 +86,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 10
       }
     }
   },

@@ -7,6 +7,7 @@ const article = require('./article')
 const search = require('./remote-search')
 const product = require('./product')
 const quote = require('./quote')
+const customer = require('./customer')
 
 const mocks = [
   ...user,
@@ -14,7 +15,8 @@ const mocks = [
   ...article,
   ...search,
   ...product,
-  ...quote
+  ...quote,
+  ...customer
 ]
 
 // for front mock

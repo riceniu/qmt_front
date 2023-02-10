@@ -8,7 +8,7 @@ export function fetchList(query) {
   })
 }
 
-export function fetchArticle(id) {
+export function fetchQuote(id) {
   return request({
     url: '/vue-element-admin/quote/detail',
     method: 'get',
@@ -24,7 +24,7 @@ export function fetchPv(pv) {
   })
 }
 
-export function createArticle(data) {
+export function createQuote(data) {
   return request({
     url: '/vue-element-admin/quote/create',
     method: 'post',
@@ -32,7 +32,7 @@ export function createArticle(data) {
   })
 }
 
-export function updateArticle(data) {
+export function updateQuote(data) {
   return request({
     url: '/vue-element-admin/quote/update',
     method: 'post',

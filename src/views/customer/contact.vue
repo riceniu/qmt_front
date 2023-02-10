@@ -4,16 +4,13 @@
               :data="list" 
               border fift highlight-current-row style="width: 100%">
 
-            <el-table-column prop="quote_number" label="Quote No." align="center" width="90" />
-            <el-table-column prop="quote_date" label="Date" align="center" width="100"/>
-            <el-table-column prop="currency" label="Currency" align="center" width="85" />
-            <el-table-column prop="vat" label="VAT" align="center" width="50"/>
-            <el-table-column prop="discount_direct" label="Disc." align="center" width="60"/>
-            <el-table-column prop="discount" label="Disc.%" align="center" width="70"/>
-            <el-table-column prop="total" label="Total" align="center" width="130"/>
-            <el-table-column prop="contact" label="Contact" align="center" width="250"/>       
-            <el-table-column prop="company" label="Company" align="center" width="250"/>  
-            <el-table-column prop="owner" label="Owner" align="center" width="250"/>  
+            <el-table-column prop="id" label="ID" align="center" width="60" />
+            <el-table-column prop="firstname" label="First name" align="center" width="100" />
+            <el-table-column prop="lastname" label="Last name" align="center" width="100"/>
+            <el-table-column prop="email" label="Email" align="center" width="200"/>
+            <el-table-column prop="tel" label="Tel" align="center" width="130"/>
+            <el-table-column prop="mobile" label="Mobile" align="center" width="130"/>
+            <el-table-column prop="company" label="Company" align="center" width="250"/>       
     
             <el-table-column align="center" label="Actions" width="120">
                 <template slot-scope="{row}">
@@ -103,7 +100,7 @@
   </template>
   
   <script>
-  import { fetchList } from '@/api/quote'
+  import { fetchList } from '@/api/customer'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   
   export default {

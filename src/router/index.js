@@ -117,13 +117,13 @@ export const constantRoutes = [
       {
         path: 'company',
         name: 'Company',
-        component: null,// () => import('@/views/qh/customer/company/index'),
+        component: () => import('@/views/customer/company'),
         meta: { title: 'Company', icon: 'el-icon-office-building' }
       },
       {
         path: 'contact',
         name: 'Contact',
-        component: null,//() => import('@/views/qh/customer/contact/index'),
+        component: () => import('@/views/customer/contact'),
         meta: { title: 'Contact', icon: 'el-icon-user' }
       }
     ]

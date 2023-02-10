@@ -97,14 +97,12 @@
 </template>
 
 <script>
-import quoteItems from './components/items.vue'
-import ComplexTable from './items_complex.vue'
+import ComplexTable from './quoteItems.vue'
 
 export default {
   name:'create',
 
   components: {
-    quoteItems,
     ComplexTable
   },  
   
