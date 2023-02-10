@@ -10,10 +10,10 @@
             <el-table-column prop="vat" label="VAT" align="center" width="50"/>
             <el-table-column prop="discount_direct" label="Disc." align="center" width="60"/>
             <el-table-column prop="discount" label="Disc.%" align="center" width="70"/>
-            <el-table-column prop="total" label="Total" align="center" width="130"/>
+            <el-table-column prop="total" label="Total" align="center" width="100"/>
             <el-table-column prop="contact" label="Contact" align="center" width="250"/>       
-            <el-table-column prop="company" label="Company" align="center" width="250"/>  
-            <el-table-column prop="owner" label="Owner" align="center" width="250"/>  
+            <el-table-column prop="company" label="Company" align="center" width="200"/>  
+            <el-table-column prop="owner" label="Owner" align="center" width="100"/>  
     
             <el-table-column align="center" label="Actions" width="120">
                 <template slot-scope="{row}">
