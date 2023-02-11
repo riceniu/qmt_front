@@ -50,8 +50,8 @@
       <div style="position:relative">
         <div class="tips">
           <span>Username : admin</span>
-          <span>Password : any</span>
-          <span>Can add/edit all user</span>
+          <span style="margin-right:10px;">Password : any</span>
+          <span>Can add/edit user</span>
         </div>
         <div class="tips">
           <span style="margin-right:18px;">Username : editor</span>

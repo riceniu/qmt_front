@@ -121,12 +121,52 @@ module.exports = [
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
-      console.log('mock.js->user/list')
-      console.log(userList)
+      //console.log('mock.js->user/list')
+      //console.log(userList)
       return{
         code: 20000,
         data: userList
       }
     },
+  },
+
+  //create user
+  {
+    url: '/vue-element-admin/user/create',
+    type: 'post',
+    response: config => {
+      //console.log('mock/user.js->create')
+      //console.log(config.body)
+      userList.push(config.body)
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+  //udpate user(reset pw)
+  {
+    url: '/vue-element-admin/user/update',
+    type: 'post',
+    response: config => {
+      console.log('mock/user.js->update')
+      console.log(config.body)
+      const name = config.body
+      for (const user of userList) {
+        if (user.name === name.name) {
+          userList[userList.indexOf(user)].password = name.password
+          console.log(userList)
+          return {
+            code: 20000,
+            data: name
+          }
+        }
+      }
+      console.log(userList)
+      return {
+        code: 20000,
+        data: 'Name not found'
+      }
+    }
   }
 ]

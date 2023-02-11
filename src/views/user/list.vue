@@ -40,6 +40,7 @@
             <el-input v-model="temp.password" placeholder="Password" type="password" show-password/>
           </el-form-item>
         </el-form>
+
         <el-form v-if="dialogStatus==='Edit'" ref="dataForm" :rules="rules" :model="temp" label-position="left" style="width: 400px; margin-left:50px;">
           <el-form-item label="Name">
             <el-input v-model="temp.name" :disabled="true"/>
@@ -53,16 +54,17 @@
               <br/>
             <el-input v-model="temp.password" placeholder="Password" type="password" show-password/>
             <el-button @click="resetPw">Cancel</el-button>
-            <el-button type="primary" @click="resetPassword">Confirm</el-button>
+            <el-button type="primary" @click="setPassword">Confirm</el-button>
             <br/>
             </div>
           </el-form-item>
         </el-form>
+
         <div slot="footer" class="dialog-footer">
           <el-button @click="closeDialog">
             Close
           </el-button>
-          <el-button v-if="dialogStatus==='Create'" type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          <el-button v-if="dialogStatus==='Create'" type="primary" @click="dialogStatus==='Create'?createData():updateData()">
             Confirm
           </el-button> 
         </div>
@@ -73,7 +75,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/user'
+import { fetchList, addUser, updateUser } from '@/api/user'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
 export default {
@@ -101,7 +103,6 @@ export default {
       temp: {
           name:'',
           username:'',
-          id: undefined,
           password:''
         },
       tempPw:'',
@@ -135,7 +136,6 @@ export default {
       this.resetTemp()
       this.dialogStatus='Create'
       this.dialogFormVisible=true
-
     },
     handleUpdate(row){
       this.temp = Object.assign({}, row) // copy obj
@@ -152,24 +152,64 @@ export default {
           password:''
         }
       },
-      resetPw(){
-        if(this.resetPassword==false){
-          this.resetPassword=true
-          this.tempPw = this.temp.password
-          this.temp.password=''
-        }else{
-          this.resetPassword = false
-          this.temp.password = this.tempPw
-          this.tempPw=''
-        }
-      },
-      closeDialog(){
-        this.dialogFormVisible=false ;
-        if(this.tempPw) {
-          this.temp.password = this.tempPw
-          this.resetPassword = false
-        }
+    resetPw(){
+      if(this.resetPassword==false){
+        this.resetPassword=true
+        this.tempPw = this.temp.password
+        this.temp.password=''
+      }else{
+        this.resetPassword = false
+        this.temp.password = this.tempPw
+        this.tempPw=''
       }
+    },
+    setPassword(){
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          updateUser(tempData).then(() => {
+            // const index = this.list.findIndex(v => v.id === this.temp.id)
+            // this.list.splice(index, 1, this.temp)
+            this.dialogFormVisible = false
+            if(this.tempPw) {
+              this.temp.password = this.tempPw
+              this.resetPassword = false
+            }
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+
+    },
+    closeDialog(){
+      this.dialogFormVisible=false ;
+      if(this.tempPw) {
+        this.temp.password = this.tempPw
+        this.resetPassword = false
+      }
+    },
+    createData(){
+      this.$refs['dataForm'].validate((valid) => {
+      if (valid) {
+        console.log('view/user/list.vue->createData')
+        console.log(this.temp)
+        addUser(this.temp).then(() => {
+          this.list.push(this.temp)
+          this.dialogFormVisible = false
+          this.$notify({
+            title: 'Success',
+            message: 'Created Successfully',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      }
+    })}
   }
 }
 </script>
