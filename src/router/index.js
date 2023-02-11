@@ -157,14 +157,13 @@ export const asyncRoutes = [
   {
     path: '/user',
     component: Layout,
-    roles:['admin'],
+    meta:{roles:['admin']},
     children: [
       {
         path: 'list',
         component: () => import('@/views/user/list'),
         name: 'UserLIst',
         meta: { title: 'User List', icon: 'el-icon-service' },
-        roles:['admin']
        }
       // {
       //   path: 'edit/:id(\\d+)',
