@@ -87,7 +87,7 @@ module.exports = [
       const { token } = config.query
       const info = users[token]
       console.log("mock/user.js->user info")
-      console.log(info)
+      //console.log(info)
       // mock error
       if (!info) {
         return {

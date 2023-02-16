@@ -3,27 +3,25 @@ const Mock = require('mockjs')
 const List = []
 const count = 50
 const Mocked = require('./mocked_data')
-const contact_list = []
-const company_list = []
-const product_list = []
+const TempItemList = []
+const ProductList=Mocked.product_list
+const LIMIT = ProductList.length
+const FinalItemList = []
+const ItemList=[]
 
-const baseContent = '<p>I am testing data, I am testing data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
-const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70b3'
-//********************************************************* */
+
+//dynamic quote
+/*
+{
 for(let i = 0 ; i<Mocked.contact_list.length;i++){
-  contact_list.push(Mocked.contact_list[i].email)
+  contact_list.push({
+    contact: Mocked.contact_list[i].firstname + ' '+ Mocked.contact_list[i].lastname,
+    company: Mocked.company_list[i].company,
+    id:i
+  })
 }
-for(let i = 0 ; i<Mocked.company_list.length;i++){
-  company_list.push(Mocked.company_list[i].company)
-}
-for(let i = 0; i<Mocked.product_list.length;i++){
-  product_list.push(Mocked.product_list[i])
-}
-/************************************************************** */
- 
-//Create a List which contains all mocked artical data
 for (let i = 0; i < count; i++) {
-  List.push(Mock.mock(
+  let mocked = Mock.mock(
     {
     quote_number: 'ABC-'+'@increment',
     quote_date: '@date',
@@ -32,23 +30,59 @@ for (let i = 0; i < count; i++) {
     discount:'@float(0,0.3,2,2)',
     discount_direct:'@float(0,500,0,0)',
     total:'@float(800,50000,0,0)',
-    'contact|1':contact_list,
-    'company|1':company_list,
+    'contactid|1':'@integer(0,29)',
     'owner|1':['Diane Gale','Zhan Niu'],
     item_quantity:'@integer(1,5)',  
-    items:[]
+    company:"",
+    contact:"",
+    'price|1':["VAT exclusive",'VAT inclusive'],
+    'trade_term|1':['EXW', 'CIF', 'FOB', 'CFR'],
+    delivery:'@integer(10,180)'+' days after payment',
+    payment:'@title(1,5)',
+    'validity|1':['30 days','60 days','90 days'],
+    'warranty|1':['1 year', '2 years','3 years']
   }
-  ))
-}
-
-let temp
-for(let i=0;i<List.length;i++){
-  for(let j=0;j<List[i].item_quantity;j++){
-  temp = Mock.mock({'items|1':product_list})
-  List[i].items.push(temp.items)
+  )
+  mocked['company']=contact_list[mocked.contactid].company
+  mocked.contact=contact_list[mocked.contactid].contact
+  List.push(mocked)
 }}
+*/
+
+//constant quote
+List.push(...Mocked.quote_list)
 
 
+/*dynamic quote items*/
+/*
+{
+for (let i = 25; i < 50; i++) {
+  let mocked = Mock.mock(
+    {
+    quote_number: Mocked.quote_list[i].quote_number,
+    item_number:'@integer(1,5)'
+  }
+  )
+  TempItemList.push(mocked)
+}
+for(let i = 0; i < TempItemList.length; i++){
+  for(let j = 0; j< TempItemList[i].item_number; j++){
+    let index = Math.floor(Math.random() * LIMIT)
+    FinalItemList.push(
+      {
+        quote_number:TempItemList[i].quote_number,
+        item:ProductList[index].productname,
+        price:ProductList[index].price,
+        quantity:Math.floor(Math.random() * 9) + 1
+      }
+    )
+  }
+}
+}
+*/
+
+//constant quote items
+FinalItemList.push(...Mocked.quote_items)
 
 module.exports = [
   {
@@ -70,7 +104,7 @@ module.exports = [
       }
 
       const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
-      console.log(pageList)
+      //console.log(List)
       //console.log(contact_list)
       //console.log(product_list)
       return {
@@ -87,12 +121,16 @@ module.exports = [
     url: '/vue-element-admin/quote/detail',
     type: 'get',
     response: config => {
-      const { id } = config.query
-      for (const article of List) {
-        if (article.id === +id) {
+      const { qn } = config.query
+      //console.log('mock/quote.js->quote/detail')
+      //console.log(config.query)
+      for (const quote of List) {
+        if (quote.quotenumber === qn) {
+          console.log('mock/quote.js->quote/detail')
+          //console.log(quote)
           return {
             code: 20000,
-            data: article
+            data: quote
           }
         }
       }
@@ -137,6 +175,44 @@ module.exports = [
         data: 'success'
       }
     }
-  }
+  },
+
+  {
+    url: '/vue-element-admin/quote/items/list',
+    type: 'get',
+    response: config => {
+      console.log('mock/quote.js->quote/items/list')
+      //console.log(config.query)
+      //console.log(FinalItemList)
+      return {
+        code: 20000,
+        data: FinalItemList
+      }
+    }
+  },
+  {
+    url: '/vue-element-admin/quote/items',
+    type: 'get',
+    response: config => {
+      console.log(config.query)
+      console.log('mock/quote.js->quote/items')
+      const requestedNumber = config.query.quote_number
+      ItemList.length = 0
+      console.log(requestedNumber)
+      for(let i=0;i<FinalItemList.length;i++){
+        console.log(FinalItemList[i])
+        if(FinalItemList[i].quote_number === requestedNumber)
+          {
+            ItemList.push(FinalItemList[i])
+          }
+      }
+      console.log(ItemList)
+      return {
+        code: 20000,
+        data: ItemList
+      }
+    }
+  },
+
 ]
 
