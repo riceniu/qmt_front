@@ -8,11 +8,11 @@ export function fetchList(query) {
   })
 }
 
-export function fetchQuote(id) {
+export function fetchQuote(quote_number) {
   return request({
     url: '/vue-element-admin/quote/detail',
-    method: 'get',
-    params: { id }
+    method: 'get', 
+    params: { quote_number }
   })
 }
 
@@ -37,5 +37,21 @@ export function updateQuote(data) {
     url: '/vue-element-admin/quote/update',
     method: 'post',
     data
+  })
+}
+
+export function fetchQuoteItemsList(query) {
+  return request({
+    url: '/vue-element-admin/quote/items/list',
+    method: 'get', 
+    params: query
+  })
+}
+
+export function fetchQuoteItems(query) {
+  return request({
+    url: '/vue-element-admin/quote/items',
+    method: 'get', 
+    params: query
   })
 }

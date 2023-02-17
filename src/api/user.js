@@ -59,7 +59,7 @@ export function addUser(data) {
 
 export function deleteUser(data) {
   return request({
-    url: '/vue-element-admin/user/update',
+    url: '/vue-element-admin/user/delete',
     method: 'post',
     data
   })

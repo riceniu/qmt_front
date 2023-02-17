@@ -1,5 +1,7 @@
 <template>
   <div class="app-container">
+
+    <!-- Table -->
     <el-table v-loading="listLoading" 
     :data="list" 
     border fift highlight-current-row style="width: 100%">
@@ -24,12 +26,15 @@
       </el-table-column>
     </el-table>
     <br/>
+
+    <!-- Add button -->
     <div>
     <el-button type="success" @click="handleAdd">Add</el-button>
     </div>
     
+    <!-- dialog for edit/add -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"   :close-on-click-modal="false">
-        <el-form v-if="dialogStatus==='Create'" ref="dataForm" :rules="rules" :model="temp" label-position="left" style="width: 400px; margin-left:50px;">
+        <el-form v-if="dialogStatus==='Add'" ref="dataForm" :rules="rules" :model="temp" label-position="left" style="width: 400px; margin-left:50px;">
           <el-form-item label="Name" prop="name">
             <el-input v-model="temp.name" placeholder="First name, Last name"/>
           </el-form-item>
@@ -64,11 +69,12 @@
           <el-button @click="closeDialog">
             Close
           </el-button>
-          <el-button v-if="dialogStatus==='Create'" type="primary" @click="dialogStatus==='Create'?createData():updateData()">
+          <el-button v-if="dialogStatus==='Add'" type="primary" @click="dialogStatus==='Add'?createData():updateData()">
             Confirm
           </el-button> 
         </div>
-      </el-dialog>
+    </el-dialog>
+    
     <!-- <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" /> -->
   </div>
 
@@ -82,24 +88,11 @@ export default {
   name: 'ProductList',
   components: { Pagination },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
   },
   data() {
     return {
       list: null,
-      total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20
-      },
       temp: {
           name:'',
           username:'',
@@ -109,8 +102,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: 'Edit',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        Edit: 'Edit user',
+        Add: 'Add user'
       },
       resetPassword: false,
       rules: {
@@ -134,7 +127,7 @@ export default {
     },
     handleAdd(){
       this.resetTemp()
-      this.dialogStatus='Create'
+      this.dialogStatus='Add'
       this.dialogFormVisible=true
     },
     handleUpdate(row){

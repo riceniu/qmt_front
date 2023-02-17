@@ -124,6 +124,80 @@ module.exports = [
         data: 'success'
       }
     }
+  },
+
+  {
+    url: '/vue-element-admin/product/lastid',
+    type: 'get',
+    response: config => {
+      let lastId = List[List.length - 1].id
+      //console.log(lastId)
+          return {
+            code: 20000,
+            data: lastId
+          }
+    }
+  },
+
+
+  {
+    url: '/vue-element-admin/product/add',
+    type: 'post',
+    response: config => {
+      //console.log('mock/product.js->add')
+      //console.log(config.body)
+      List.push(config.body)
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  },
+
+  {
+    url: '/vue-element-admin/product/edit',
+    type: 'post',
+    response: config => {
+      console.log('mock/product.js->edit')
+      //console.log(config.body)
+      const changed = config.body
+      for (const product of List) {
+        if (product.id === changed.id) {
+          List[List.indexOf(product)] = changed
+          //console.log(List)
+          return {
+            code: 20000,
+            data: "success"
+          }
+        }
+      }
+      console.log(List)
+      return {
+        code: 20000,
+        data: 'Name not found'
+      }
+    }
+  },
+
+  {
+      url: '/vue-element-admin/product/delete',
+      type: 'delete',
+      response: config=>{
+        console.log('mock/product.js->delete')
+        //console.log(config.body)
+        let index
+        for(const product of List){
+          if(product.id === config.body.id){
+            index = List.indexOf(product)
+            List.splice(index,1)
+          }
+        }
+        return{
+          code: 20000,
+          data: 'Product deleted'
+        }
+      }
+    
   }
 ]
 

@@ -39,3 +39,33 @@ export function updateArticle(data) {
     data
   })
 }
+
+export function fetchLastId() {
+  return request({
+    url: '/vue-element-admin/product/lastid',
+    method: 'get',
+  })
+}
+
+export function addProduct(data) {
+  return request({
+    url: '/vue-element-admin/product/add',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteProduct(data) {
+  return request({
+    url: '/vue-element-admin/product/delete',
+    method: 'delete',
+    data
+  })
+}
+export function editProduct(data) {
+  return request({
+    url: '/vue-element-admin/product/edit',
+    method: 'post',
+    data
+  })
+}
