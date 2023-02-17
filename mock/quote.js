@@ -84,6 +84,42 @@ for(let i = 0; i < TempItemList.length; i++){
 //constant quote items
 FinalItemList.push(...Mocked.quote_items)
 
+ //modification of mocked data
+ /*
+const correction=[]
+const quoteitems=[]
+{
+
+let item_list=Mocked.quote_items
+for(const quote of Mocked.quote_list){
+  let qn = quote.quote_number
+  quote.total = 0
+  quote.vat = (Math.random()*10>5) ? 0.2:0
+  quote.discount = (Math.random()*10 > 9)?0.1 :0
+  quote.discount_direct = (Math.random()*10>8) ? 500: 0
+  for(const item of item_list)
+  {
+    if(item.quote_number === qn){
+      for(const product of Mocked.product_list){
+        if(product.productname === item.item){
+          item.price = product.price
+        }
+      }
+      quoteitems.push(item)
+      quote.total += item.price * item.quantity
+    }
+  }
+  quote.total = (quote.total - quote.discount_direct)*(1-quote.discount)*(1+quote.vat)
+  delete quote.item_quantity
+  correction.push(quote)
+}
+for(let i = 0; i<50 ; i++){
+  quoteitems.shift()
+}
+//console.log(correction)
+console.log(quoteitems)
+}
+*/
 module.exports = [
   {
     url: '/vue-element-admin/quote/list',
@@ -121,11 +157,12 @@ module.exports = [
     url: '/vue-element-admin/quote/detail',
     type: 'get',
     response: config => {
-      const { qn } = config.query
+      const  qn  = config.query.quote_number
       //console.log('mock/quote.js->quote/detail')
       //console.log(config.query)
+      //console.log(qn)
       for (const quote of List) {
-        if (quote.quotenumber === qn) {
+        if (quote.quote_number === qn) {
           console.log('mock/quote.js->quote/detail')
           //console.log(quote)
           return {
@@ -194,19 +231,20 @@ module.exports = [
     url: '/vue-element-admin/quote/items',
     type: 'get',
     response: config => {
-      console.log(config.query)
       console.log('mock/quote.js->quote/items')
       const requestedNumber = config.query.quote_number
       ItemList.length = 0
-      console.log(requestedNumber)
+      //console.log(requestedNumber)
       for(let i=0;i<FinalItemList.length;i++){
-        console.log(FinalItemList[i])
+        //console.log(FinalItemList[i])
         if(FinalItemList[i].quote_number === requestedNumber)
           {
             ItemList.push(FinalItemList[i])
           }
       }
-      console.log(ItemList)
+      //console.log(correction)
+      //console.log(ItemList)
+
       return {
         code: 20000,
         data: ItemList

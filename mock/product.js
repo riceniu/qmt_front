@@ -24,7 +24,20 @@ for (let i = 0; i < count; i++) {
 }
 */
 //constant productList
+
 List.push(...Mocked.product_list)
+
+//product price optimization
+/*const correction=[]
+{
+  const productList = Mocked.product_list
+  for(const product of productList){
+    product.price = (Math.floor(Math.random()*20 )+ 1) *100
+    correction.push(product)
+  }
+  //console.log(correction)
+}*/
+
 module.exports = [
   {
     url: '/vue-element-admin/product/list',
