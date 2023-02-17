@@ -4,7 +4,7 @@
       <el-form :inline="true">
         
         <el-form-item label="Quote Number:">
-          <el-input v-model="quote.quotenumber" placeholder="KHI-"/>
+          <el-input v-model="quote.quote_number" placeholder="KHI-"/>
         </el-form-item>
         
         <el-form-item label="Quote date:">
@@ -127,6 +127,12 @@ export default {
         payment:'',
         validity:'',
         warranty:''
+      },
+      quoteItem:{
+        quote_number:'',
+        item:'',
+        quantity:'',
+        price:'',
       }
     }
   },

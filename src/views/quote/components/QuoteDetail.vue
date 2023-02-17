@@ -1,0 +1,213 @@
+<template>
+    <div class="app-container">
+      <el-form ref="quote" :model="postForm" label-width="120px">
+        <el-form :inline="true">
+          
+          <el-form-item label="Quote Number:">
+            <el-input v-model="quote.quote_number" placeholder="KHI-"/>
+          </el-form-item>
+          
+          <el-form-item label="Quote date:">
+              <el-date-picker v-model="quote.quote_date" 
+              type="date" placeholder="Pick a date" style="width: 100%;" 
+              value-format="yyyy-MM-dd"/>
+          </el-form-item>
+          
+          <el-form-item label="Owner">
+            <el-select v-model="quote.owner" placeholder="please select the Owner">
+              <el-option label="Diane" value="Diane" />
+              <el-option label="Tony" value="Tony" />
+            </el-select>
+          </el-form-item>
+        
+        </el-form>
+        
+        <el-form :inline="true">
+          <el-form-item label="Company">
+            <el-input v-model="quote.company"  />
+          </el-form-item>
+  
+          <el-form-item label="Contact">
+            <el-input v-model="quote.contact"  />
+          </el-form-item>
+        </el-form>
+  
+        <!-- <quoteItems></quoteItems> -->
+        <ComplexTable :quote_number="PassQuoteNumber"/>
+        
+        <el-form :inline="true">
+          <el-form-item label="Direct discount">
+            <el-input v-model="quote.discount_direct"  />
+          </el-form-item>
+  
+          <el-form-item label="Discount %">
+            <el-input v-model="quote.discount"  />
+          </el-form-item>      
+          
+          <el-form-item label="VAT">
+            <el-input v-model="quote.vat" size="mini" />
+          </el-form-item>
+
+          <el-form-item label="Total">
+            <el-input v-model="quote.total"  />
+          </el-form-item>
+        </el-form>
+
+        <el-form :inline="true">
+          <el-form-item label="Currency">
+            <el-input v-model="quote.currency"  />
+          </el-form-item>
+  
+          <el-form-item label="Price">
+            <el-input v-model="quote.price"  />
+          </el-form-item>      
+          
+          <el-form-item label="Trade Term">
+            <el-input v-model="quote.trade_term"  />
+          </el-form-item>
+        </el-form>
+  
+        <el-form :inline="true">
+          <el-form-item label="Delivery">
+            <el-input v-model="quote.delivery"  />
+          </el-form-item>      
+          
+          <el-form-item label="Payment Term">
+            <el-input v-model="quote.payment"  />
+          </el-form-item>
+        </el-form>
+  
+        <el-form :inline="true">
+          <el-form-item label="Validity">
+            <el-input v-model="quote.validity"  />
+          </el-form-item>      
+          
+          <el-form-item label="Warranty">
+            <el-input v-model="quote.warranty"  />
+          </el-form-item>
+        </el-form>
+  
+        <!-- <el-form-item label="Instant delivery">
+          <el-switch v-model="quote.delivery" />
+        </el-form-item>
+        <el-form-item label="Activity type">
+          <el-checkbox-group v-model="quote.type">
+            <el-checkbox label="Online activities" name="type" />
+            <el-checkbox label="Promotion activities" name="type" />
+            <el-checkbox label="Offline activities" name="type" />
+            <el-checkbox label="Simple brand exposure" name="type" />
+          </el-checkbox-group>
+        </el-form-item> -->
+        <!-- <el-form-item label="Resources">
+          <el-radio-group v-model="quote.resource">
+            <el-radio label="Sponsor" />
+            <el-radio label="Venue" />
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="Activity form">
+          <el-input v-model="quote.desc" type="textarea" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">Create</el-button>
+          <el-button @click="onCancel">Cancel</el-button>
+        </el-form-item> -->
+      </el-form>
+    </div>
+  </template>
+  
+  <script>
+  import ComplexTable from '../quoteItems.vue'
+  import {fetchQuote} from '@/api/quote'
+ 
+  const defaultForm = {
+      quote_number: 'ABC-1169',
+      quote_date: '',
+      currency: '',
+      vat:'',
+      discount: '',
+      discount_direct:'' ,
+      total: '',
+      contactid: '',
+      owner: '',
+      item_quantity: '',
+      company: '',
+      contact: '',
+      price: '',
+      trade_term: 'F',
+      delivery: '',
+      payment: '',
+      validity: '',
+      warranty: ''
+}
+
+  export default {
+    name:'create',
+  
+    components: {
+      ComplexTable
+    },  
+    
+    data() {
+      return {
+        postForm: Object.assign({}, defaultForm),
+        quote: {
+          quote_number: 'ABC-1169',
+          currency: '',
+          vat: '',
+          discount_direct: '',
+          discount: '',
+          total:'',
+          company:'',
+          contact:'',
+          greeting:'',
+          owner:'',
+          date_quote:'',
+          ending:'',
+          price:'',
+          trade_term:'',
+          delivery:'',
+          payment:'',
+          validity:'',
+          warranty:''
+        },
+        quoteItem:{
+          quote_number:'ABC-1169',
+          item:'',
+          quantity:'',
+          price:'',
+        },
+        PassQuoteNumber:''
+      }
+    },
+    created(){
+      this.fetchDate(this.quote.quote_number)
+      this.PassQuoteNumber=this.quote.quote_number
+    },
+    methods: {
+      fetchDate(quote_number){
+        fetchQuote(quote_number).then(response => {
+        this.quote = response.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+      onSubmit() {
+        this.$message('submit!')
+      },
+      onCancel() {
+        this.$message({
+          message: 'cancel!',
+          type: 'warning'
+        })
+      }
+    }
+  }
+  </script>
+  
+  <style scoped>
+  .line{
+    text-align: center;
+  }
+  </style>
+  
+  
