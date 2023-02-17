@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole" />
+    <!-- <component :is="currentRole" /> -->
+    <p>Welcome to the quotation system</p>
   </div>
 </template>
 
