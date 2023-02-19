@@ -71,7 +71,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/',
+    path: '',
     component: Layout,
     redirect: '/dashboard',
     children: [{
@@ -83,19 +83,31 @@ export const constantRoutes = [
   },
 
   {
-    path: '/quote/',
+    path: '/quote/new',
     component: Layout,
     children: [
       {
-        path: 'new',
-        name: 'Quote',
+        path: '',
+        name: 'CreateQuote',
         component: () => import('@/views/quote/create'),
         meta: { title: 'New quote', icon: 'el-icon-document' }
       }
     ]
   },
   {
-    path: '/quote',
+    path: '/quote/list/edit',
+    component: Layout,
+    children: [{
+      path: ':id',
+      name: 'EditQuote',
+      component: () => import('@/views/quote/edit'),
+      meta: { title: 'Edit', icon: 'el-icon-document'},
+      hidden:true
+    },
+    ]
+  },
+  {
+    path: '/quote/',
     component: Layout,
     children: [
       {
