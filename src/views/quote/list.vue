@@ -11,14 +11,16 @@
             <el-table-column prop="discount_direct" label="Disc." align="center" width="60"/>
             <el-table-column prop="discount" label="Disc.%" align="center" width="70"/>
             <el-table-column prop="total" label="Total" align="center" width="100"/>
-            <el-table-column prop="contact" label="Contact" align="center" width="250"/>       
-            <el-table-column prop="company" label="Company" align="center" width="200"/>  
+            <el-table-column prop="contact" label="Contact" align="center" width="150"/>       
+            <el-table-column prop="company" label="Company" align="center" width="100"/>  
             <el-table-column prop="owner" label="Owner" align="center" width="100"/>  
     
             <el-table-column align="center" label="Actions" width="120">
-                <template slot-scope="{row}">
-                    <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(row)"/>
-                    <el-button type="primary" icon="el-icon-edit" size="mini" @click="handleUpdate(row)"/>
+                <template slot-scope="scope">
+                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(row)"/>
+                  <router-link :to="'/quote/list/edit/'+scope.row.quote_number">
+                    <el-button type="primary" icon="el-icon-edit" size="mini" />
+                  </router-link>
                 </template>
             </el-table-column>
       
@@ -29,74 +31,6 @@
       <el-button type="success" @click="handleAdd">Add</el-button>
       </div>
       
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"   :close-on-click-modal="false">
-          <el-form 
-          v-if="dialogStatus==='Create'" 
-          ref="dataForm" 
-          :rules="rules" 
-          :model="temp" 
-          label-position="left" 
-          :inline="true"
-          style="width: 400px; margin-left:50px;">
-
-            <el-form-item label="First name" prop="firstname" label-width="100px">
-                <el-input v-model="temp.firstname" />
-            </el-form-item>
-            <el-form-item label="Last name" label-width="100px">
-                <el-input v-model="temp.lastname" />
-            </el-form-item>
-            <el-form-item label="Email" prop="email" label-width="100px">
-              <el-input v-model="temp.email" />
-            </el-form-item>
-            <el-form-item label="Tel" label-width="100px" >
-              <el-input v-model="temp.tel"/>
-            </el-form-item>
-            <el-form-item label="Mobile" label-width="100px">
-              <el-input v-model="temp.mobile"/>
-            </el-form-item>
-            <el-form-item label="Company" label-width="100px">
-              <el-input type="textarea" v-model="temp.company"/>
-            </el-form-item>
-          </el-form>
-
-          <el-form 
-          v-if="dialogStatus==='Edit'" 
-          ref="dataForm" :rules="rules" 
-          :model="temp" 
-          :inline="true"
-          label-position="left" 
-          style="width: 400px; margin-left:50px;">
-            <el-form-item label="ID" prop="id" label-width="100px" >
-                <el-input v-model="temp.id" :disabled="true"/>
-            </el-form-item>
-            <el-form-item label="First name" prop="firstname" label-width="100px">
-                <el-input v-model="temp.firstname" />
-            </el-form-item>
-            <el-form-item label="Last name" label-width="100px">
-                <el-input v-model="temp.lastname" />
-            </el-form-item>
-            <el-form-item label="Email" prop="email" label-width="100px">
-              <el-input v-model="temp.email" />
-            </el-form-item>
-            <el-form-item label="Tel" label-width="100px" >
-              <el-input v-model="temp.tel"/>
-            </el-form-item>
-            <el-form-item label="Mobile" label-width="100px">
-              <el-input v-model="temp.mobile"/>
-            </el-form-item>
-            <el-form-item label="Company" label-width="100px">
-              <el-input type="textarea" v-model="temp.company"/>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="closeDialog">
-              Close
-            </el-button>
-            <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-              Confirm
-            </el-button> 
-          </div>
-        </el-dialog>
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     </div>
   
@@ -109,16 +43,6 @@
   export default {
     name: 'ProductList',
     components: { Pagination },
-    filters: {
-      statusFilter(status) {
-        const statusMap = {
-          published: 'success',
-          draft: 'info',
-          deleted: 'danger'
-        }
-        return statusMap[status]
-      }
-    },
     data() {
       return {
         list: null,
@@ -127,26 +51,6 @@
         listQuery: {
           page: 1,
           limit: 20
-        },
-        temp: {
-            firstname:'',
-            lastname:'',
-            id: undefined,
-            tel:'',
-            mobile:'',
-            company:'',
-            email:'',
-          },
-        tempPw:'',
-        dialogFormVisible: false,
-        dialogStatus: 'Edit',
-        textMap: {
-          update: 'Edit',
-          create: 'Create'
-        },
-        resetPassword: false,
-        rules: {
-          email: [{ required: true, message: 'Email is required', trigger: 'blur' }]
         },
       }
     },
@@ -217,8 +121,6 @@
                 message: 'Canceled'
             });          
             });
-      
-
         }
     }
   }

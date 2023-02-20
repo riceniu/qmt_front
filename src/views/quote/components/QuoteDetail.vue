@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-      <el-form ref="quote" :model="postForm" label-width="120px">
+      <el-form ref="quote" :model="quote" label-width="120px">
         <el-form :inline="true">
           
           <el-form-item label="Quote Number:">
@@ -32,8 +32,9 @@
           </el-form-item>
         </el-form>
   
-        <!-- <quoteItems></quoteItems> -->
-        <ComplexTable :quote_number="PassQuoteNumber"/>
+        <!-- invoke sub-component with parameter:quote_number -->
+        <ComplexTable :quoteNumber="PassQuoteNumber"
+        v-on:itemChange="itemChange"/>
         
         <el-form :inline="true">
           <el-form-item label="Direct discount">
@@ -42,7 +43,7 @@
   
           <el-form-item label="Discount %">
             <el-input v-model="quote.discount"  />
-          </el-form-item>      
+          </el-form-item>
           
           <el-form-item label="VAT">
             <el-input v-model="quote.vat" size="mini" />
@@ -112,33 +113,35 @@
           <el-button @click="onCancel">Cancel</el-button>
         </el-form-item> -->
       </el-form>
+      <el-button @click="isEdit?editQuote():addQuote()">Confirm</el-button>
     </div>
   </template>
   
   <script>
-  import ComplexTable from '../quoteItems.vue'
-  import {fetchQuote} from '@/api/quote'
+  import ComplexTable from './quoteItems.vue'
+  import {fetchQuote, createQuote} from '@/api/quote'
  
-  const defaultForm = {
-      quote_number: 'ABC-1169',
-      quote_date: '',
-      currency: '',
-      vat:'',
-      discount: '',
-      discount_direct:'' ,
-      total: '',
-      contactid: '',
-      owner: '',
-      item_quantity: '',
-      company: '',
-      contact: '',
-      price: '',
-      trade_term: 'F',
-      delivery: '',
-      payment: '',
-      validity: '',
-      warranty: ''
-}
+  //seems useless
+//   const defaultForm = {
+//       quote_number: '',
+//       quote_date: '',
+//       currency: '',
+//       vat:'',
+//       discount: '',
+//       discount_direct:'' ,
+//       total: '',
+//       contactid: '',
+//       owner: '',
+//       item_quantity: '',
+//       company: '',
+//       contact: '',
+//       price: '',
+//       trade_term: 'F',
+//       delivery: '',
+//       payment: '',
+//       validity: '',
+//       warranty: ''
+// }
 
   export default {
     name:'create',
@@ -146,12 +149,16 @@
     components: {
       ComplexTable
     },  
-    
+    props: {
+      isEdit:{
+        type: Boolean,
+        default: false
+      }},
     data() {
       return {
-        postForm: Object.assign({}, defaultForm),
+        //postForm: Object.assign({}, defaultForm),
         quote: {
-          quote_number: 'ABC-1169',
+          quote_number: '',
           currency: '',
           vat: '',
           discount_direct: '',
@@ -171,25 +178,29 @@
           warranty:''
         },
         quoteItem:{
-          quote_number:'ABC-1169',
-          item:'',
-          quantity:'',
-          price:'',
+          quote_number:'',
         },
-        PassQuoteNumber:''
+        PassQuoteNumber:'',
       }
     },
     created(){
-      this.fetchDate(this.quote.quote_number)
-      this.PassQuoteNumber=this.quote.quote_number
+      console.log('created')
+      if(this.isEdit){
+        this.fetchDate(this.$route.params.id)
+      }
+    },
+    updated(){
+      this.PassQuoteNumber = this.quote.quote_number
     },
     methods: {
       fetchDate(quote_number){
+        console.log('fetch')
         fetchQuote(quote_number).then(response => {
-        this.quote = response.data
-      }).catch(err => {
-        console.log(err)
-      })
+          this.quote = response.data
+          this.PassQuoteNumber = this.quote.quote_number
+        }).catch(err => {
+          console.log(err)
+        })
     },
       onSubmit() {
         this.$message('submit!')
@@ -199,6 +210,28 @@
           message: 'cancel!',
           type: 'warning'
         })
+      },
+      addQuote(){
+        createQuote(this.quote).then(response=>{
+          this.$message({
+            type:'success',
+            message:'Successfully added'
+          })
+        })
+        this.$router.push({path:'/quote/list'})
+      },
+      editQuote(){
+        console.log(this.isEdit)
+        alert('edit')
+      },
+      itemChange: function (itemchange){
+        console.log(itemchange)
+        let cal = 0
+        for(const item of itemchange){
+          cal += item.price*(item.quantity*1)
+        }
+        console.log(cal)
+        this.quote.total = (cal - this.quote.discount_direct)*(1-this.quote.discount)*(1+this.quote.vat)
       }
     }
   }
