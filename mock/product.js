@@ -144,8 +144,8 @@ module.exports = [
     url: '/vue-element-admin/product/add',
     type: 'post',
     response: config => {
-      //console.log('mock/product.js->add')
-      //console.log(config.body)
+      console.log('mock/product.js->add')
+      console.log(config.body)
       List.push(config.body)
       return {
         code: 20000,

@@ -55,8 +55,8 @@
 
       <br/>
       <div style="float:right; margin-right:300px;">
-      Subtotal: <el-input label="subtotal" type="text" v-model="subtotal" :disabled="true" style="width:100px" margin-right="50px">
-      
+        <el-tag>Subtotal: </el-tag>
+        <el-input label="subtotal" type="text" v-model="subtotal" :disabled="true" style="width:100px" margin-right="50px">
       </el-input>
     </div>
       <br/>
