@@ -95,29 +95,25 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/quote/list/edit',
-    component: Layout,
-    children: [{
-      path: ':id',
-      name: 'EditQuote',
-      component: () => import('@/views/quote/edit'),
-      meta: { title: 'Edit', icon: 'el-icon-document'},
-      hidden:true
-    },
-    ]
-  },
-  {
-    path: '/quote/',
+    path: '/quote/list',
     component: Layout,
     children: [
       {
-        path: 'list',
+        path: '',
         name: 'QuoteList',
         component: () => import('@/views/quote/list'),
-        meta: { title: 'Quote list', icon: 'list'  }
+        meta: { title: 'Quotes', icon: 'list'  },
+      },
+      {
+        path: 'edit/:id',
+        name: 'EditQuote',
+        component: () => import('@/views/quote/edit'),
+        meta: { title: 'Edit', icon: 'el-icon-document'},
+        hidden:true
       }
     ]
   },
+  
 
   {
     path: '/customer',

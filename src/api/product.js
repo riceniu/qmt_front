@@ -69,3 +69,10 @@ export function editProduct(data) {
     data
   })
 }
+
+export function getCategory() {
+  return request({
+    url: '/vue-element-admin/product/category',
+    method: 'get',
+  })
+}

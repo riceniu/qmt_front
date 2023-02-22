@@ -3,8 +3,8 @@
     <!-- Table -->
     <el-table v-loading="listLoading" 
     :data="list" 
-    :default-sort = "{prop: 'id', order: 'descending'}"
     border fit highlight-current-row style="width: 100%">
+    <!-- :default-sort = "{prop: 'category', order: 'ascending'}" -->
       <el-table-column align="center" label="ID" width="65" sortable prop='id'>
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
@@ -60,7 +60,10 @@
 
     <!--dialog-->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible"   :close-on-click-modal="false">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-width="90px" style="margin-left:20px; margin-right:40px">
+      <el-form ref="dataForm" 
+      :rules="rules" 
+      :model="temp" 
+      label-width="90px" style="margin-left:20px; margin-right:40px">
           
         <el-form-item label="ID" prop="id">
           <el-input v-model="temp.id" :disabled="true"/>
@@ -95,6 +98,7 @@
           />
         </el-form-item>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDialog">
           Close
@@ -142,7 +146,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 10
+        limit: 20
       },
       CategoryType,
       CurrencyType,
@@ -262,8 +266,8 @@ export default {
     createData(){
       this.$refs['dataForm'].validate((valid) => {
       if (valid) {
-        console.log('view/product/list.vue->createData')
-        console.log(this.temp)
+        //console.log('view/product/list.vue->createData')
+        //console.log(this.temp)
         addProduct(this.temp).then(() => {
           this.dialogFormVisible = false
           this.$notify({
@@ -273,6 +277,7 @@ export default {
             duration: 2000
           })
         })
+        this.getList()
       }
     })}
   },

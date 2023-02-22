@@ -196,9 +196,15 @@ module.exports = [
     url: '/vue-element-admin/quote/create',
     type: 'post',
     response: config=> {
-      console.log('mock/quote.js->quote/create')
-      console.log(config.body)
-      List.push(config.body)
+      // console.log('mock/quote.js->quote/create')
+      // console.log('config.body.quote & items')
+      // console.log(config.body.quote)
+      // console.log(...config.body.items)
+      List.push(config.body.quote)
+      FinalItemList.push(...config.body.items)
+      // for(const item of config.body.items){
+      //   console.log(...config.body.items.i)
+      // ItemList.push(config.body.items.i)}
       return {
         code: 20000,
         data: 'success'
@@ -209,7 +215,29 @@ module.exports = [
   {
     url: '/vue-element-admin/quote/update',
     type: 'post',
-    response: _ => {
+    response: config=> {
+      console.log('mock/quote.js->quote/update')
+      const changed =config.body
+      for(const quote of List){
+        if(quote.quote_number === changed.quote.quote_number){
+          console.log(changed.quote)
+          List[List.indexOf(quote)] = changed.quote
+        }
+      }
+      let index =[]
+      for(const item of FinalItemList){
+        if(item.quote_number === changed.quote.quote_number){
+          index.push(FinalItemList.indexOf(item))
+        }
+      }
+      for(let i=index.length-1;i>=0;i--){
+        console.log(index)
+        console.log(FinalItemList[index[i]])
+          FinalItemList.splice(index[i],1)
+        }
+      
+          console.log(changed.items)
+      FinalItemList.push(...changed.items)
       return {
         code: 20000,
         data: 'success'
@@ -235,10 +263,10 @@ module.exports = [
     type: 'get',
     response: config => {
       console.log('mock/quote.js->quote/items')
-      console.log(config.query)
+      //console.log(config.query)
       const requestedNumber = config.query.quote_number
       ItemList.length = 0
-      console.log(requestedNumber)
+      //console.log(requestedNumber)
       for(let i=0;i<FinalItemList.length;i++){
         //console.log(FinalItemList[i])
         if(FinalItemList[i].quote_number === requestedNumber)
@@ -247,7 +275,7 @@ module.exports = [
           }
       }
       //console.log(correction)
-      //console.log(ItemList)
+      console.log(ItemList)
 
       return {
         code: 20000,

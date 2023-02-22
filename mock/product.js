@@ -38,6 +38,33 @@ List.push(...Mocked.product_list)
   //console.log(correction)
 }*/
 
+const categoryOptionList = []
+let temptype=[]
+for(const product of List ){
+  if(temptype.indexOf(product.category)<0){
+    temptype.push(product.category)
+    categoryOptionList.push({
+      'value':product.category,
+      'label':product.category,
+      'children':[{
+        'value':product.productname,
+        'label':product.productname,
+        ...product
+      }]
+    })
+  }else{
+    categoryOptionList[temptype.indexOf(product.category)].children.push(
+      {
+        'value':product.productname,
+        'label':product.productname,
+        ...product
+      }
+    )
+  }
+}
+const optionList = categoryOptionList.sort((a, b) => a.value.localeCompare(b.value))
+//console.log(optionList)
+
 module.exports = [
   {
     url: '/vue-element-admin/product/list',
@@ -198,6 +225,18 @@ module.exports = [
         }
       }
     
-  }
+  },
+  {
+    url: '/vue-element-admin/product/category',
+    type: 'get',
+    response: config=>{
+      console.log('mock/product.js->category')
+      //console.log(optionList)
+      return{
+        code: 20000,
+        data: optionList
+      }
+    }
+}
 ]
 
