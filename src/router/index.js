@@ -155,6 +155,33 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/print',
+    component: Layout,
+    //redirect: '/product/list',
+    name: 'printer',
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/components-demo/tinymce'),
+        name: 'Print',
+        meta: { title: 'printer', icon: 'el-icon-collection' }
+      }
+    ]
+  },  {
+    path: '/split-panel',
+    component: Layout,
+    //redirect: '/product/list',
+    name: 'split-panel',
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/components-demo/report-template'),
+        name: 'split-panel',
+        meta: { title: 'split-panel', icon: 'el-icon-collection' }
+      }
+    ]
+  },
 ]
 
 /**
