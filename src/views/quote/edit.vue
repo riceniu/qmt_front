@@ -1,14 +1,14 @@
 <template>
-    <quoteDetail :is-edit="true" />
+  <quoteDetail :is-edit="true" />
 </template>
   
 <script>
-import QuoteDetail from './components/QuoteDetail'
+import QuoteDetail from "./components/QuoteDetail";
 
 export default {
-  name: 'EditQuote',
-  components: { QuoteDetail }
-}
+  name: "EditQuote",
+  components: { QuoteDetail },
+};
 </script> 
   
   

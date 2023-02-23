@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import QuoteDetail from './components/QuoteDetail'
+import QuoteDetail from "./components/QuoteDetail";
 
 export default {
-  name: 'CreateQuote',
-  components: { QuoteDetail }
-}
+  name: "CreateQuote",
+  components: { QuoteDetail },
+};
 </script> 
 
