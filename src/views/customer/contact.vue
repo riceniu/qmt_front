@@ -73,6 +73,9 @@
         :inline="true"
         style="width: 400px; margin-left: 50px"
       >
+        <el-form-item label="ID" prop="id" label-width="100px">
+          <el-input v-model="temp.id" :disabled="true" />
+        </el-form-item>
         <el-form-item label="First name" prop="firstname" label-width="100px">
           <el-input v-model="temp.firstname" />
         </el-form-item>
@@ -128,7 +131,7 @@
         <el-button @click="closeDialog"> Close </el-button>
         <el-button
           type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
+          @click="dialogStatus === 'Create' ? createData() : updateData()"
         >
           Confirm
         </el-button>
@@ -145,7 +148,12 @@
 </template>
   
   <script>
-import { fetchList } from "@/api/customer";
+import {
+  fetchList,
+  deleteContact,
+  updateContact,
+  createContact,
+} from "@/api/customer";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -189,7 +197,7 @@ export default {
       resetPassword: false,
       rules: {
         email: [
-          { required: true, message: "Email is required", trigger: "blur" },
+          { required: true, message: "This is mandatory", trigger: "blur" },
         ],
       },
     };
@@ -206,11 +214,14 @@ export default {
         this.listLoading = false;
       });
     },
+
     handleAdd() {
       this.resetTemp();
+      this.temp.id = Math.floor(Math.random() * 100000) + 1;
       this.dialogStatus = "Create";
       this.dialogFormVisible = true;
     },
+
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = "Edit";
@@ -219,6 +230,7 @@ export default {
         this.$refs["dataForm"].clearValidate();
       });
     },
+
     resetTemp() {
       this.temp = {
         name: "",
@@ -226,6 +238,7 @@ export default {
         password: "",
       };
     },
+
     resetPw() {
       if (this.resetPassword == false) {
         this.resetPassword = true;
@@ -237,6 +250,7 @@ export default {
         this.tempPw = "";
       }
     },
+
     closeDialog() {
       this.dialogFormVisible = false;
       if (this.tempPw) {
@@ -244,17 +258,21 @@ export default {
         this.resetPassword = false;
       }
     },
-    handleDelete() {
-      this.$confirm("Delete this contact?", "Warning", {
+
+    handleDelete(row) {
+      this.$confirm("Delete this company?", "Warning", {
         confirmButtonText: "Confirm",
         cancelButtonText: "Cancel",
         type: "warning",
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "Deleted!",
-          });
+          deleteContact(row).then(
+            this.$message({
+              type: "success",
+              message: "Deleted!",
+            })
+          );
+          this.getList();
         })
         .catch(() => {
           this.$message({
@@ -262,6 +280,34 @@ export default {
             message: "Canceled",
           });
         });
+    },
+
+    updateData() {
+      //console.log(this.temp)
+      updateContact(this.temp).then(
+        this.$message({
+          type: "success",
+          message: "Saved",
+        })
+      );
+      this.closeDialog();
+      this.getList();
+    },
+
+    createData() {
+      //console.log(this.temp)
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          createContact(this.temp).then(
+            this.$message({
+              type: "success",
+              message: "Addedd",
+            })
+          );
+          this.closeDialog();
+          this.getList();
+        }
+      });
     },
   },
 };

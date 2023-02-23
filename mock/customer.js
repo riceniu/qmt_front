@@ -1,12 +1,13 @@
-const Mock = require('mockjs')
+const Mock = require("mockjs");
 
-const List = []
-const count = 30
+const count = 30;
 
-const baseContent = '<p>Customer test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>'
-const image_uri = 'C:\Users\zhan_\Pictures\wallpaper\big-ben-bridge-castle-460672.jpg'
+const baseContent =
+  '<p>Customer test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>';
+const image_uri =
+  "C:Userszhan_Pictureswallpaper\big-ben-bridge-castle-460672.jpg";
 
-const Mocked = require('./mocked_data')
+const Mocked = require("./mocked_data");
 let companies = `Openlane
   Yearin
   Goodsilron
@@ -51,8 +52,8 @@ let companies = `Openlane
   Rangreen
   J-Texon
   Rundofase
-  Doncon`
-  let countries = `Afghanistan
+  Doncon`;
+let countries = `Afghanistan
   Albania
   Algeria
   Andorra
@@ -246,12 +247,12 @@ let companies = `Openlane
   Vietnam
   Yemen
   Zambia
-  Zimbabwe`
+  Zimbabwe`;
 
-let companyName=[]
-companyName = companies.split('\n')
-const companyList = []
-const contactList = []
+let companyName = [];
+companyName = companies.split("\n");
+const companyList = [];
+const contactList = [];
 
 //dynamic companyList
 
@@ -268,7 +269,7 @@ for (let i = 0; i < count; i++) {
 }
 */
 //constant companyList
-companyList.push(...Mocked.company_list)
+companyList.push(...Mocked.company_list);
 
 //dynamic contactList
 /*
@@ -297,129 +298,254 @@ for (let i = 0; i < count; i++) {
 }
 */
 //constant contactList
-contactList.push(...Mocked.contact_list)
+contactList.push(...Mocked.contact_list);
 
 //List.length = 0
 //List.push(...Mocked.contact_list)
 
 module.exports = [
   {
-    url: '/vue-element-admin/customer/list',
-    type: 'get',
-    response: config => {
-      const { importance, type, title, page = 1, limit = 20, sort } = config.query
+    url: "/vue-element-admin/customer/list",
+    type: "get",
+    response: (config) => {
+      const {
+        importance,
+        type,
+        title,
+        page = 1,
+        limit = 20,
+        sort,
+      } = config.query;
       //const customerList=[]
       //customerList.push(...Mocked.contact_list)
 
-      let mockList = contactList.filter(item => {
-        if (importance && item.importance !== +importance) return false
-        if (type && item.type !== type) return false
-        if (title && item.title.indexOf(title) < 0) return false
-        return true
-      })
+      let mockList = contactList.filter((item) => {
+        if (importance && item.importance !== +importance) return false;
+        if (type && item.type !== type) return false;
+        if (title && item.title.indexOf(title) < 0) return false;
+        return true;
+      });
 
-      if (sort === '-id') {
-        mockList = mockList.reverse()
+      if (sort === "-id") {
+        mockList = mockList.reverse();
       }
 
-      const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
-      
-      console.log('mock/customer.js->customer/list')
+      const pageList = mockList.filter(
+        (item, index) => index < limit * page && index >= limit * (page - 1)
+      );
+
+      console.log("mock/customer.js->customer/list");
       //console.log(contactList)
       return {
         code: 20000,
         data: {
           total: mockList.length,
-          items: pageList
-        }
-      }
-    }
+          items: pageList,
+        },
+      };
+    },
   },
   {
-    url: '/vue-element-admin/customer/company',
-    type: 'get',
-    response: config => {
-      const { importance, type, title, page = 1, limit = 20, sort } = config.query
+    url: "/vue-element-admin/customer/company",
+    type: "get",
+    response: (config) => {
+      const {
+        importance,
+        type,
+        title,
+        page = 1,
+        limit = 20,
+        sort,
+      } = config.query;
 
-      let mockList = companyList.filter(item => {
-        if (importance && item.importance !== +importance) return false
-        if (type && item.type !== type) return false
-        if (title && item.title.indexOf(title) < 0) return false
-        return true
-      })
+      let mockList = companyList.filter((item) => {
+        if (importance && item.importance !== +importance) return false;
+        if (type && item.type !== type) return false;
+        if (title && item.title.indexOf(title) < 0) return false;
+        return true;
+      });
 
-      if (sort === '-id') {
-        mockList = mockList.reverse()
+      if (sort === "-id") {
+        mockList = mockList.reverse();
       }
 
-      const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
-      
-      console.log('mock/customer.js->customer/compmany')
+      const pageList = mockList.filter(
+        (item, index) => index < limit * page && index >= limit * (page - 1)
+      );
+
+      console.log("mock/customer.js->customer/compmany");
       //console.log(companyList)
       return {
         code: 20000,
         data: {
           total: mockList.length,
-          items: pageList
-        }
-      }
-    }
+          items: pageList,
+        },
+      };
+    },
   },
 
   {
-    url: '/vue-element-admin/customer/detail',
-    type: 'get',
-    response: config => {
-      const { id } = config.query
+    url: "/vue-element-admin/customer/detail",
+    type: "get",
+    response: (config) => {
+      const { id } = config.query;
       for (const customer of List) {
         if (customer.id === +id) {
           return {
             code: 20000,
-            data: customer
-          }
+            data: customer,
+          };
         }
       }
-    }
+    },
   },
 
   {
-    url: '/vue-element-admin/customer/pv',
-    type: 'get',
-    response: _ => {
+    url: "/vue-element-admin/customer/pv",
+    type: "get",
+    response: (_) => {
       return {
         code: 20000,
         data: {
           pvData: [
-            { key: 'PC', pv: 1024 },
-            { key: 'mobile', pv: 1024 },
-            { key: 'ios', pv: 1024 },
-            { key: 'android', pv: 1024 }
-          ]
+            { key: "PC", pv: 1024 },
+            { key: "mobile", pv: 1024 },
+            { key: "ios", pv: 1024 },
+            { key: "android", pv: 1024 },
+          ],
+        },
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/create",
+    type: "post",
+    response: (_) => {
+      return {
+        code: 20000,
+        data: "success",
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/update",
+    type: "post",
+    response: (_) => {
+      return {
+        code: 20000,
+        data: "success",
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/company/delete",
+    type: "delete",
+    response: (config) => {
+      console.log("mock/customer.js->company-delete");
+      console.log(config.body);
+      let index;
+      for (const company of companyList) {
+        if (company.id === config.body.id) {
+          index = companyList.indexOf(company);
+          console.log("index " + index);
+          companyList.splice(index, 1);
+          break;
         }
       }
-    }
+      return {
+        code: 20000,
+        data: "Company deleted",
+      };
+    },
   },
 
   {
-    url: '/vue-element-admin/customer/create',
-    type: 'post',
-    response: _ => {
+    url: "/vue-element-admin/customer/contact/delete",
+    type: "delete",
+    response: (config) => {
+      console.log("mock/customer.js->contact-delete");
+      console.log(config.body);
+      let index;
+      for (const contact of contactList) {
+        if (contact.id === config.body.id) {
+          index = contactList.indexOf(contact);
+          contactList.splice(index, 1);
+          break;
+        }
+      }
+
       return {
         code: 20000,
-        data: 'success'
-      }
-    }
+        data: "Product deleted",
+      };
+    },
   },
 
   {
-    url: '/vue-element-admin/customer/update',
-    type: 'post',
-    response: _ => {
+    url: "/vue-element-admin/customer/company/update",
+    type: "post",
+    response: (config) => {
+      console.log("mock/customer.js->update->company");
+      console.log(config.body);
+      for (const company of companyList) {
+        if (company.id === config.body.id) {
+          companyList[companyList.indexOf(company)] = config.body;
+        }
+      }
       return {
         code: 20000,
-        data: 'success'
-      }
-    }
-  }
-]
+        data: "success",
+      };
+    },
+  },
 
+  {
+    url: "/vue-element-admin/customer/company/create",
+    type: "post",
+    response: (config) => {
+      console.log("mock/customer.js->create->company");
+      console.log(config.body);
+      companyList.push(config.body);
+      return {
+        code: 20000,
+        data: "success",
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/contact/update",
+    type: "post",
+    response: (config) => {
+      console.log("mock/customer.js->update->contact");
+      console.log(config.body);
+      for (const contact of contactList) {
+        if (contact.id === config.body.id) {
+          contactList[contactList.indexOf(contact)] = config.body;
+        }
+      }
+      return {
+        code: 20000,
+        data: "success",
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/contact/create",
+    type: "post",
+    response: (config) => {
+      console.log("mock/customer.js->create->contact");
+      console.log(config.body);
+      contactList.push(config.body);
+      return {
+        code: 20000,
+        data: "success",
+      };
+    },
+  },
+];
