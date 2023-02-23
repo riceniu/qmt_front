@@ -2,7 +2,7 @@ import request from "@/utils/request";
 
 export function fetchList(query) {
   return request({
-    url: "/vue-element-admin/customer/list",
+    url: "/vue-element-admin/customer/contact",
     method: "get",
     params: query,
   });

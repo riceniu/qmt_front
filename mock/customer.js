@@ -304,10 +304,55 @@ contactList.push(...Mocked.contact_list);
 //List.push(...Mocked.contact_list)
 
 module.exports = [
+// useless
   {
-    url: "/vue-element-admin/customer/list",
+// {
+  //   url: "/vue-element-admin/customer/pv",
+  //   type: "get",
+  //   response: (_) => {
+  //     return {
+  //       code: 20000,
+  //       data: {
+  //         pvData: [
+  //           { key: "PC", pv: 1024 },
+  //           { key: "mobile", pv: 1024 },
+  //           { key: "ios", pv: 1024 },
+  //           { key: "android", pv: 1024 },
+  //         ],
+  //       },
+  //     };
+  //   },
+  // },
+
+  // {
+  //   url: "/vue-element-admin/customer/create",
+  //   type: "post",
+  //   response: (_) => {
+  //     return {
+  //       code: 20000,
+  //       data: "success",
+  //     };
+  //   },
+  // },
+
+  // {
+  //   url: "/vue-element-admin/customer/update",
+  //   type: "post",
+  //   response: (_) => {
+  //     return {
+  //       code: 20000,
+  //       data: "success",
+  //     };
+  //   },
+  // },
+
+  },
+  
+  {
+    url: "/vue-element-admin/customer/contact",
     type: "get",
     response: (config) => {
+      console.log("mock/customer.js->customer/contact");
       const {
         importance,
         type,
@@ -333,8 +378,6 @@ module.exports = [
       const pageList = mockList.filter(
         (item, index) => index < limit * page && index >= limit * (page - 1)
       );
-
-      console.log("mock/customer.js->customer/list");
       //console.log(contactList)
       return {
         code: 20000,
@@ -401,52 +444,13 @@ module.exports = [
     },
   },
 
-  {
-    url: "/vue-element-admin/customer/pv",
-    type: "get",
-    response: (_) => {
-      return {
-        code: 20000,
-        data: {
-          pvData: [
-            { key: "PC", pv: 1024 },
-            { key: "mobile", pv: 1024 },
-            { key: "ios", pv: 1024 },
-            { key: "android", pv: 1024 },
-          ],
-        },
-      };
-    },
-  },
-
-  {
-    url: "/vue-element-admin/customer/create",
-    type: "post",
-    response: (_) => {
-      return {
-        code: 20000,
-        data: "success",
-      };
-    },
-  },
-
-  {
-    url: "/vue-element-admin/customer/update",
-    type: "post",
-    response: (_) => {
-      return {
-        code: 20000,
-        data: "success",
-      };
-    },
-  },
-
+  
   {
     url: "/vue-element-admin/customer/company/delete",
     type: "delete",
     response: (config) => {
       console.log("mock/customer.js->company-delete");
-      console.log(config.body);
+      //console.log(config.body);
       let index;
       for (const company of companyList) {
         if (company.id === config.body.id) {
@@ -468,7 +472,7 @@ module.exports = [
     type: "delete",
     response: (config) => {
       console.log("mock/customer.js->contact-delete");
-      console.log(config.body);
+      //console.log(config.body);
       let index;
       for (const contact of contactList) {
         if (contact.id === config.body.id) {
@@ -490,7 +494,7 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/customer.js->update->company");
-      console.log(config.body);
+      //console.log(config.body);
       for (const company of companyList) {
         if (company.id === config.body.id) {
           companyList[companyList.indexOf(company)] = config.body;
@@ -508,7 +512,7 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/customer.js->create->company");
-      console.log(config.body);
+      //console.log(config.body);
       companyList.push(config.body);
       return {
         code: 20000,
@@ -522,7 +526,7 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/customer.js->update->contact");
-      console.log(config.body);
+      //console.log(config.body);
       for (const contact of contactList) {
         if (contact.id === config.body.id) {
           contactList[contactList.indexOf(contact)] = config.body;
@@ -540,7 +544,7 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/customer.js->create->contact");
-      console.log(config.body);
+      //console.log(config.body);
       contactList.push(config.body);
       return {
         code: 20000,

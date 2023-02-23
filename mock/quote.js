@@ -45,7 +45,8 @@ for (let i = 0; i < count; i++) {
   mocked['company']=contact_list[mocked.contactid].company
   mocked.contact=contact_list[mocked.contactid].contact
   List.push(mocked)
-}}
+}
+}
 */
 
 //constant quote
@@ -118,7 +119,46 @@ for(let i = 0; i<50 ; i++){
 console.log(quoteitems)
 }
 */
+
 module.exports = [
+  /* comment
+{
+  //
+  // {
+  //   url: "/vue-element-admin/quote/pv",
+  //   type: "get",
+  //   response: (_) => {
+  //     return {
+  //       code: 20000,
+  //       data: {
+  //         pvData: [
+  //           { key: "PC", pv: 1024 },
+  //           { key: "mobile", pv: 1024 },
+  //           { key: "ios", pv: 1024 },
+  //           { key: "android", pv: 1024 },
+  //         ],
+  //       },
+  //     };
+  //   },
+  // },
+
+  // {
+  //   url: "/vue-element-admin/quote/items/list",
+  //   type: "get",
+  //   response: (config) => {
+  //     console.log("mock/quote.js->quote/items/list");
+  //     //console.log(config.query)
+  //     //console.log(FinalItemList)
+  //     return {
+  //       code: 20000,
+  //       data: FinalItemList,
+  //     };
+  //   },
+  // },
+},
+*/
+
+  // quote list
   {
     url: "/vue-element-admin/quote/list",
     type: "get",
@@ -160,45 +200,27 @@ module.exports = [
     },
   },
 
+  //quote detail(edit page)
   {
     url: "/vue-element-admin/quote/detail",
     type: "get",
     response: (config) => {
-      const qn = config.query.quote_number;
-      //console.log('mock/quote.js->quote/detail')
+      console.log("mock/quote.js->quote/detail");
       //console.log(config.query)
       //console.log(qn)
       for (const quote of List) {
-        if (quote.quote_number === qn) {
-          console.log("mock/quote.js->quote/detail");
-          console.log(quote);
+        if (quote.quote_number === config.query.quote_number) {
           return {
             code: 20000,
             data: quote,
           };
+          break;
         }
       }
     },
   },
 
-  {
-    url: "/vue-element-admin/quote/pv",
-    type: "get",
-    response: (_) => {
-      return {
-        code: 20000,
-        data: {
-          pvData: [
-            { key: "PC", pv: 1024 },
-            { key: "mobile", pv: 1024 },
-            { key: "ios", pv: 1024 },
-            { key: "android", pv: 1024 },
-          ],
-        },
-      };
-    },
-  },
-
+  // create quote
   {
     url: "/vue-element-admin/quote/create",
     type: "post",
@@ -219,6 +241,7 @@ module.exports = [
     },
   },
 
+  //update quote
   {
     url: "/vue-element-admin/quote/update",
     type: "post",
@@ -227,7 +250,7 @@ module.exports = [
       const changed = config.body;
       for (const quote of List) {
         if (quote.quote_number === changed.quote.quote_number) {
-          console.log(changed.quote);
+         // console.log(changed.quote);
           List[List.indexOf(quote)] = changed.quote;
         }
       }
@@ -238,12 +261,12 @@ module.exports = [
         }
       }
       for (let i = index.length - 1; i >= 0; i--) {
-        console.log(index);
-        console.log(FinalItemList[index[i]]);
+        //console.log(index);
+        //console.log(FinalItemList[index[i]]);
         FinalItemList.splice(index[i], 1);
       }
 
-      console.log(changed.items);
+      //console.log(changed.items);
       FinalItemList.push(...changed.items);
       return {
         code: 20000,
@@ -252,26 +275,13 @@ module.exports = [
     },
   },
 
-  {
-    url: "/vue-element-admin/quote/items/list",
-    type: "get",
-    response: (config) => {
-      console.log("mock/quote.js->quote/items/list");
-      //console.log(config.query)
-      //console.log(FinalItemList)
-      return {
-        code: 20000,
-        data: FinalItemList,
-      };
-    },
-  },
-
+  // delete quote & related items
   {
     url: "/vue-element-admin/quote/delete",
     type: "delete",
     response: (config) => {
       console.log("mock/quote.js->delete");
-      console.log(config.body);
+      //console.log(config.body);
       let index;
       for (const quote of List) {
         if (quote.quote_number === config.body.quote_number) {
@@ -298,6 +308,7 @@ module.exports = [
     },
   },
 
+  // get quoted items => return itemList
   {
     url: "/vue-element-admin/quote/items",
     type: "get",
@@ -314,7 +325,7 @@ module.exports = [
         }
       }
       //console.log(correction)
-      console.log(ItemList);
+      //console.log(ItemList);
 
       return {
         code: 20000,
