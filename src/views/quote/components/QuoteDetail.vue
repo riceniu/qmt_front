@@ -177,7 +177,7 @@
         </el-col>
 </el-row>
       </el-form>
-      <el-button type=primary plain @click="isEdit?editQuote():addQuote()">Save</el-button>
+      <el-button type=success @click="isEdit?editQuote():addQuote()">Save</el-button>
     </div>
   </template>
   

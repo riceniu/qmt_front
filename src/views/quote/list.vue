@@ -17,10 +17,11 @@
     
             <el-table-column align="center" label="Actions" width="120">
                 <template slot-scope="scope">
-                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(row)"/>
                   <router-link :to="'/quote/list/edit/'+scope.row.quote_number">
                     <el-button type="primary" icon="el-icon-edit" size="mini" />
                   </router-link>
+                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)"/>
+
                 </template>
             </el-table-column>
       
@@ -37,7 +38,7 @@
   </template>
   
   <script>
-  import { fetchList } from '@/api/quote'
+  import { fetchList, deleteQuote } from '@/api/quote'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   
   export default {
@@ -105,16 +106,21 @@
             this.resetPassword = false
           }
         },
-        handleDelete(){
+        handleDelete(row){
+          console.log(row)
             this.$confirm('Delete this contact?', 'Warning', {
             confirmButtonText: 'Confirm',
             cancelButtonText: 'Cancel',
             type: 'warning'
             }).then(() => {
-            this.$message({
+              deleteQuote(row).then(            
+                this.$message({
                 type: 'success',
                 message: 'Deleted!'
-            });
+                })
+              )
+              this.getList()
+
             }).catch(() => {
             this.$message({
                 type: 'info',

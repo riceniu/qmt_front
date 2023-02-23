@@ -258,6 +258,40 @@ module.exports = [
       }
     }
   },
+
+  {
+    url: '/vue-element-admin/quote/delete',
+    type: 'delete',
+    response: config=>{
+      console.log('mock/quote.js->delete')
+      console.log(config.body)
+      let index
+      for(const quote of List){
+        if(quote.quote_number === config.body.quote_number){
+          index = List.indexOf(quote)
+          List.splice(index,1)
+        }
+      }
+      index =[]
+      for(const item of FinalItemList){
+        if(item.quote_number === config.body.quote_number){
+          index.push(FinalItemList.indexOf(item))
+        }
+      }
+      for(let i=index.length-1;i>=0;i--){
+        console.log(index)
+        console.log(FinalItemList[index[i]])
+          FinalItemList.splice(index[i],1)
+        }
+
+      return{
+        code: 20000,
+        data: 'Product deleted'
+      }
+    }
+  
+},
+
   {
     url: '/vue-element-admin/quote/items',
     type: 'get',

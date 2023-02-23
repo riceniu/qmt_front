@@ -55,3 +55,11 @@ export function fetchQuoteItems(query) {
     params: query
   })
 }
+
+export function deleteQuote(data) {
+  return request({
+    url: '/vue-element-admin/quote/delete',
+    method: 'delete',
+    data
+  })
+}

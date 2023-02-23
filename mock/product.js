@@ -226,6 +226,7 @@ module.exports = [
       }
     
   },
+  
   {
     url: '/vue-element-admin/product/category',
     type: 'get',
