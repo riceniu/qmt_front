@@ -168,7 +168,8 @@ export const constantRoutes = [
         meta: { title: 'printer', icon: 'el-icon-collection' }
       }
     ]
-  },  {
+  },  
+  {
     path: '/split-panel',
     component: Layout,
     //redirect: '/product/list',
@@ -181,6 +182,13 @@ export const constantRoutes = [
         meta: { title: 'split-panel', icon: 'el-icon-collection' }
       }
     ]
+  },
+  {
+    path: '/report',
+    //redirect: '/quote/report',
+    component: () => import('@/views/quote/report'),
+    name: 'report',
+    meta: { title: 'quote form', icon: 'el-icon-collection' }
   },
 ]
 
