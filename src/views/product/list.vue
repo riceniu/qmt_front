@@ -66,9 +66,10 @@
 
       <el-table-column min-width="250px" label="Quote text">
         <template slot-scope="{ row }">
-          <router-link :to="'/product/edit/' + row.id" class="link-type">
-            <span>{{ row.quote_text }}</span>
-          </router-link>
+          <span>{{ row.quotetext }}</span>
+          <!-- <router-link :to="'/product/edit/' + row.id" class="link-type">
+            <span>{{ row.quotetext }}</span>
+          </router-link> -->
         </template>
       </el-table-column>
 
@@ -158,7 +159,7 @@
           <el-input
             type="textarea"
             placeholder="Quote text"
-            v-model="temp.quote_text"
+            v-model="temp.quotetext"
             rows="4"
           />
         </el-form-item>
@@ -187,9 +188,10 @@ import {
 } from "@/api/product";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 const CategoryType = [
-  { key: "Type-A", value: "Type-A" },
-  { key: "Type-B", value: "Type-B" },
-  { key: "Type-C", value: "Type-C" },
+  { key: "CFL", value: "CFL" },
+  { key: "PU", value: "PU" },
+  { key: "DA", value: "DA" },
+  { key: "MOTOR", value: "MOTOR" },
 ];
 const CurrencyType = [
   { key: "USD", value: "USD" },
@@ -230,7 +232,7 @@ export default {
       dialogStatus: "",
       temp: {
         id: "",
-        quote_text: "",
+        quotetext: "",
         currency: "",
         category: "",
         price: "",
@@ -294,6 +296,8 @@ export default {
       )
         .then(() => {
           deleteProduct(this.temp);
+        })
+        .then(() => {
           this.$message({
             type: "success",
             message: "Product deleted!",
@@ -322,7 +326,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: "",
-        quote_text: "",
+        quotetext: "",
         currency: "",
         category: "",
         price: "",
@@ -338,7 +342,7 @@ export default {
     updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          editProduct(this.temp).then();
+          editProduct(this.temp).then(() => this.getList());
           this.dialogFormVisible = false;
           this.$notify({
             title: "Success",
@@ -346,7 +350,6 @@ export default {
             type: "success",
             duration: 2000,
           });
-          this.getList();
         }
       });
     },
@@ -363,8 +366,8 @@ export default {
               type: "success",
               duration: 2000,
             });
+            this.getList();
           });
-          this.getList();
         }
       });
     },

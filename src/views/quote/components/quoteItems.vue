@@ -141,7 +141,7 @@
           <el-input
             type="textarea"
             placeholder="Quote text"
-            v-model="temp.quote_text"
+            v-model="temp.quotetext"
             rows="4"
           />
         </el-form-item>
@@ -171,16 +171,22 @@
 <script>
 import { fetchQuoteItems } from "@/api/quote";
 import { getCategory } from "@/api/product";
-
 export default {
   name: "ComplexTable",
-  props: ["quoteNumber"],
+  props: ["quotenumber"],
   data() {
     return {
+      optionedItme: [
+        { key: "CFL", value: "CFL" },
+        { key: "PU", value: "PU" },
+        { key: "DA", value: "DA" },
+        { key: "MOTOR", value: "MOTOR" },
+      ],
+      optionedItme: [],
       list: [],
       listLoading: true,
       QueryList: {
-        quote_number: "",
+        quotenumber: "",
       },
       rules: {
         quantity: [
@@ -199,7 +205,7 @@ export default {
       },
       temp: {
         item: "",
-        quote_text: "",
+        quotetext: "",
         quantity: 0,
         price: 0,
         currency: "",
@@ -238,31 +244,36 @@ export default {
       Items: [],
       uniqueKey: 584651274321768,
       dialogVisible: true,
-      optionedItme: [],
       tempOption: "",
       editingRow: 0,
     };
   },
   watch: {
-    quoteNumber(newnumber, oldnumber) {
-      this.QueryList.quote_number = this.quoteNumber;
+    quotenumber(newnumber, oldnumber) {
+      this.QueryList.quotenumber = this.quotenumber;
       this.getList();
     },
   },
   created() {
     this.resetTemp();
     this.listLoading = false;
+    console.log(this.quotenumber)
     getCategory().then((response) => {
-      this.optionedItme = [...response.data];
-      //console.log(this.optionedItme)
+    this.optionedItme = [...response.data];
+    //console.log(this.optionedItme)
     });
     this.updateSubtotal();
+  },
+  mounted(){
+    //this.getList()
   },
   methods: {
     async getList() {
       this.listLoading = true;
+      console.log(this.QueryList)
       await fetchQuoteItems(this.QueryList).then((response) => {
-        this.list = response.data;
+        this.list = response.data.itemList;
+        console.log(this.list)
         this.listLoading = false;
       });
       this.updateSubtotal();
@@ -303,10 +314,10 @@ export default {
             break;
           }
         }
-        //console.log(this.temp)
+        console.log(this.temp)
         if (this.temp.category) {
           this.tempOption[0] = type.value;
-          //console.log(this.tempOption)
+          console.log(this.tempOption)
           break;
         }
       }
@@ -409,7 +420,7 @@ export default {
         temp.item = this.temp.productname;
         temp.quantity = this.temp.quantity;
         temp.price = this.temp.price;
-        temp.quote_number = this.quoteNumber;
+        temp.quotenumber = this.quotenumber;
         this.list.push(temp);
       } else {
         //edit
@@ -419,7 +430,7 @@ export default {
         this.list[index].item = this.temp.productname;
         this.list[index].quantity = this.temp.quantity;
         this.list[index].price = this.temp.price;
-        this.list[index].quote_number = this.quoteNumber;
+        this.list[index].quotenumber = this.quotenumber;
         console.log(this.list[index]);
       }
       this.updateSubtotal();

@@ -9,19 +9,19 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="Quote No.:" prop="quote_number">
+          <el-form-item label="Quote No.:" prop="quotenumber">
             <el-input
               :disabled="isEdit"
-              v-model="quote.quote_number"
+              v-model="quote.quoteNumber"
               @change="changeQuoteNumber"
               placeholder="KHI-"
             />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="Quote date:" prop="quote_date">
+          <el-form-item label="Quote date:" prop="quotedate">
             <el-date-picker
-              v-model="quote.quote_date"
+              v-model="quote.dateQuote"
               type="date"
               placeholder="Pick a date"
               style="width: 100%"
@@ -61,9 +61,9 @@
         <el-input type="textarea" :rows="4" v-model="quote.greeting" />
       </el-form-item>
 
-      <!-- invoke sub-component with parameter:quote_number -->
+      <!-- invoke sub-component with parameter:quotenumber -->
       <ComplexTable
-        :quoteNumber="PassQuoteNumber"
+        :quotenumber="PassQuoteNumber"
         v-on:itemChange="itemChange"
       />
       <div>
@@ -211,7 +211,7 @@
   
   <script>
 import ComplexTable from "./quoteItems.vue";
-import { fetchQuote, createQuote, updateQuote } from "@/api/quote";
+import { fetchQuoteItems, createQuote, updateQuote } from "@/api/quote";
 
 export default {
   name: "create",
@@ -233,7 +233,7 @@ export default {
         { label: "NZ", value: "NZ" },
       ],
       quote: {
-        quote_number: "",
+        quotenumber: "",
         currency: "",
         vat: "",
         discount_direct: "",
@@ -243,7 +243,7 @@ export default {
         contact: "",
         greeting: "",
         owner: "",
-        quote_date: "",
+        quotedate: "",
         ending: "",
         price: "",
         trade_term: "",
@@ -254,10 +254,10 @@ export default {
       },
       items: [],
       rules: {
-        quote_number: [
+        quotenumber: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
-        quote_date: [
+        quotedate: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
         owner: [
@@ -281,7 +281,7 @@ export default {
         ],
       },
       quoteItem: {
-        quote_number: "",
+        quotenumber: "",
       },
       PassQuoteNumber: "",
       subtotal: 0,
@@ -297,12 +297,14 @@ export default {
   beforeDestroy() {},
   updated() {},
   methods: {
-    fetchDate(quote_number) {
+    fetchDate(quotenumber) {
       console.log("fetch");
-      fetchQuote(quote_number)
+      console.log(quotenumber);
+      this.quoteItem.quotenumber = quotenumber;
+      fetchQuoteItems(this.quoteItem)
         .then((response) => {
-          this.quote = response.data;
-          this.PassQuoteNumber = this.quote.quote_number;
+          this.quote = response.data.quote;
+          this.PassQuoteNumber = this.quote.quoteNumber;
         })
         .catch((err) => {
           console.log(err);
@@ -320,13 +322,13 @@ export default {
     addQuote() {
       this.$refs["quote"].validate((valid) => {
         if (valid) {
-          let quote_data = {
+          let quotedata = {
             quote: this.quote,
             items: this.items,
           };
           console.log("adddQuote");
-          console.log(quote_data);
-          createQuote(quote_data);
+          console.log(quotedata);
+          createQuote(quotedata);
           this.$message({
             type: "success",
             message: "Successfully added",
@@ -336,18 +338,18 @@ export default {
       });
     },
     changeQuoteNumber() {
-      this.PassQuoteNumber = this.quote.quote_number;
+      this.PassQuoteNumber = this.quote.quotenumber;
     },
     editQuote() {
       this.$refs["quote"].validate((valid) => {
         if (valid) {
-          let quote_data = {
+          let quotedata = {
             quote: this.quote,
             items: this.items,
           };
           console.log("editQuote");
-          console.log(quote_data);
-          updateQuote(quote_data);
+          console.log(quotedata);
+          updateQuote(quotedata);
           this.$message({
             type: "success",
             message: "Successfully saved",
@@ -370,7 +372,7 @@ export default {
           (cal - this.quote.discount_direct) *
           (1 - this.quote.discount) *
           (1 + this.quote.vat);
-        if (itemchange[0].quote_number === this.quote.quote_number) {
+        if (itemchange[0].quotenumber === this.quote.quotenumber) {
           //this.items = Object.assign({},itemchange)
           this.items = itemchange;
           console.log("this.items");

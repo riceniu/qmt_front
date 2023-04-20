@@ -12,7 +12,7 @@ export function fetchQuote(quote_number) {
   return request({
     url: '/vue-element-admin/quote/detail',
     method: 'get', 
-    params: { quote_number }
+    params: query
   })
 }
 

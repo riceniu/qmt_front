@@ -47,6 +47,8 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
+      console.log('store/modules/user.js->getInfo state.token')
+      console.log(state.token)
       getInfo(state.token).then(response => {
         const { data } = response
 

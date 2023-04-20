@@ -4,6 +4,7 @@ userList.push({ name:'Administrater', username:'admin', password:'111111'})
 userList.push({ name:'Normal Editor', username:'editor', password:'111111'})
 userList.push({ name:'Niu Zhan', username:'nz', password:'111111'})
 userList.push({ name:'Diane Gale', username:'diane', password:'111111'})
+userList.push({ name:'xxx', username:'x', password:'111111'})
 
 const tokens = {
   admin: {
@@ -24,7 +25,7 @@ const users = {
   'admin-token': {
     roles: ['admin'],
     introduction: 'I am a super administrator',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: 'http://www.kehui.com/wp-content/uploads/2018/08/kehuilogo2.svg',
     name: 'Super Admin'
   },
   'editor-token': {
@@ -55,15 +56,16 @@ module.exports = [
     url: '/vue-element-admin/user/login',
     type: 'post',
     response: config => {
-      const { username } = config.body
-      const token = tokens[username]
-      
-      console.log('-----------------------------------------------------------')
-      console.log(username)
-      console.log(token)
       console.log("mock/user.js")
 
-
+      const { username } = config.body
+      const token = tokens[username]
+      console.log(`received config.body:`)
+      console.log(config.body)
+      
+      console.log('returned: data:')
+      console.log(token)
+      
       // mock error
       if (!token) {
         return {
@@ -86,7 +88,9 @@ module.exports = [
     response: config => {
       const { token } = config.query
       const info = users[token]
-      console.log("mock/user.js->user info")
+      console.log(`mock/user.js->user info
+      return: info:`)
+      console.log(info)
       //console.log(info)
       // mock error
       if (!info) {
@@ -121,8 +125,8 @@ module.exports = [
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
-      //console.log('mock.js->user/list')
-      //console.log(userList)
+      console.log('mock.js->user/list')
+      console.log(userList)
       return{
         code: 20000,
         data: userList
