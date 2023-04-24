@@ -71,7 +71,9 @@
     <br />
 
     <div>
-      <el-button type="success" @click="handleAdd">Add</el-button>
+      <router-link :to="'/quote/new'">
+        <el-button type="success" @click="handleAdd">Add</el-button>
+      </router-link>
     </div>
 
     <pagination
