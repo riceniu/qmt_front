@@ -99,7 +99,7 @@
           <el-input v-model="temp.country" />
         </el-form-item>
         <el-form-item label="Domain" prop="domain" label-width="100px">
-          <el-input v-model="temp.domain" />
+          <el-input v-model="temp.domain" :disabled="true" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -177,7 +177,6 @@ export default {
       },
     };
   },
-  watch() {},
   created() {
     this.getList();
   },
@@ -193,7 +192,8 @@ export default {
 
     handleAdd() {
       this.resetTemp();
-      this.temp.id = Math.floor(Math.random() * 100000) + 1;
+      //this.temp.id = Math.floor(Math.random() * 100000) + 1;
+      this.temp.id = "";
       this.dialogStatus = "Create";
       this.dialogFormVisible = true;
     },
@@ -238,43 +238,86 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteCompany(row).then(
-            this.$message({
-              type: "success",
-              message: "Deleted!",
-            })
-          );
-          this.getList();
+          this.delCompany(row);
         })
         .catch(() => {
           this.$message({
             type: "info",
             message: "Canceled",
           });
-        });
+        })
+        .then(this.getList());
     },
-
+    async delCompany(row) {
+      try {
+        let res = await deleteCompany(row);
+        console.log(res);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "id " + row.id + " " + row.company + " is deleted",
+          });
+          this.getList();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+    },
     updateData() {
-      //console.log(this.temp)
-      updateCompany(this.temp).then(
+      this.updCompany();
+    },
+    async updCompany() {
+      try {
+        let res = await updateCompany(this.temp);
+        console.log(res);
+        this.resMsg(res);
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+    },
+    createData() {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          this.creCompany();
+        }
+      });
+    },
+    async creCompany() {
+      try {
+        let res = await createCompany(this.temp);
+        this.resMsg(res);
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+    },
+    resMsg(res) {
+      if (res.code === 200) {
         this.$message({
           type: "success",
           message: "Saved",
-        })
-      );
-      this.closeDialog();
-      this.getList();
-    },
-
-    createData() {
-      createCompany(this.temp).then(
+        });
+      } else {
         this.$message({
-          type: "success",
-          message: "Added",
-        })
-      );
-      this.closeDialog();
+          type: "error",
+          message: res.message,
+        });
+      }
       this.getList();
+      this.closeDialog();
     },
   },
 };

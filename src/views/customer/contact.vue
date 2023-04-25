@@ -115,7 +115,7 @@
           <el-input v-model="temp.lastname" />
         </el-form-item>
         <el-form-item label="Email" prop="email" label-width="100px">
-          <el-input v-model="temp.email" />
+          <el-input v-model="temp.email" :disabled="true" />
         </el-form-item>
         <el-form-item label="Tel" label-width="100px">
           <el-input v-model="temp.tel" />
@@ -181,7 +181,7 @@ export default {
       temp: {
         firstname: "",
         lastname: "",
-        id: undefined,
+        id: "",
         tel: "",
         mobile: "",
         company: "",
@@ -217,7 +217,7 @@ export default {
 
     handleAdd() {
       this.resetTemp();
-      this.temp.id = Math.floor(Math.random() * 100000) + 1;
+      this.temp.id = "";
       this.dialogStatus = "Create";
       this.dialogFormVisible = true;
     },
@@ -232,23 +232,7 @@ export default {
     },
 
     resetTemp() {
-      this.temp = {
-        name: "",
-        username: "",
-        password: "",
-      };
-    },
-
-    resetPw() {
-      if (this.resetPassword == false) {
-        this.resetPassword = true;
-        this.tempPw = this.temp.password;
-        this.temp.password = "";
-      } else {
-        this.resetPassword = false;
-        this.temp.password = this.tempPw;
-        this.tempPw = "";
-      }
+      this.temp = {};
     },
 
     closeDialog() {
@@ -266,13 +250,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteContact(row).then(
-            this.$message({
-              type: "success",
-              message: "Deleted!",
-            })
-          );
-          this.getList();
+          this.delContact(row);
         })
         .catch(() => {
           this.$message({
@@ -282,32 +260,95 @@ export default {
         });
     },
 
-    updateData() {
-      //console.log(this.temp)
-      updateContact(this.temp).then(
+    async delContact(row) {
+      try {
+        let res = await deleteContact(row);
+        console.log(res);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message:
+              "id " +
+              row.id +
+              " " +
+              row.firstname +
+              " " +
+              row.lastname +
+              " is deleted",
+          });
+          this.getList();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
         this.$message({
-          type: "success",
-          message: "Saved",
-        })
-      );
-      this.closeDialog();
-      this.getList();
+          type: "error",
+          message: error,
+        });
+      }
+    },
+
+    updateData() {
+      this.updContact();
+    },
+    async updContact() {
+      try {
+        let res = await updateContact(this.temp);
+        console.log(res);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "Saved",
+          });
+          this.getList();
+          this.closeDialog();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
     },
 
     createData() {
       //console.log(this.temp)
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          createContact(this.temp).then(
-            this.$message({
-              type: "success",
-              message: "Addedd",
-            })
-          );
-          this.closeDialog();
-          this.getList();
+          this.creContact();
         }
       });
+    },
+    async creContact() {
+      try {
+        let res = await createContact(this.temp);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "Added",
+          });
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+      this.getList();
+      this.closeDialog();
     },
   },
 };

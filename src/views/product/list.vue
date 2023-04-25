@@ -295,14 +295,7 @@ export default {
         }
       )
         .then(() => {
-          deleteProduct(this.temp);
-        })
-        .then(() => {
-          this.$message({
-            type: "success",
-            message: "Product deleted!",
-          });
-          this.getList();
+          this.delProduct(row);
         })
         .catch(() => {
           this.$message({
@@ -310,6 +303,29 @@ export default {
             message: "Canceled",
           });
         });
+    },
+    async delProduct(row) {
+      try {
+        let res = await deleteProduct(row);
+        console.log(res);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "id " + row.id + " " + row.productname + " is deleted",
+          });
+          this.getList();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
     },
     closeDialog() {
       this.dialogFormVisible = false;
@@ -342,34 +358,56 @@ export default {
     updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          editProduct(this.temp).then(() => this.getList());
-          this.dialogFormVisible = false;
-          this.$notify({
-            title: "Success",
-            message: "Update Successfully",
-            type: "success",
-            duration: 2000,
-          });
+          this.updProduct();
         }
       });
+    },
+    async updProduct() {
+      try {
+        let res = await editProduct(this.temp);
+        this.resMsg(res);
+        this.getList();
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
     },
     createData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          //console.log('view/product/list.vue->createData')
-          //console.log(this.temp)
-          addProduct(this.temp).then(() => {
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
-            });
-            this.getList();
-          });
+          this.creProduct();
         }
       });
+    },
+    async creProduct() {
+      try {
+        let res = await addProduct(this.temp);
+        this.resMsg(res);
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+    },
+    resMsg(res) {
+      if (res.code === 200) {
+        this.$notify({
+          title: "Success",
+          message: "Operation Successfully",
+          type: "success",
+          duration: 2000,
+        });
+      } else {
+        this.$message({
+          type: "error",
+          message: res.message,
+        });
+      }
+      this.dialogFormVisible = false;
+      this.getList();
     },
   },
 };
