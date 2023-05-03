@@ -6,7 +6,7 @@ const count = 30;
 const baseContent =
   '<p>Product test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>';
 const image_uri =
-  "C:Userszhan_Pictureswallpaper\big-ben-bridge-castle-460672.jpg";
+  "";
 
 //dyanamic productList
 /*
@@ -161,7 +161,9 @@ module.exports = [
       );
 
       console.log("mock/product.js->product/list");
-      //console.log(List)
+      console.log(`return
+      pageList:`);
+      console.log(pageList);
       return {
         code: 20000,
         data: {
@@ -177,7 +179,9 @@ module.exports = [
     type: "get",
     response: (config) => {
       let lastId = List[List.length - 1].id;
-      //console.log(lastId)
+      console.log(`return:
+      data:`)
+      console.log(lastId)
       return {
         code: 20000,
         data: lastId,
@@ -190,7 +194,8 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/product.js->add");
-      //console.log(config.body)
+      console.log(`received: config.body`)
+      console.log(config.body)
       List.push(config.body);
       return {
         code: 20000,
@@ -204,7 +209,8 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/product.js->edit");
-      //console.log(config.body)
+      console.log(`received config.body`)
+      console.log(config.body)
       const changed = config.body;
       for (const product of List) {
         if (product.id === changed.id) {
@@ -229,7 +235,8 @@ module.exports = [
     type: "delete",
     response: (config) => {
       console.log("mock/product.js->delete");
-      //console.log(config.body);
+      console.log(`received config.body`)
+      console.log(config.body);
       let index;
       for (const product of List) {
         if (product.id === config.body.id) {

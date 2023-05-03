@@ -1,5 +1,14 @@
 <template>
   <div class="app-container">
+    <div class="tab-container">
+        <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+        <keep-alive>
+          <tab-pane v-if="activeName==item.key" :type="item.key"  />
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
     <!-- Table -->
     <el-table
       v-loading="listLoading"
@@ -66,9 +75,10 @@
 
       <el-table-column min-width="250px" label="Quote text">
         <template slot-scope="{ row }">
-          <router-link :to="'/product/edit/' + row.id" class="link-type">
-            <span>{{ row.quote_text }}</span>
-          </router-link>
+          <span>{{ row.quotetext }}</span>
+          <!-- <router-link :to="'/product/edit/' + row.id" class="link-type">
+            <span>{{ row.quotetext }}</span>
+          </router-link> -->
         </template>
       </el-table-column>
 
@@ -158,7 +168,7 @@
           <el-input
             type="textarea"
             placeholder="Quote text"
-            v-model="temp.quote_text"
+            v-model="temp.quotetext"
             rows="4"
           />
         </el-form-item>
@@ -187,9 +197,10 @@ import {
 } from "@/api/product";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 const CategoryType = [
-  { key: "Type-A", value: "Type-A" },
-  { key: "Type-B", value: "Type-B" },
-  { key: "Type-C", value: "Type-C" },
+  { key: "CFL", value: "CFL" },
+  { key: "PU", value: "PU" },
+  { key: "DA", value: "DA" },
+  { key: "MOTOR", value: "MOTOR" },
 ];
 const CurrencyType = [
   { key: "USD", value: "USD" },
@@ -212,6 +223,14 @@ export default {
   },
   data() {
     return {
+      tabMapOptions: [
+        {label:'ALL', key:'ALL'},
+        { label: 'CFL', key: 'CFL' },
+        { label: 'PU', key: 'PU' },
+        { label: 'DA', key: 'DA' },
+        { label: 'MOTOR', key: 'MOTOR' }
+      ],
+      activeName: 'CFL',
       list: null,
       total: 0,
       listLoading: true,
@@ -230,7 +249,7 @@ export default {
       dialogStatus: "",
       temp: {
         id: "",
-        quote_text: "",
+        quotetext: "",
         currency: "",
         category: "",
         price: "",
@@ -293,12 +312,7 @@ export default {
         }
       )
         .then(() => {
-          deleteProduct(this.temp);
-          this.$message({
-            type: "success",
-            message: "Product deleted!",
-          });
-          this.getList();
+          this.delProduct(row);
         })
         .catch(() => {
           this.$message({
@@ -306,6 +320,29 @@ export default {
             message: "Canceled",
           });
         });
+    },
+    async delProduct(row) {
+      try {
+        let res = await deleteProduct(row);
+        console.log(res);
+        if (res.code === 200) {
+          this.$message({
+            type: "success",
+            message: "id " + row.id + " " + row.productname + " is deleted",
+          });
+          this.getList();
+        } else {
+          this.$message({
+            type: "error",
+            message: res.message,
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
     },
     closeDialog() {
       this.dialogFormVisible = false;
@@ -322,7 +359,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: "",
-        quote_text: "",
+        quotetext: "",
         currency: "",
         category: "",
         price: "",
@@ -338,35 +375,56 @@ export default {
     updateData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          editProduct(this.temp).then();
-          this.dialogFormVisible = false;
-          this.$notify({
-            title: "Success",
-            message: "Update Successfully",
-            type: "success",
-            duration: 2000,
-          });
-          this.getList();
+          this.updProduct();
         }
       });
+    },
+    async updProduct() {
+      try {
+        let res = await editProduct(this.temp);
+        this.resMsg(res);
+        this.getList();
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
     },
     createData() {
       this.$refs["dataForm"].validate((valid) => {
         if (valid) {
-          //console.log('view/product/list.vue->createData')
-          //console.log(this.temp)
-          addProduct(this.temp).then(() => {
-            this.dialogFormVisible = false;
-            this.$notify({
-              title: "Success",
-              message: "Created Successfully",
-              type: "success",
-              duration: 2000,
-            });
-          });
-          this.getList();
+          this.creProduct();
         }
       });
+    },
+    async creProduct() {
+      try {
+        let res = await addProduct(this.temp);
+        this.resMsg(res);
+      } catch (error) {
+        this.$message({
+          type: "error",
+          message: error,
+        });
+      }
+    },
+    resMsg(res) {
+      if (res.code === 200) {
+        this.$notify({
+          title: "Success",
+          message: "Operation Successfully",
+          type: "success",
+          duration: 2000,
+        });
+      } else {
+        this.$message({
+          type: "error",
+          message: res.message,
+        });
+      }
+      this.dialogFormVisible = false;
+      this.getList();
     },
   },
 };

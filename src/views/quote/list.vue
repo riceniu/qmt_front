@@ -9,13 +9,13 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="quote_number"
+        prop="quoteNumber"
         label="Quote No."
         align="center"
         width="90"
       />
       <el-table-column
-        prop="quote_date"
+        prop="dateQuote"
         label="Date"
         align="center"
         width="100"
@@ -28,7 +28,7 @@
       />
       <el-table-column prop="vat" label="VAT" align="center" width="50" />
       <el-table-column
-        prop="discount_direct"
+        prop="discountDirect"
         label="Disc."
         align="center"
         width="60"
@@ -56,7 +56,7 @@
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
-          <router-link :to="'/quote/list/edit/' + scope.row.quote_number">
+          <router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">
             <el-button type="primary" icon="el-icon-edit" size="mini" />
           </router-link>
           <el-button
@@ -71,7 +71,9 @@
     <br />
 
     <div>
-      <el-button type="success" @click="handleAdd">Add</el-button>
+      <router-link :to="'/quote/new'">
+        <el-button type="success" @click="handleAdd">Add</el-button>
+      </router-link>
     </div>
 
     <pagination

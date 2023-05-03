@@ -41,6 +41,7 @@
             v-model="row.quantity"
             size="mini"
             @change="handleQuantityChange"
+            :min="1"
           >
             {{ row.quantity }}
           </el-input-number>
@@ -121,6 +122,7 @@
             :options="optionedItme"
             @change="handleOptionChange"
             v-model="tempOption"
+            filterable
             style="width: 260px; margin-bottom: 20px"
           ></el-cascader>
         </el-form-item>
@@ -141,8 +143,9 @@
           <el-input
             type="textarea"
             placeholder="Quote text"
-            v-model="temp.quote_text"
+            v-model="temp.quotetext"
             rows="4"
+            :disabled="true"
           />
         </el-form-item>
       </el-form>
@@ -169,18 +172,18 @@
 </template>
   
 <script>
-import { fetchQuoteItems } from "@/api/quote";
-import { getCategory } from "@/api/product";
-
+//import { fetchQuoteItems } from "@/api/quote";
+import { getCategory, getProductbyName } from "@/api/product";
 export default {
   name: "ComplexTable",
-  props: ["quoteNumber"],
+  props: ["quotenumber", "ListItems"],
   data() {
     return {
+      optionedItme: [],
       list: [],
       listLoading: true,
       QueryList: {
-        quote_number: "",
+        quotenumber: "",
       },
       rules: {
         quantity: [
@@ -199,7 +202,7 @@ export default {
       },
       temp: {
         item: "",
-        quote_text: "",
+        quotetext: "",
         quantity: 0,
         price: 0,
         currency: "",
@@ -238,33 +241,48 @@ export default {
       Items: [],
       uniqueKey: 584651274321768,
       dialogVisible: true,
-      optionedItme: [],
       tempOption: "",
       editingRow: 0,
+      tempQuoteVO: "",
     };
   },
   watch: {
-    quoteNumber(newnumber, oldnumber) {
-      this.QueryList.quote_number = this.quoteNumber;
+    quotenumber(newnumber, oldnumber) {
+      this.QueryList.quotenumber = this.quotenumber;
       this.getList();
     },
   },
+  computed: {},
   created() {
+    console.log("subform-created");
     this.resetTemp();
     this.listLoading = false;
+    //console.log(this.quotenumber);
+    //console.log(this.ListItems)
+    this.list = this.ListItems;
     getCategory().then((response) => {
       this.optionedItme = [...response.data];
       //console.log(this.optionedItme)
     });
     this.updateSubtotal();
   },
+  mounted() {
+    //this.getList()
+  },
   methods: {
     async getList() {
       this.listLoading = true;
-      await fetchQuoteItems(this.QueryList).then((response) => {
-        this.list = response.data;
-        this.listLoading = false;
-      });
+      console.log("items=>getList()");
+      //console.log(this.QueryList);
+      // await fetchQuoteItems(this.QueryList).then((response) => {
+      //   this.list = response.data.itemList;
+      //   console.log(this.list);
+      //   this.listLoading = false;
+      // });
+      //console.log(this.ListItems);
+      this.list = this.ListItems;
+      //console.log(this.list);
+      this.listLoading = false;
       this.updateSubtotal();
     },
 
@@ -289,30 +307,43 @@ export default {
       });
     },
 
-    handleEdit(row, index) {
+    async handleEdit(row, index) {
+      console.log("handelEdit");
       this.editingRow = index;
       this.tempOption = [{}, {}];
 
-      console.log(this.editingRow);
-      for (const type of this.optionedItme) {
-        for (const product of type.children) {
-          if (product.productname === row.item) {
-            this.temp = product;
-            this.temp.quantity = row.quantity;
-            this.tempOption[1] = product.productname;
-            break;
-          }
-        }
-        //console.log(this.temp)
-        if (this.temp.category) {
-          this.tempOption[0] = type.value;
-          //console.log(this.tempOption)
-          break;
-        }
-      }
+      // console.log(this.editingRow);
+      // for (const type of this.optionedItme) {
+      //   for (const product of type.children) {
+      //     if (product.productname === row.item) {
+      //       this.temp = product;
+      //       this.temp.quantity = row.quantity;
+      //       this.tempOption[1] = product.productname;
+      //       break;
+      //     }
+      //   }
+      //   console.log(this.temp);
+      //   if (this.temp.category) {
+      //     this.tempOption[0] = type.value;
+      //     console.log(this.tempOption);
+      //     break;
+      //   }
+      // }
 
+      let res = await getProductbyName(row.item);
+
+      const product = res.data;
+      console.log(product);
+      this.temp.quotetext = product.quotetext;
+      this.temp.currency = product.currency;
+      this.temp.quantity = row.quantity;
+      this.temp.price = product.price;
+      this.tempOption[0] = product.category;
+      this.tempOption[1] = product.productname;
+      console.log(this.tempOption);
       this.dialogFormVisible = true;
       this.dialogStatus = "Edit";
+      this.$forceUpdate();
     },
 
     handleDelete(row, index) {
@@ -344,28 +375,42 @@ export default {
     },
 
     handleOptionChange() {
-      //console.log('handleOptionChange')
-      //console.log(this.tempOption)
-      let index = 0;
-      for (const type of this.optionedItme) {
-        if (type.value.indexOf(this.tempOption[0]) >= 0) {
-          break;
-        }
-        index += 1;
-      }
-      //console.log('index '+ index)
-      let tmpType = this.optionedItme[index].children;
-      let i = 0;
-      for (const product of tmpType) {
-        i += 1;
-        if (product.value === this.tempOption[1]) {
-          this.temp = Object.assign({}, product);
-          this.temp.quantity = 1;
-          break;
-        }
-      }
-      console.log("handoptionChange end+temp");
-      console.log(this.temp);
+      //mock mode
+      // console.log('handleOptionChange')
+      // console.log(this.tempOption[1])
+      // let index = 0;
+      // for (const type of this.optionedItme) {
+      //   if (type.value.indexOf(this.tempOption[0]) >= 0) {
+      //     break;
+      //   }
+      //   index += 1;
+      // }
+      // //console.log('index '+ index)
+      // let tmpType = this.optionedItme[index].children;
+      // let i = 0;
+      // for (const product of tmpType) {
+      //   i += 1;
+      //   if (product.value === this.tempOption[1]) {
+      //     this.temp = Object.assign({}, product);
+      //     this.temp.quantity = 1;
+      //     break;
+      //   }
+      // }
+      // console.log("handoptionChange end+temp");
+      // console.log(this.temp);
+
+      //backend api mode
+      console.log(this.tempOption[1]);
+      getProductbyName(this.tempOption[1]).then((response) => {
+        const product = response.data;
+        console.log(product);
+        this.temp.quotetext = product.quotetext;
+        this.temp.currency = product.currency;
+        this.temp.quantity = 1;
+        this.temp.price = product.price;
+        this.$forceUpdate();
+      });
+      console.log(this.tempOption);
     },
 
     closeDialog() {
@@ -375,6 +420,7 @@ export default {
     },
 
     addItem() {
+      console.log("children->addItem");
       this.saveItem(-1);
       this.$notify({
         title: "Success",
@@ -398,7 +444,7 @@ export default {
       });
       this.dialogFormVisible = false;
       this.resetTemp();
-      this.tempOption = "";
+      //this.tempOption = "";
     },
 
     saveItem(index) {
@@ -406,20 +452,21 @@ export default {
         //add
         console.log("saveItem - add");
         let temp = {};
-        temp.item = this.temp.productname;
+        console.log(this.temp);
+        temp.item = this.tempOption[1];
         temp.quantity = this.temp.quantity;
         temp.price = this.temp.price;
-        temp.quote_number = this.quoteNumber;
+        temp.quotenumber = this.quotenumber;
         this.list.push(temp);
       } else {
         //edit
         console.log("saveItem - edit");
         console.log(this.list[index]);
         console.log(this.temp);
-        this.list[index].item = this.temp.productname;
+        this.list[index].item = this.tempOption[1];
         this.list[index].quantity = this.temp.quantity;
         this.list[index].price = this.temp.price;
-        this.list[index].quote_number = this.quoteNumber;
+        this.list[index].quotenumber = this.quotenumber;
         console.log(this.list[index]);
       }
       this.updateSubtotal();
