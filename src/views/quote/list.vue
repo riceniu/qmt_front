@@ -28,7 +28,7 @@
       />
       <el-table-column prop="vat" label="VAT" align="center" width="50" />
       <el-table-column
-        prop="discount_direct"
+        prop="discountDirect"
         label="Disc."
         align="center"
         width="60"

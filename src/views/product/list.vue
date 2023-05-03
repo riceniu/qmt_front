@@ -1,5 +1,14 @@
 <template>
   <div class="app-container">
+    <div class="tab-container">
+        <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
+      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
+        <keep-alive>
+          <tab-pane v-if="activeName==item.key" :type="item.key"  />
+        </keep-alive>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
     <!-- Table -->
     <el-table
       v-loading="listLoading"
@@ -214,6 +223,14 @@ export default {
   },
   data() {
     return {
+      tabMapOptions: [
+        {label:'ALL', key:'ALL'},
+        { label: 'CFL', key: 'CFL' },
+        { label: 'PU', key: 'PU' },
+        { label: 'DA', key: 'DA' },
+        { label: 'MOTOR', key: 'MOTOR' }
+      ],
+      activeName: 'CFL',
       list: null,
       total: 0,
       listLoading: true,

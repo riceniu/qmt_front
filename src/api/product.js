@@ -76,3 +76,11 @@ export function getCategory() {
     method: 'get',
   })
 }
+
+export function getProductbyName(name){
+  return request({
+    url:'/vue-element-admin/product/findProduct',
+    method:'get',
+    params:{name}
+  })
+}

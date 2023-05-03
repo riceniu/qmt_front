@@ -9,17 +9,16 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="Quote No.:" prop="quotenumber">
+          <el-form-item label="Quote No.:" prop="quoteNumber">
             <el-input
               :disabled="isEdit"
               v-model="quote.quoteNumber"
-              @change="changeQuoteNumber"
               placeholder="KHI-"
             />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="Quote date:" prop="quotedate">
+          <el-form-item label="Quote date:" prop="dateQuote">
             <el-date-picker
               v-model="quote.dateQuote"
               type="date"
@@ -64,6 +63,7 @@
       <!-- invoke sub-component with parameter:quotenumber -->
       <ComplexTable
         :quotenumber="PassQuoteNumber"
+        :ListItems="items"
         v-on:itemChange="itemChange"
       />
       <div>
@@ -78,7 +78,7 @@
               <el-col :span="6" :offset="7">
                 <el-form-item label="Direct discount" class="narrow">
                   <el-input
-                    v-model="quote.discount_direct"
+                    v-model="quote.discountDirect"
                     @change="updateTotal"
                   />
                 </el-form-item>
@@ -103,7 +103,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6" :offset="5">
-                <el-form-item label="VAT" class="narrow">
+                <el-form-item label="VAT %" class="narrow">
                   <el-input v-model="quote.vat" @change="updateTotal" />
                 </el-form-item>
               </el-col>
@@ -112,7 +112,7 @@
           <!-- <el-col :span="6" :offset="15">
             <div>
               <el-form-item label="Direct discount" class="narrow">
-              <el-input v-model="quote.discount_direct" @change="updateTotal"  />
+              <el-input v-model="quote.discountDirect" @change="updateTotal"  />
               </el-form-item >
               <el-form-item label="Discount %" class="narrow">
               <el-input v-model="quote.discount"  @change="updateTotal" /></el-form-item>
@@ -140,7 +140,7 @@
         <!-- <el-row>
           <el-col :span="5">
             <el-form-item label="Direct discount">
-              <el-input v-model="quote.discount_direct" @change="updateTotal"  />
+              <el-input v-model="quote.discountDirect" @change="updateTotal"  />
             </el-form-item>
           </el-col>
           <el-col :span="5" :offset="2">
@@ -227,23 +227,26 @@ export default {
   },
   data() {
     return {
+      //flag if got data from database
+      gotList: false,
       //postForm: Object.assign({}, defaultForm),
       ownerList: [
         { label: "Diane", value: "Diane" },
         { label: "NZ", value: "NZ" },
+        { label: "API", value: "API" },
       ],
       quote: {
-        quotenumber: "",
+        quoteNumber: "",
         currency: "",
         vat: "",
-        discount_direct: "",
+        discountDirect: "",
         discount: "",
         total: "",
         company: "",
         contact: "",
         greeting: "",
         owner: "",
-        quotedate: "",
+        dateQuote: "",
         ending: "",
         price: "",
         trade_term: "",
@@ -254,10 +257,10 @@ export default {
       },
       items: [],
       rules: {
-        quotenumber: [
+        quoteNumber: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
-        quotedate: [
+        dateQuote: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
         owner: [
@@ -285,6 +288,7 @@ export default {
       },
       PassQuoteNumber: "",
       subtotal: 0,
+      tempQuoteItemQueryVO:""
     };
   },
   created() {
@@ -303,8 +307,12 @@ export default {
       this.quoteItem.quotenumber = quotenumber;
       fetchQuoteItems(this.quoteItem)
         .then((response) => {
+          this.tempQuoteItemQueryVO = response.data
+          console.log(this.tempQuoteItemQueryVO)
           this.quote = response.data.quote;
+          this.items = response.data.itemList;
           this.PassQuoteNumber = this.quote.quoteNumber;
+          this.gotList = true;
         })
         .catch((err) => {
           console.log(err);
@@ -324,42 +332,44 @@ export default {
         if (valid) {
           let quotedata = {
             quote: this.quote,
-            items: this.items,
+            itemList: this.items,
           };
           console.log("adddQuote");
           console.log(quotedata);
-          createQuote(quotedata);
-          this.$message({
-            type: "success",
-            message: "Successfully added",
-          });
+          createQuote(quotedata).
+          then(
+            this.$message({
+              type: "success",
+              message: "Quote successfully added",
+            })
+          );
         }
         this.$router.push({ path: "/quote/list" });
       });
-    },
-    changeQuoteNumber() {
-      this.PassQuoteNumber = this.quote.quotenumber;
     },
     editQuote() {
       this.$refs["quote"].validate((valid) => {
         if (valid) {
           let quotedata = {
             quote: this.quote,
-            items: this.items,
+            itemList: this.items,
           };
           console.log("editQuote");
           console.log(quotedata);
-          updateQuote(quotedata);
-          this.$message({
-            type: "success",
-            message: "Successfully saved",
-          });
+          updateQuote(quotedata).then(
+            this.$message({
+              type: "success",
+              message: "Successfully saved",
+            })
+          );
         }
         this.$router.push({ path: "/quote/list" });
       });
     },
 
     itemChange: function (itemchange) {
+      console.log("parent->itemchange")
+      console.log(itemchange)
       if (itemchange.length > 0) {
         console.log(itemchange);
         let cal = 0;
@@ -369,24 +379,24 @@ export default {
         console.log(cal);
         this.subtotal = cal;
         this.quote.total =
-          (cal - this.quote.discount_direct) *
-          (1 - this.quote.discount) *
-          (1 + this.quote.vat);
-        if (itemchange[0].quotenumber === this.quote.quotenumber) {
-          //this.items = Object.assign({},itemchange)
-          this.items = itemchange;
-          console.log("this.items");
-          console.log(this.items);
-        } else {
-          alert("Error: quotate_number error");
-        }
+          (cal - this.quote.discountDirect) *
+          (1 - this.quote.discount / 100) *
+          (1 + this.quote.vat / 100);
+        // if (itemchange[0].quotenumber === this.quote.quotenumber) {
+        //   //this.items = Object.assign({},itemchange)
+        //   this.items = itemchange;
+        //   console.log("this.items");
+        //   console.log(this.items);
+        // } else {
+        //   alert("Error: quotate_number error");
+        // }
       }
     },
     updateTotal() {
       this.quote.total =
-        (this.subtotal - this.quote.discount_direct) *
-        (1 - this.quote.discount) *
-        (1 + this.quote.vat);
+        (this.subtotal - this.quote.discountDirect) *
+        (1 - this.quote.discount / 100) *
+        (1 + this.quote.vat / 100);
     },
   },
 };
