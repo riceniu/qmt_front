@@ -162,13 +162,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteQuote(row).then(
-            this.$message({
-              type: "success",
-              message: "Deleted!",
-            })
-          );
-          this.getList();
+          this.delQuote(row);
         })
         .catch(() => {
           this.$message({
@@ -176,6 +170,14 @@ export default {
             message: "Canceled",
           });
         });
+    },
+    async delQuote(row) {
+      await deleteQuote(row);
+      this.$message({
+        type: "success",
+        message: "Deleted!",
+      });
+      this.getList();
     },
   },
 };

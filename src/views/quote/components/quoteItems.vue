@@ -122,22 +122,25 @@
             :options="optionedItme"
             @change="handleOptionChange"
             v-model="tempOption"
-            filterable
             style="width: 260px; margin-bottom: 20px"
           ></el-cascader>
         </el-form-item>
 
+        <el-form-item label="Item" prop="item">
+          <el-input v-model="temp.item" />
+        </el-form-item>
+
         <el-form-item label="Price" prop="price">
-          <el-input v-model="temp.price" :disabled="true" />
+          <el-input v-model="temp.price" />
         </el-form-item>
 
         <el-form-item label="Quantity" prop="quantity">
           <el-input v-model="temp.quantity" :disabled="true" />
         </el-form-item>
 
-        <el-form-item label="Currency" prop="currency">
-          <el-input v-model="temp.currency" :disabled="true" />
-        </el-form-item>
+        <!-- <el-form-item label="Currency" prop="currency">
+          <el-input v-model="temp.currency"  />
+        </el-form-item> -->
 
         <el-form-item label="Quote text" prop="text">
           <el-input
@@ -145,7 +148,6 @@
             placeholder="Quote text"
             v-model="temp.quotetext"
             rows="4"
-            :disabled="true"
           />
         </el-form-item>
       </el-form>
@@ -200,13 +202,7 @@ export default {
           },
         ],
       },
-      temp: {
-        item: "",
-        quotetext: "",
-        quantity: 0,
-        price: 0,
-        currency: "",
-      },
+      temp: {},
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
@@ -215,22 +211,6 @@ export default {
       },
       dialogPvVisible: false,
       pvData: [],
-      rules: {
-        type: [
-          { required: true, message: "type is required", trigger: "change" },
-        ],
-        timestamp: [
-          {
-            type: "date",
-            required: true,
-            message: "timestamp is required",
-            trigger: "change",
-          },
-        ],
-        title: [
-          { required: true, message: "title is required", trigger: "blur" },
-        ],
-      },
       textMap: {
         Edit: "Edit",
         Add: "Add a new item",
@@ -295,7 +275,7 @@ export default {
       console.log(value);
     },
     resetTemp() {
-      this.temp = {};
+      this.temp = { item: "", price: "", quotetext: "",id:"" };
     },
 
     handleCreate() {
@@ -330,17 +310,19 @@ export default {
       //   }
       // }
 
-      let res = await getProductbyName(row.item);
-
-      const product = res.data;
-      console.log(product);
-      this.temp.quotetext = product.quotetext;
-      this.temp.currency = product.currency;
+      //let res = await getProductbyName(row.item);
+      console.log(row);
+      //const product = res.data;
+      //console.log(product);
+      this.temp.item = row.item;
+      this.temp.id = row.id;
+      this.temp.quotetext = row.text;
+      //this.temp.currency = row.currency;
       this.temp.quantity = row.quantity;
-      this.temp.price = product.price;
-      this.tempOption[0] = product.category;
-      this.tempOption[1] = product.productname;
-      console.log(this.tempOption);
+      this.temp.price = row.price;
+      this.tempOption[0] = "";
+      this.tempOption[1] = "";
+      //console.log(this.tempOption);
       this.dialogFormVisible = true;
       this.dialogStatus = "Edit";
       this.$forceUpdate();
@@ -404,6 +386,7 @@ export default {
       getProductbyName(this.tempOption[1]).then((response) => {
         const product = response.data;
         console.log(product);
+        this.temp.item = product.productname;
         this.temp.quotetext = product.quotetext;
         this.temp.currency = product.currency;
         this.temp.quantity = 1;
@@ -453,20 +436,23 @@ export default {
         console.log("saveItem - add");
         let temp = {};
         console.log(this.temp);
-        temp.item = this.tempOption[1];
+        temp.item = this.temp.item;
         temp.quantity = this.temp.quantity;
         temp.price = this.temp.price;
-        temp.quotenumber = this.quotenumber;
+        temp.quoteNumber = this.quotenumber;
+        temp.text = this.temp.quotetext;
         this.list.push(temp);
       } else {
         //edit
         console.log("saveItem - edit");
         console.log(this.list[index]);
         console.log(this.temp);
-        this.list[index].item = this.tempOption[1];
+        this.list[index].id = this.temp.id;
+        this.list[index].item = this.temp.item;
         this.list[index].quantity = this.temp.quantity;
         this.list[index].price = this.temp.price;
-        this.list[index].quotenumber = this.quotenumber;
+        this.list[index].quoteNumber = this.quotenumber;
+        this.list[index].text = this.temp.quotetext;
         console.log(this.list[index]);
       }
       this.updateSubtotal();
