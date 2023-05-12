@@ -10,30 +10,40 @@
     >
       <el-table-column prop="id" label="ID" align="center" width="60" />
       <el-table-column
+        prop="gender"
+        label=""
+        align="center"
+        width="50"
+        show-overflow-tooltip
+      /><el-table-column
         prop="firstname"
         label="First name"
         align="center"
         width="100"
+        show-overflow-tooltip
       />
       <el-table-column
         prop="lastname"
         label="Last name"
         align="center"
         width="100"
+        show-overflow-tooltip
       />
-      <el-table-column prop="email" label="Email" align="center" width="200" />
-      <el-table-column prop="tel" label="Tel" align="center" width="130" />
+      <el-table-column prop="email" label="Email" align="center" width="200" show-overflow-tooltip/>
+      <el-table-column prop="tel" label="Tel" align="center" width="130" show-overflow-tooltip/>
       <el-table-column
         prop="mobile"
         label="Mobile"
         align="center"
         width="130"
+        show-overflow-tooltip
       />
       <el-table-column
         prop="company"
         label="Company"
         align="center"
         width="250"
+        show-overflow-tooltip
       />
 
       <el-table-column align="center" label="Actions" width="120">

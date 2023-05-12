@@ -12,13 +12,14 @@
         prop="quoteNumber"
         label="Quote No."
         align="center"
-        width="90"
+        width="120"
+        show-overflow-tooltip
       />
       <el-table-column
         prop="dateQuote"
         label="Date"
         align="center"
-        width="100"
+        width="120"
       />
       <el-table-column
         prop="currency"
@@ -26,7 +27,7 @@
         align="center"
         width="85"
       />
-      <el-table-column prop="vat" label="VAT" align="center" width="50" />
+      
       <el-table-column
         prop="discountDirect"
         label="Disc."
@@ -35,22 +36,32 @@
       />
       <el-table-column
         prop="discount"
-        label="Disc.%"
+        label="Disc%"
         align="center"
         width="70"
       />
-      <el-table-column prop="total" label="Total" align="center" width="100" />
+      <el-table-column prop="vat" label="VAT" align="center" width="50" />
+      <el-table-column
+        prop="total"
+        label="Total"
+        align="right"
+        width="100"
+        :formatter="totalFormat"
+        show-overflow-tooltip
+      />
       <el-table-column
         prop="contact"
         label="Contact"
-        align="center"
-        width="150"
+        align="left"
+        width="175"
+        show-overflow-tooltip
       />
       <el-table-column
         prop="company"
         label="Company"
-        align="center"
-        width="100"
+        align="left"
+        width="175"
+        show-overflow-tooltip
       />
       <el-table-column prop="owner" label="Owner" align="center" width="100" />
 
@@ -179,6 +190,17 @@ export default {
       });
       this.getList();
     },
+    totalFormat(row, column, cellValue) {
+      cellValue = parseFloat(cellValue).toFixed(2)
+			cellValue += '';
+			if (!cellValue.includes('.')) cellValue += '.';
+
+			return cellValue.replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+				return $1 + ',';
+			}).replace(/\.$/, '');
+		},
+
+    
   },
 };
 </script>

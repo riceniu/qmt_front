@@ -12,20 +12,21 @@
       <el-table-column
         prop="company"
         label="Company Name"
-        align="center"
-        width="200"
+        align="left"
+        width="400"
+        show-overflow-tooltip
       />
       <el-table-column
         prop="country"
         label="Country"
-        align="center"
+        align="left"
         width="200"
       />
       <!-- <el-table-column prop="city" label="City" align="center" width="100"/> -->
       <el-table-column
         prop="domain"
         label="Domain"
-        align="center"
+        align="left"
         width="200"
       />
 

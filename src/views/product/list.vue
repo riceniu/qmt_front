@@ -8,12 +8,14 @@
           :label="item.label"
           :name="item.key"
         >
-          <keep-alive>
+          <!-- <keep-alive> -->
             <tab-pane
               v-if="activeName == item.key"
+              v-on:listRefreshed="listRefreshed"
               :type="item.key"
+              :refresh="refresh"
             />
-          </keep-alive>
+          <!-- </keep-alive> -->
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -143,16 +145,8 @@ export default {
         { label: "MOTOR", key: "MOTOR" },
       ],
       activeName: "ALL",
-      list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-      },
       CategoryType,
       CurrencyType,
-      category: {},
       textMap: {
         Edit: "Edit",
         Add: "Add new product",
@@ -185,6 +179,7 @@ export default {
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
       },
+      refresh:0,
     };
   },
   created() {
@@ -345,8 +340,15 @@ export default {
         });
       }
       this.dialogFormVisible = false;
-      this.getList();
+      this.refresh = 1;
+      console.log("add")
+      console.log(this.refresh)
+      //this.getList();
     },
+    listRefreshed(){
+      console.log('parent refresh')
+      this.refresh = 0
+    }
   },
 };
 </script>
