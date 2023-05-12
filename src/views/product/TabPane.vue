@@ -109,7 +109,9 @@ import {
   addProduct,
   editProduct,
   deleteProduct,
+  getAllProducts,
 } from "@/api/product";
+
 export default {
   filters: {
     statusFilter(status) {
@@ -127,6 +129,7 @@ export default {
       type: String,
       default: "CN",
     },
+    default:[]
   },
   data() {
     return {
@@ -134,23 +137,34 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        type: "ALL"
       },
-      total: 0,
+      total: 1,
       loading: false,
     };
   },
+  watch: {
+    allProduct(newnumber, oldnumber) {
+      this.list = this.allProduct;
+    },
+  },
   created() {
+    //this.getList();
+    //console.log(this.allProduct)
+    //this.list = this.allProduct
+    console.log(this.type)
     this.getList();
   },
   methods: {
-    getList() {
+    async getList() {
       this.listLoading = true;
-      fetchList(this.listQuery).then((response) => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-        this.listLoading = false;
-      });
-    },
+      this.listQuery.type = this.type;
+      const response = await fetchList(this.listQuery);
+      console.log(response)
+      this.list = response.data.items;
+      this.total = response.data.total;
+      this.listLoading = false;
+    },    
   },
 };
 </script>

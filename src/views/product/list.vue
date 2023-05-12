@@ -1,15 +1,22 @@
 <template>
   <div class="app-container">
     <div class="tab-container">
-        <el-tabs v-model="activeName" style="margin-top:15px;" type="border-card">
-      <el-tab-pane v-for="item in tabMapOptions" :key="item.key" :label="item.label" :name="item.key">
-        <keep-alive>
-          <tab-pane v-if="activeName==item.key" :type="item.key"  />
-        </keep-alive>
-      </el-tab-pane>
-    </el-tabs>
-  </div>
-
+      <el-tabs v-model="activeName" style="margin-top: 15px" type="border-card">
+        <el-tab-pane
+          v-for="item in tabMapOptions"
+          :key="item.key"
+          :label="item.label"
+          :name="item.key"
+        >
+          <keep-alive>
+            <tab-pane
+              v-if="activeName == item.key"
+              :type="item.key"
+            />
+          </keep-alive>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
 
     <!-- Add button -->
     <div>
@@ -91,13 +98,14 @@
 </template>
 
 <script>
-import TabPane from './TabPane'
+import TabPane from "./TabPane";
 import {
   fetchList,
   fetchLastId,
   addProduct,
   editProduct,
   deleteProduct,
+//  getAllProducts,
 } from "@/api/product";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 const CategoryType = [
@@ -114,7 +122,7 @@ const CurrencyType = [
 ];
 export default {
   name: "ProductList",
-  components: { Pagination,TabPane },
+  components: { Pagination, TabPane },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -128,13 +136,13 @@ export default {
   data() {
     return {
       tabMapOptions: [
-        {label:'ALL', key:'ALL'},
-        { label: 'CFL', key: 'CFL' },
-        { label: 'PU', key: 'PU' },
-        { label: 'DA', key: 'DA' },
-        { label: 'MOTOR', key: 'MOTOR' }
+        { label: "ALL", key: "ALL" },
+        { label: "CFL", key: "CFL" },
+        { label: "PU", key: "PU" },
+        { label: "DA", key: "DA" },
+        { label: "MOTOR", key: "MOTOR" },
       ],
-      activeName: 'ALL',
+      activeName: "ALL",
       list: null,
       total: 0,
       listLoading: true,
@@ -180,17 +188,26 @@ export default {
     };
   },
   created() {
-    this.getList();
+    //this.getList();
+    //this.getAll();
   },
   methods: {
-    getList() {
+    async getList() {
       this.listLoading = true;
-      fetchList(this.listQuery).then((response) => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-        this.listLoading = false;
-      });
-    },
+      const response = await fetchList(this.listQuery);
+      console.log(response)
+      this.list = response.data.items;
+      this.total = response.data.total;
+      this.listLoading = false;
+    },    
+    // async getAll() {
+    //   this.listLoading = true;
+    //   const response = await getAllProducts()
+    //   console.log(response)
+    //   this.list = response.data;
+    //   this.total = response.data.length;
+    //   this.listLoading = false;
+    // },
     handleEdit(row) {
       this.temp = Object.assign({}, row);
       this.dialogStatus = "Edit";
