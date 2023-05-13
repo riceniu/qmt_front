@@ -93,3 +93,19 @@ export function createCompany(data) {
     data,
   });
 }
+
+export function remoteSearchCompany(name) {
+  return request({
+    url: '/vue-element-admin/customer/company/searchByName',
+    method: 'get',
+    params: {name}
+  })
+}
+
+export function remoteSearchContact(name) {
+  return request({
+    url: '/vue-element-admin/customer/contact/searchByName',
+    method: 'get',
+    params: {name}
+  })
+}

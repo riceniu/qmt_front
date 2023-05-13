@@ -13,7 +13,7 @@
             <el-input
               :disabled="isEdit"
               v-model="quote.quoteNumber"
-              placeholder="KHI-"
+              placeholder="KIxxxx-xxx"
             />
           </el-form-item>
         </el-col>
@@ -30,12 +30,19 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="Owner" prop="owner">
-            <el-select v-model="quote.owner" placeholder="Please select">
+            <el-select
+              v-model="quote.owner"
+              filterable
+              remote
+              :remote-method="getUserList"
+              placeholder="Please select"
+              automatic-dropdown
+            >
               <el-option
-                v-for="item in ownerList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="(item, index) in ownerList"
+                :key="item + index"
+                :label="item"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -43,21 +50,60 @@
       </el-row>
 
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="Contact" prop="contact">
+        <el-col :span="12">
+          <!-- <el-form-item label="Contact" prop="contact">
             <el-input v-model="quote.contact" />
+          </el-form-item> -->
+          <el-form-item label="Contact" prop="contact">
+            <el-select
+              v-model="quote.contact"
+              filterable
+              remote
+              :remote-method="getContactList"
+              placeholder="Please select"
+              default-first-option
+              no-data-text="No such contact, please add"
+            >
+              <el-option
+                v-for="item in contactOptionList"
+                :key="item.contactId" 
+                :label="item.contactName"
+                :value="item.contactId"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
 
-        <el-col :span="14">
-          <el-form-item label="Company" prop="company">
+        <el-col :span="12">
+          <!-- <el-form-item label="Company" prop="company">
             <el-input type="textarea" v-model="quote.company" />
+          </el-form-item> -->
+          <el-form-item label="Company" prop="company">
+            <el-select
+              v-model="quote.company"
+              filterable
+              remote
+              :remote-method="getCompanyList"
+              placeholder="Please select"
+              no-data-text="No such company, please add"
+            >
+              <el-option
+                v-for="item in companyOptionList"
+                :key="item.companyId"
+                :label="item.company"
+                :value="item.companyId"
+              />
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-form-item label="Greeting" prop="greeting">
-        <el-input type="textarea" :rows="4" v-model="quote.greeting" />
+        <el-input type="textarea" :rows="2" v-model="quote.greeting" />
+      </el-form-item>
+
+      <el-form-item label="Ending" prop="ending">
+        <el-input type="textarea" :rows="2" v-model="quote.ending" />
       </el-form-item>
 
       <!-- invoke sub-component with parameter:quotenumber -->
@@ -212,6 +258,8 @@
   <script>
 import ComplexTable from "./quoteItems.vue";
 import { fetchQuoteItems, createQuote, updateQuote } from "@/api/quote";
+import { remoteSearch as remoteSearchUser } from "@/api/user";
+import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
 
 export default {
   name: "create",
@@ -230,11 +278,9 @@ export default {
       //flag if got data from database
       gotList: false,
       //postForm: Object.assign({}, defaultForm),
-      ownerList: [
-        { label: "Diane", value: "Diane" },
-        { label: "NZ", value: "NZ" },
-        { label: "API", value: "API" },
-      ],
+      ownerList: [],
+      contactOptionList: [],
+      companyOptionList: [],
       quote: {
         quoteNumber: "",
         currency: "",
@@ -243,7 +289,9 @@ export default {
         discount: "",
         total: "",
         company: "",
+        companyId:"",
         contact: "",
+        contactId:"",
         greeting: "",
         owner: "",
         dateQuote: "",
@@ -288,11 +336,16 @@ export default {
       },
       PassQuoteNumber: "",
       subtotal: 0,
-      tempQuoteItemQueryVO:""
+      tempQuoteItemQueryVO: "",
     };
   },
   created() {
     console.log("created");
+    remoteSearchUser("").then((response) => {
+      if (!response.data) return;
+      this.ownerList = response.data.map((v) => v.name);
+      console.log(this.ownerList);
+    });
     if (this.isEdit) {
       this.fetchDate(this.$route.params.id);
     }
@@ -307,8 +360,8 @@ export default {
       this.quoteItem.quotenumber = quotenumber;
       fetchQuoteItems(this.quoteItem)
         .then((response) => {
-          this.tempQuoteItemQueryVO = response.data
-          console.log(this.tempQuoteItemQueryVO)
+          this.tempQuoteItemQueryVO = response.data;
+          console.log(this.tempQuoteItemQueryVO);
           this.quote = response.data.quote;
           this.items = response.data.itemList;
           this.PassQuoteNumber = this.quote.quoteNumber;
@@ -336,15 +389,14 @@ export default {
           };
           console.log("adddQuote");
           console.log(quotedata);
-          createQuote(quotedata).
-          then(
+          createQuote(quotedata).then(
             this.$message({
               type: "success",
               message: "Quote successfully added",
             })
           );
+          this.$router.push({ path: "/quote/list" });
         }
-        this.$router.push({ path: "/quote/list" });
       });
     },
     editQuote() {
@@ -362,20 +414,21 @@ export default {
               message: "Successfully saved",
             })
           );
+          this.$router.push({ path: "/quote/list" });
         }
-        this.$router.push({ path: "/quote/list" });
       });
     },
 
     itemChange: function (itemchange) {
-      console.log("parent->itemchange")
-      console.log(itemchange)
+      console.log("parent->itemchange");
+      console.log(itemchange);
       if (itemchange.length > 0) {
         console.log(itemchange);
         let cal = 0;
         for (const item of itemchange) {
           cal += item.price * (item.quantity * 1);
         }
+        ``;
         console.log(cal);
         this.subtotal = cal;
         this.quote.total =
@@ -397,6 +450,44 @@ export default {
         (this.subtotal - this.quote.discountDirect) *
         (1 - this.quote.discount / 100) *
         (1 + this.quote.vat / 100);
+    },
+    //functions related to remote search
+    getUserList(query) {
+      // console.log(typeof query);
+      // this.loading = true;
+      // remoteSearchUser(query)
+      //   .then((response) => {
+      //     if (!response.data) return;
+      //     this.ownerList = response.data.map((v) => v.name);
+      //     console.log(this.ownerList);
+      //   })
+      //   .then((this.loading = false));
+    },
+    getContactList(query) {
+      this.loading = true;
+      remoteSearchContact(query)
+        .then((response) => {
+          if (!response.data) return;
+          this.contactOptionList = response.data.map((v) => ({
+            contactId: v.id,
+            contactName: v.firstname + " " + v.lastname,
+          }));
+          console.log(this.contactOptionList);
+        })
+        .then((this.loading = false));
+    },
+    getCompanyList(query) {
+      this.loading = true;
+      remoteSearchCompany(query)
+        .then((response) => {
+          if (!response.data) return;
+          this.companyOptionList = response.data.map((v) => ({
+            companyId: v.id,
+            company: v.company,
+          }));
+          console.log(this.companyOptionList);
+        })
+        .then((this.loading = false));
     },
   },
 };

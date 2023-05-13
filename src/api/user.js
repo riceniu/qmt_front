@@ -25,11 +25,19 @@ export function logout() {
   })
 }
 
-export function fetchList(query) {
+export function fetchList(name) {
   return request({
     url: '/vue-element-admin/user/list',
     method: 'get',
-    params: query
+    params: {name}
+  })
+}
+
+export function remoteSearch(name) {
+  return request({
+    url: '/vue-element-admin/user/searchByName',
+    method: 'get',
+    params: {name}
   })
 }
 
