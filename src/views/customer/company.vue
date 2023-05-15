@@ -23,12 +23,7 @@
         width="200"
       />
       <!-- <el-table-column prop="city" label="City" align="center" width="100"/> -->
-      <el-table-column
-        prop="domain"
-        label="Domain"
-        align="left"
-        width="200"
-      />
+      <el-table-column prop="domain" label="Domain" align="left" width="200" />
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="{ row }">
@@ -74,7 +69,24 @@
           <el-input v-model="temp.company" />
         </el-form-item>
         <el-form-item label="Country" prop="country" label-width="100px">
-          <el-input v-model="temp.country" />
+          <!-- <el-input v-model="temp.country" /> -->
+          <el-select
+            v-model="temp.country"
+            filterable
+            remote
+            :remote-method="searchList"
+            placeholder="Please select"
+            default-first-option
+            no-data-text="Wrong country name"
+            @focus="getCountryList"
+          >
+            <el-option
+              v-for="item in countryList"
+              :key="item.country"
+              :label="item.country"
+              :value="item.country"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="Domain" prop="domain" label-width="100px">
           <el-input v-model="temp.domain" />
@@ -131,6 +143,7 @@ import {
   createCompany,
 } from "@/api/customer";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import country from "./countryList.json";
 
 export default {
   name: "ProductList",
@@ -160,6 +173,7 @@ export default {
         id: undefined,
         domain: "",
       },
+      countryList: [],
       tempPw: "",
       dialogFormVisible: false,
       dialogStatus: "Edit",
@@ -319,6 +333,30 @@ export default {
       }
       this.getList();
       this.closeDialog();
+    },
+    getCountryList() {
+      // this.countryList = Object.values(country.all).map((v) => ({
+      //       country: v.name,
+      //       region: v.region,
+      //       key:v.iso3
+      //     }))
+      //this.countryList = country.sort((b,a)=>(a.country < b.country) ? 1 : (a.country > b.country) ? -1 : 0);
+      //console.log(country)
+      this.countryList = country.map(v=>v)
+      //console.log( this.countryList)
+    },
+    searchList(query) {
+      console.log(query);
+      //console.log(country);
+      this.countryList.length = 0;
+      for (const item of country) {
+        //console.log(item);
+        if (item.country.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          this.countryList.push(item);
+        }
+      }
+      if(this.countryList.length===0){this.countryList = []}
+      //console.log(this.countryList);
     },
   },
 };
