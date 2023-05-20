@@ -63,3 +63,18 @@ export function deleteQuote(data) {
     data
   })
 }
+
+export function getLatestQuoteNumber() {
+  return request({
+    url: '/vue-element-admin/quote/getLatestQuoteNumber',
+    method: 'get', 
+  })
+}
+
+export function checkQuoteNumber(query) {
+  return request({
+    url: '/vue-element-admin/quote/number',
+    method: 'get', 
+    params: query
+  })
+}
