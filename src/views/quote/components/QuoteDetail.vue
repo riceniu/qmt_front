@@ -57,6 +57,8 @@
           <el-form-item label="Contact" prop="contact">
             <el-select
               v-model="quote.contact"
+              @change="selectContact"
+              value-key="id"
               filterable
               remote
               :remote-method="getContactList"
@@ -66,9 +68,9 @@
             >
               <el-option
                 v-for="item in contactOptionList"
-                :key="item.contactId" 
+                :key="item.contactId"
                 :label="item.contactName"
-                :value="item.contactId"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -81,8 +83,11 @@
           <el-form-item label="Company" prop="company">
             <el-select
               v-model="quote.company"
+              @change="selectCompany"
+              value-key="id"
               filterable
               remote
+              default-first-option
               :remote-method="getCompanyList"
               placeholder="Please select"
               no-data-text="No such company, please add"
@@ -91,7 +96,7 @@
                 v-for="item in companyOptionList"
                 :key="item.companyId"
                 :label="item.company"
-                :value="item.companyId"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -117,13 +122,24 @@
           <div>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="Currency" class="narrow"
-                  ><el-input v-model="quote.currency"
-                /></el-form-item>
+                <el-form-item label="Currency" class="narrow" prop="currency">
+                  <!-- <el-input v-model="quote.currency"/> -->
+                  <el-select v-model="quote.currency" class="filter-item">
+                    <el-option
+                      v-for="item in CurrencyType"
+                      :key="item.key"
+                      :label="item.display_name"
+                      :value="item.key"
+                    /> </el-select
+                ></el-form-item>
               </el-col>
               <el-col :span="6" :offset="7">
                 <el-form-item label="Direct discount" class="narrow">
-                  <el-input
+                  <!-- <el-input
+                    v-model="quote.discountDirect"
+                    @change="updateTotal"
+                  /> -->
+                  <el-input-number
                     v-model="quote.discountDirect"
                     @change="updateTotal"
                   />
@@ -133,12 +149,16 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="Trade Term" class="narrow">
-                  <el-input v-model="quote.trade_term" />
+                  <el-input v-model="quote.tradeTerm" />
                 </el-form-item>
               </el-col>
               <el-col :span="6" :offset="5">
                 <el-form-item label="Discount %" class="narrow">
-                  <el-input v-model="quote.discount" @change="updateTotal"
+                  <!-- <el-input v-model="quote.discount" @change="updateTotal"
+                />-->
+                  <el-input-number
+                    v-model="quote.discount"
+                    @change="updateTotal"
                 /></el-form-item>
               </el-col>
             </el-row>
@@ -150,25 +170,12 @@
               </el-col>
               <el-col :span="6" :offset="5">
                 <el-form-item label="VAT %" class="narrow">
-                  <el-input v-model="quote.vat" @change="updateTotal" />
+                  <!-- <el-input v-model="quote.vat" @change="updateTotal" /> -->
+                  <el-input-number v-model="quote.vat" @change="updateTotal" />
                 </el-form-item>
               </el-col>
             </el-row>
           </div>
-          <!-- <el-col :span="6" :offset="15">
-            <div>
-              <el-form-item label="Direct discount" class="narrow">
-              <el-input v-model="quote.discountDirect" @change="updateTotal"  />
-              </el-form-item >
-              <el-form-item label="Discount %" class="narrow">
-              <el-input v-model="quote.discount"  @change="updateTotal" /></el-form-item>
-              <el-form-item label="VAT" >
-              <el-input v-model="quote.vat"  @change="updateTotal" /></el-form-item>
-              <hr />
-              <el-form-item label="Total">
-              <el-input v-model="quote.total"  :disabled="true"/></el-form-item>
-            </div>
-          </el-col>  -->
           <el-row>
             <el-col :span="10">
               <el-form-item label="Delivery" class="narrow">
@@ -178,7 +185,16 @@
             <el-col :span="6" :offset="5">
               <hr style="margin-bottom: 0; margin-top: 0" />
               <el-form-item label="Total" class="narrow">
-                <el-input v-model="quote.total" :disabled="true" />
+                <!-- <el-input 
+                v-model="quote.total" 
+                :disabled="true" 
+                /> -->
+                <el-input-number
+                  :controls="false"
+                  v-model="quote.total"
+                  :precision="2"
+                  :disabled="true"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -209,30 +225,6 @@
           </el-col>
         </el-row> -->
       </div>
-      <!-- <el-row>
-            <el-col :span="7">
-              <el-form-item label="Trade Term">
-                <el-input v-model="quote.trade_term"  />
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="7">
-              <el-form-item label="Currency">
-                <el-input v-model="quote.currency"  />
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="7">
-              <el-form-item label="Price">
-                <el-input v-model="quote.price"  />
-              </el-form-item>  
-            </el-col>    
-          </el-row> -->
-
-      <!-- 
-          <el-form-item label="Delivery">
-            <el-input v-model="quote.delivery"  />
-          </el-form-item>       -->
       <el-row>
         <el-col :span="10">
           <el-form-item label="Payment Term" class="narrow">
@@ -257,10 +249,20 @@
   
   <script>
 import ComplexTable from "./quoteItems.vue";
-import { fetchQuoteItems, createQuote, updateQuote } from "@/api/quote";
+import {
+  fetchQuoteItems,
+  createQuote,
+  updateQuote,
+  getLatestQuoteNumber,
+  checkQuoteNumber,
+} from "@/api/quote";
 import { remoteSearch as remoteSearchUser } from "@/api/user";
 import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
-
+const CurrencyType = [
+  { key: "USD", value: "USD" },
+  { key: "GBP", value: "GBP" },
+  { key: "Euro", value: "Euro" },
+];
 export default {
   name: "create",
 
@@ -289,20 +291,21 @@ export default {
         discount: "",
         total: "",
         company: "",
-        companyId:"",
+        companyId: "",
         contact: "",
-        contactId:"",
+        contactId: "",
         greeting: "",
         owner: "",
         dateQuote: "",
         ending: "",
         price: "",
-        trade_term: "",
+        tradeTerm: "",
         delivery: "",
         payment: "",
         validity: "",
         warranty: "",
       },
+      CurrencyType,
       items: [],
       rules: {
         quoteNumber: [
@@ -317,7 +320,10 @@ export default {
         company: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
-        contact: [
+        // contact: [
+        //   { required: true, message: "This is mandatory", trigger: "blur" },
+        // ],
+        currency: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
         nnn: [
@@ -344,16 +350,50 @@ export default {
     remoteSearchUser("").then((response) => {
       if (!response.data) return;
       this.ownerList = response.data.map((v) => v.name);
-      console.log(this.ownerList);
+      //console.log(this.ownerList);
     });
     if (this.isEdit) {
       this.fetchDate(this.$route.params.id);
+    } else {
+      //this.quote.quoteNumber = 'KI'+ new Date((new Date).getTime() + 8*60*60*1000);
+      let date = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+      this.quote.dateQuote = date
+        .toJSON()
+        .split("T")
+        .join(" ")
+        .substring(0, 10);
+      this.latestQuoteNumber();
+      this.quote.currency = "USD";
+      console.log(this.quote);
     }
   },
   mounted() {},
   beforeDestroy() {},
   updated() {},
+  watch: {
+    quote: function (val) {
+      console.log(val);
+    },
+    deep: true,
+  },
   methods: {
+    async latestQuoteNumber() {
+      let res = await getLatestQuoteNumber();
+      this.quote.quoteNumber = res.data;
+      console.log(this.quote.dateQuote);
+      if (this.quote.quoteNumber.length === 10) {
+        let num = parseInt(this.quote.quoteNumber.substring(7, 10));
+        num += 1;
+        this.quote.quoteNumber =
+          "KI" +
+          this.quote.dateQuote.substring(2, 4) +
+          this.quote.dateQuote.substring(5, 7) +
+          "_" +
+          num;
+      } else {
+        this.quote.quoteNumber = "";
+      }
+    },
     fetchDate(quotenumber) {
       console.log("fetch");
       console.log(quotenumber);
@@ -380,33 +420,56 @@ export default {
         type: "warning",
       });
     },
-    addQuote() {
-      this.$refs["quote"].validate((valid) => {
-        if (valid) {
-          let quotedata = {
-            quote: this.quote,
-            itemList: this.items,
-          };
-          console.log("adddQuote");
-          console.log(quotedata);
-          createQuote(quotedata).then(
-            this.$message({
-              type: "success",
-              message: "Quote successfully added",
-            })
-          );
+    async addQuote() {
+      let res = await checkQuoteNumber({ quotenumber: this.quote.quoteNumber });
+      let exist = res.data === "EXIST" ? true : false;
+      console.log(exist);
+      if (exist) {
+        this.$message({
+          type: "error",
+          message: "Quote number already exists, please change",
+          duration: 3000,
+        });
+      } else {
+        this.$refs["quote"].validate((valid) => {
+          console.log(valid);
+          if (valid) {
+            //check if quote number already exists
+
+            this.quote.company = this.quote.companyId;
+            this.quote.contact = this.quote.contactId;
+            let quotedata = {
+              quote: this.quote,
+              itemList: this.items,
+            };
+            console.log("adddQuote");
+            console.log(quotedata);
+            createQuote(quotedata).then(
+              //////////////////////////////////////////////////////////////////////////////////////////
+              //router only direct to list when respose code = 200 or 20000
+              //////////////////////////////////////////////////////////////
+              this.$message({
+                type: "success",
+                message: "Quote successfully added",
+              })
+            );
           this.$router.push({ path: "/quote/list" });
-        }
-      });
+          }
+        });
+      }
     },
     editQuote() {
       this.$refs["quote"].validate((valid) => {
+        console.log(valid);
         if (valid) {
+          console.log("editQuote");
+          console.log(this.quote);
+          this.quote.company = this.quote.companyId;
+          this.quote.contact = this.quote.contactId;
           let quotedata = {
             quote: this.quote,
             itemList: this.items,
           };
-          console.log("editQuote");
           console.log(quotedata);
           updateQuote(quotedata).then(
             this.$message({
@@ -421,7 +484,7 @@ export default {
 
     itemChange: function (itemchange) {
       console.log("parent->itemchange");
-      console.log(itemchange);
+      //console.log(itemchange);
       if (itemchange.length > 0) {
         console.log(itemchange);
         let cal = 0;
@@ -489,6 +552,29 @@ export default {
         })
         .then((this.loading = false));
     },
+    quoteNumber(quoteNumber) {
+      let query = { quotenumber: quoteNumber };
+      checkQuoteNumber(query).then((response) => {
+        console.log(response);
+        if (response.data === "EXIST") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    },
+    selectContact(e) {
+      console.log(e);
+      this.quote.contact = e.contactName;
+      this.quote.contactId = e.contactId;
+      console.log(this.quote);
+    },
+    selectCompany(e) {
+      console.log(e);
+      this.quote.company = e.company;
+      this.quote.companyId = e.companyId;
+      console.log(this.quote);
+    },
   },
 };
 </script>
@@ -499,6 +585,9 @@ export default {
 }
 .narrow {
   margin-bottom: 2px;
+}
+.my-el-select /deep/ .el-input .el-input__inner {
+  border-color: #dcdfe6 !important;
 }
 </style>
   

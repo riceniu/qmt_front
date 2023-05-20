@@ -24,7 +24,13 @@
         </template> -->
       </el-table-column>
 
-      <el-table-column label="Item" align="Left" width="auto" min-width="40%">
+      <el-table-column
+        label="Item"
+        align="Left"
+        width="auto"
+        min-width="30%"
+        show-overflow-tooltip
+      >
         <template slot-scope="scope">
           <span style="text-align: left">{{ scope.row.item }}</span>
         </template>
@@ -51,16 +57,16 @@
       <el-table-column
         label="Unit price"
         width="auto"
-        align="left"
-        min-width="10%"
+        align="center"
+        min-width="15%"
       >
         <template slot-scope="{ row }">
-          <span>{{ row.price }}</span>
+          <span class="decimal">{{ decFormat(row.price) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Sum" width="auto" align="left" min-width="10%">
+      <el-table-column label="Sum" width="auto" align="center" min-width="15%">
         <template slot-scope="{ row }">
-          <span>{{ row.price * row.quantity }}</span>
+          <span class="decimal">{{ decFormat(row.price * row.quantity) }}</span>
         </template>
       </el-table-column>
 
@@ -89,13 +95,15 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <br />
     <el-col :span="6" :offset="15">
       <el-form-item label="Subtotal">
-        <el-input
+        <el-input-number
           type="text"
           v-model="subtotal"
+          :precision="2"
           :disabled="true"
+          :controls="false"
           style="width: 100px"
         />
       </el-form-item>
@@ -114,7 +122,7 @@
         ref="dataForm"
         :rules="rules"
         :model="temp"
-        label-width="90px"
+        label-width="85px"
         style="margin-left: 20px; margin-right: 40px"
       >
         <el-form-item label="Product" prop="productname">
@@ -122,7 +130,9 @@
             :options="optionedItme"
             @change="handleOptionChange"
             v-model="tempOption"
+            filterable=""
             style="width: 260px; margin-bottom: 20px"
+            default-first-option
           ></el-cascader>
         </el-form-item>
 
@@ -131,12 +141,16 @@
         </el-form-item>
 
         <el-form-item label="Price" prop="price">
-          <el-input v-model="temp.price" />
+          <el-input-number
+            :controls="false"
+            :precision="2"
+            v-model="temp.price"
+          />
         </el-form-item>
 
-        <el-form-item label="Quantity" prop="quantity">
+        <!-- <el-form-item label="Quantity" prop="quantity">
           <el-input v-model="temp.quantity" :disabled="true" />
-        </el-form-item>
+        </el-form-item> -->
 
         <!-- <el-form-item label="Currency" prop="currency">
           <el-input v-model="temp.currency"  />
@@ -150,6 +164,34 @@
             rows="4"
           />
         </el-form-item>
+
+        <el-form-item label="Comments" prop="comments">
+          <el-input
+            type="textarea"
+            placeholder="Comments(optional)"
+            v-model="temp.comments"
+            rows="4"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="pic-to be finished soon" prop="pic">
+          <el-upload
+            ref="picUpload"
+            :file-list="picList"
+            action
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-change="handleChangePic"
+            :auto-upload="false"
+            :limit="2"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+
+          <el-dialog :visible.sync="picDialogVisible">
+            <img width="100%" :src="picDialogImageUrl" alt="" />
+          </el-dialog>
+        </el-form-item> -->
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -181,6 +223,9 @@ export default {
   props: ["quotenumber", "ListItems"],
   data() {
     return {
+      picDialogImageUrl: "",
+      picDialogVisible: false,
+      picList: [],
       optionedItme: [],
       list: [],
       listLoading: true,
@@ -188,9 +233,6 @@ export default {
         quotenumber: "",
       },
       rules: {
-        quantity: [
-          { required: true, message: "This is mandatory", trigger: "blur" },
-        ],
         price: [
           { required: true, message: "This is mandatory", trigger: "blur" },
           {
@@ -250,6 +292,21 @@ export default {
     //this.getList()
   },
   methods: {
+    //picture related functions
+    handleChangePic(file, picList) {
+      console.log(file, picList);
+      this.temp.pic = file;
+      if (picList.length > 1) {
+        picList.splice(0, 1);
+      }
+    },
+    handleRemove(file, picList) {
+      console.log(file, picList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     async getList() {
       this.listLoading = true;
       console.log("items=>getList()");
@@ -275,7 +332,16 @@ export default {
       console.log(value);
     },
     resetTemp() {
-      this.temp = { item: "", price: "", quotetext: "",id:"" };
+      this.temp = {
+        item: "",
+        price: "",
+        quotetext: "",
+        id: "",
+        comments: "",
+        pic: "",
+      };
+      this.picList = [];
+      //this.$refs.picUpload.clearFiles();
     },
 
     handleCreate() {
@@ -320,6 +386,8 @@ export default {
       //this.temp.currency = row.currency;
       this.temp.quantity = row.quantity;
       this.temp.price = row.price;
+      this.temp.comments = row.comments;
+      if (row.pic) this.picList[0] = row.pic;
       this.tempOption[0] = "";
       this.tempOption[1] = "";
       //console.log(this.tempOption);
@@ -403,31 +471,39 @@ export default {
     },
 
     addItem() {
-      console.log("children->addItem");
-      this.saveItem(-1);
-      this.$notify({
-        title: "Success",
-        message: "Item is successfully added",
-        type: "success",
-        duration: 2000,
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          console.log("children->addItem");
+          this.saveItem(-1);
+          this.$notify({
+            title: "Success",
+            message: "Item is successfully added",
+            type: "success",
+            duration: 2000,
+          });
+          this.dialogFormVisible = false;
+          this.resetTemp();
+          this.tempOption = "";
+        }
       });
-      this.dialogFormVisible = false;
-      this.resetTemp();
-      this.tempOption = "";
     },
 
     editItem() {
-      let index = this.editingRow;
-      this.saveItem(index);
-      this.$notify({
-        title: "Success",
-        message: "Item is successfully edited",
-        type: "success",
-        duration: 2000,
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          let index = this.editingRow;
+          this.saveItem(index);
+          this.$notify({
+            title: "Success",
+            message: "Item is successfully added",
+            type: "success",
+            duration: 2000,
+          });
+          this.dialogFormVisible = false;
+          this.resetTemp();
+          //this.tempOption = "";
+        }
       });
-      this.dialogFormVisible = false;
-      this.resetTemp();
-      //this.tempOption = "";
     },
 
     saveItem(index) {
@@ -437,8 +513,9 @@ export default {
         let temp = {};
         console.log(this.temp);
         temp.item = this.temp.item;
-        temp.quantity = this.temp.quantity;
-        temp.price = this.temp.price;
+        temp.comments = this.temp.comments;
+        temp.quantity = 1;
+        temp.price = this.temp.price ? this.temp.price : 0;
         temp.quoteNumber = this.quotenumber;
         temp.text = this.temp.quotetext;
         this.list.push(temp);
@@ -453,9 +530,24 @@ export default {
         this.list[index].price = this.temp.price;
         this.list[index].quoteNumber = this.quotenumber;
         this.list[index].text = this.temp.quotetext;
+        this.list[index].comments = this.temp.comments;
+        //console.log(this.temp.pic);
+        this.list[index].pic = this.temp.pic;
         console.log(this.list[index]);
       }
       this.updateSubtotal();
+    },
+    decFormat(cellValue) {
+      //console.log('decFormat')
+      cellValue = parseFloat(cellValue).toFixed(2);
+      cellValue += "";
+      if (!cellValue.includes(".")) cellValue += ".";
+
+      return cellValue
+        .replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+          return $1 + ",";
+        })
+        .replace(/\.$/, "");
     },
   },
 };
@@ -463,5 +555,9 @@ export default {
 <style>
 .Item {
   text-align: center;
+}
+.decimal {
+  margin-right: 50px;
+  float: right;
 }
 </style>
