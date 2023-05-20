@@ -195,8 +195,7 @@ const CategoryType = [
 const CurrencyType = [
   { key: "USD", value: "USD" },
   { key: "GBP", value: "GBP" },
-  { key: "EURO", value: "EURO" },
-  { key: "CNY", value: "CNY" },
+  { key: "Euro", value: "Euro" },
 ];
 export default {
   filters: {

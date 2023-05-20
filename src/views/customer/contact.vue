@@ -29,8 +29,20 @@
         width="100"
         show-overflow-tooltip
       />
-      <el-table-column prop="email" label="Email" align="center" width="200" show-overflow-tooltip/>
-      <el-table-column prop="tel" label="Tel" align="center" width="130" show-overflow-tooltip/>
+      <el-table-column
+        prop="email"
+        label="Email"
+        align="center"
+        width="200"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="tel"
+        label="Tel"
+        align="center"
+        width="130"
+        show-overflow-tooltip
+      />
       <el-table-column
         prop="mobile"
         label="Mobile"
@@ -86,6 +98,17 @@
         <el-form-item label="ID" prop="id" label-width="100px">
           <el-input v-model="temp.id" :disabled="true" />
         </el-form-item>
+        <el-form-item label="Gender" prop="gender" label-width="100px">
+          <el-select v-model="temp.gender">
+            <el-option
+              v-for="item in GenderList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option
+          ></el-select>
+        </el-form-item>
         <el-form-item label="First name" prop="firstname" label-width="100px">
           <el-input v-model="temp.firstname" />
         </el-form-item>
@@ -117,6 +140,17 @@
       >
         <el-form-item label="ID" prop="id" label-width="100px">
           <el-input v-model="temp.id" :disabled="true" />
+        </el-form-item>
+        <el-form-item label="Gender" prop="gender" label-width="100px">
+          <el-select v-model="temp.gender">
+            <el-option
+              v-for="item in GenderList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option
+          ></el-select>
         </el-form-item>
         <el-form-item label="First name" prop="firstname" label-width="100px">
           <el-input v-model="temp.firstname" />
@@ -181,6 +215,7 @@ export default {
   },
   data() {
     return {
+      GenderList: [{ value: "Mr", label: "Mr" },{ value: "Ms", label: "Ms" },{ value: "x", label: "x" }],
       list: null,
       total: 0,
       listLoading: true,

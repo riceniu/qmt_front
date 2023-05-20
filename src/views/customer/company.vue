@@ -109,7 +109,24 @@
           <el-input v-model="temp.company" />
         </el-form-item>
         <el-form-item label="Country" prop="country" label-width="100px">
-          <el-input v-model="temp.country" />
+          <!-- <el-input v-model="temp.country" /> -->
+          <el-select
+            v-model="temp.country"
+            filterable
+            remote
+            :remote-method="searchList"
+            placeholder="Please select"
+            default-first-option
+            no-data-text="Wrong country name"
+            @focus="getCountryList"
+          >
+            <el-option
+              v-for="item in countryList"
+              :key="item.country"
+              :label="item.country"
+              :value="item.country"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="Domain" prop="domain" label-width="100px">
           <el-input v-model="temp.domain" :disabled="true" />
