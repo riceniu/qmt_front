@@ -27,7 +27,7 @@
         align="center"
         width="85"
       />
-      
+
       <el-table-column
         prop="discountDirect"
         label="Disc."
@@ -67,7 +67,7 @@
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
-          <router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">
+          <router-link  target="_blank" :to="'/quote/list/edit/' + scope.row.quoteNumber">
             <el-button type="primary" icon="el-icon-edit" size="mini" />
           </router-link>
           <el-button
@@ -191,16 +191,17 @@ export default {
       this.getList();
     },
     totalFormat(row, column, cellValue) {
-      cellValue = parseFloat(cellValue).toFixed(2)
-			cellValue += '';
-			if (!cellValue.includes('.')) cellValue += '.';
+      //console.log('totalFormat')
+      cellValue = parseFloat(cellValue).toFixed(2);
+      cellValue += "";
+      if (!cellValue.includes(".")) cellValue += ".";
 
-			return cellValue.replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
-				return $1 + ',';
-			}).replace(/\.$/, '');
-		},
-
-    
+      return cellValue
+        .replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+          return $1 + ",";
+        })
+        .replace(/\.$/, "");
+    },
   },
 };
 </script>
