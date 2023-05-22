@@ -69,6 +69,7 @@
         sortable
         show-overflow-tooltip
       />
+      <el-table-column prop="category" label="Cat." align="center" sortable width="80" />
       <el-table-column prop="owner" label="Owner" align="center" sortable width="100" />
 
       <el-table-column align="center" label="Actions" width="120">

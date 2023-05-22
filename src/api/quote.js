@@ -78,3 +78,11 @@ export function checkQuoteNumber(query) {
     params: query
   })
 }
+
+export function checkContext(query) {
+  return request({
+    url: '/vue-element-admin/quote/checkContext',
+    method: 'get', 
+    params: query
+  })
+}

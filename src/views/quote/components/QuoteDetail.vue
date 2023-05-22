@@ -1,5 +1,31 @@
 <template>
   <div class="app-container">
+    <div class="float-button">
+      <el-tooltip
+        v-if="isEdit && previousQuote != ''"
+        :content="previousQuote"
+        placement="top-end"
+      >
+        <el-button
+          icon="el-icon-arrow-left"
+          type="primary"
+          @click="jump(previousQuote)"
+          >Previous</el-button
+        >
+      </el-tooltip>
+      <el-tooltip
+        v-if="isEdit && nextQuote != ''"
+        :content="nextQuote"
+        placement="top-end"
+      >
+        <el-button
+          icon="el-icon-arrow-right"
+          type="primary"
+          @click="jump(nextQuote)"
+          >Next</el-button
+        >
+      </el-tooltip>
+    </div>
     <el-form
       ref="quote"
       :model="quote"
@@ -230,20 +256,41 @@
           <el-form-item label="Payment Term" class="narrow">
             <el-input v-model="quote.payment" />
           </el-form-item>
-
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
           <el-form-item label="Validity" class="narrow">
             <el-input v-model="quote.validity" />
           </el-form-item>
-
+        </el-col>
+        <el-col :span="7" :offset="3">
+          <el-form-item label="Category" class="narrow" prop="category">
+            <el-radio-group v-model="quote.category">
+              <el-radio
+                :label="item.value"
+                :key="item.value"
+                v-for="item in CategoryList"
+                >{{ item.label }}</el-radio
+              >
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
           <el-form-item label="Warranty" class="narrow">
             <el-input v-model="quote.warranty" />
           </el-form-item>
         </el-col>
+
+        <el-col :span="7" :offset="4">
+          <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
+            >Save</el-button
+          >
+        </el-col>
       </el-row>
     </el-form>
-    <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
-      >Save</el-button
-    >
   </div>
 </template>
   
@@ -255,6 +302,7 @@ import {
   updateQuote,
   getLatestQuoteNumber,
   checkQuoteNumber,
+  checkContext,
 } from "@/api/quote";
 import { remoteSearch as remoteSearchUser } from "@/api/user";
 import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
@@ -262,6 +310,12 @@ const CurrencyType = [
   { key: "USD", value: "USD" },
   { key: "GBP", value: "GBP" },
   { key: "Euro", value: "Euro" },
+];
+const CategoryList = [
+  { key: "CFL", value: "CFL", label: "CFL" },
+  { key: "PU", value: "PU", label: "PU" },
+  { key: "DA", value: "DA", label: "DA" },
+  { key: "MOTOR", value: "MOTOR", label: "MOTOR" },
 ];
 export default {
   name: "create",
@@ -277,9 +331,13 @@ export default {
   },
   data() {
     return {
+      //tip for previous/next quote number
+      previousQuote: "",
+      nextQuote: "",
       //flag if got data from database
       gotList: false,
       //postForm: Object.assign({}, defaultForm),
+      CategoryList,
       ownerList: [],
       contactOptionList: [],
       companyOptionList: [],
@@ -304,7 +362,9 @@ export default {
         payment: "",
         validity: "",
         warranty: "",
+        category: "",
       },
+      initQuoteVo: {},
       CurrencyType,
       items: [],
       rules: {
@@ -318,6 +378,9 @@ export default {
           { required: true, message: "This is mandatory", trigger: "change" },
         ],
         company: [
+          { required: true, message: "This is mandatory", trigger: "blur" },
+        ],
+        category: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
         // contact: [
@@ -354,6 +417,7 @@ export default {
     });
     if (this.isEdit) {
       this.fetchDate(this.$route.params.id);
+      this.remoteCheckContext(this.$route.params.id);
     } else {
       //this.quote.quoteNumber = 'KI'+ new Date((new Date).getTime() + 8*60*60*1000);
       let date = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
@@ -366,6 +430,7 @@ export default {
       this.quote.currency = "USD";
       console.log(this.quote);
     }
+    this.initQuoteVo = Object.assign({}, this.tempQuoteItemQueryVO);
   },
   mounted() {},
   beforeDestroy() {},
@@ -453,7 +518,7 @@ export default {
                 message: "Quote successfully added",
               })
             );
-          this.$router.push({ path: "/quote/list" });
+            this.$router.push({ path: "/quote/list" });
           }
         });
       }
@@ -477,7 +542,7 @@ export default {
               message: "Successfully saved",
             })
           );
-          this.$router.push({ path: "/quote/list" });
+          //this.$router.push({ path: "/quote/list" });
         }
       });
     },
@@ -575,6 +640,18 @@ export default {
       this.quote.companyId = e.companyId;
       console.log(this.quote);
     },
+    async remoteCheckContext(quotenumber) {
+      let query = { quotenumber: quotenumber };
+      let res = await checkContext(query);
+      console.log(res);
+      this.previousQuote = res.data.previousQuote ? res.data.previousQuote : "";
+      this.nextQuote = res.data.nextQuote ? res.data.nextQuote : "";
+      console.log(this.previousQuote);
+      console.log(this.nextQuote);
+    },
+    jump(quote) {
+      this.$router.push("/quote/list/edit/" + quote);
+    },
   },
 };
 </script>
@@ -588,6 +665,13 @@ export default {
 }
 .my-el-select /deep/ .el-input .el-input__inner {
   border-color: #dcdfe6 !important;
+}
+
+.float-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
 }
 </style>
   
