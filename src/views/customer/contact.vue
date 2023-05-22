@@ -1,5 +1,29 @@
 <template>
   <div class="app-container">
+    <!-- <div class="filter-container">
+      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
+      </el-select>
+      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
+      </el-select>
+      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+      </el-select>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+        Search
+      </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+        Add
+      </el-button>
+      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+        Export
+      </el-button>
+      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+        reviewer
+      </el-checkbox>
+    </div> -->
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -8,53 +32,60 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column prop="id" label="ID" align="center" width="60" />
+      <!-- <el-table-column prop="id" label="ID" align="center" width="60" /> -->
       <el-table-column
         prop="gender"
         label=""
         align="center"
         width="50"
         show-overflow-tooltip
+        sortable
       /><el-table-column
         prop="firstname"
         label="First name"
-        align="center"
-        width="100"
+        align="left"
+        width="120"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="lastname"
         label="Last name"
-        align="center"
-        width="100"
+        align="left"
+        width="120"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="email"
         label="Email"
-        align="center"
+        align="left"
         width="200"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="tel"
         label="Tel"
-        align="center"
+        align="left"
         width="130"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="mobile"
         label="Mobile"
-        align="center"
+        align="left"
         width="130"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="company"
         label="Company"
-        align="center"
+        align="left"
         width="250"
+        sortable
         show-overflow-tooltip
       />
 
@@ -86,7 +117,7 @@
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
-      <el-form
+      <!-- <el-form
         v-if="dialogStatus === 'Create'"
         ref="dataForm"
         :rules="rules"
@@ -94,11 +125,11 @@
         label-position="left"
         :inline="true"
         style="width: 400px; margin-left: 50px"
-      >
-        <el-form-item label="ID" prop="id" label-width="100px">
+      > -->
+        <!-- <el-form-item label="ID" prop="id" label-width="100px">
           <el-input v-model="temp.id" :disabled="true" />
-        </el-form-item>
-        <el-form-item label="Gender" prop="gender" label-width="100px">
+        </el-form-item> -->
+        <!-- <el-form-item label="Gender" prop="gender" label-width="100px">
           <el-select v-model="temp.gender">
             <el-option
               v-for="item in GenderList"
@@ -125,12 +156,28 @@
           <el-input v-model="temp.mobile" />
         </el-form-item>
         <el-form-item label="Company" label-width="100px">
-          <el-input type="textarea" v-model="temp.company" />
+          <el-select
+            v-model="temp.company"
+            @change="selectCompany"
+            value-key="id"
+            filterable
+            remote
+            default-first-option
+            :remote-method="getCompanyList"
+            placeholder="Please select"
+            no-data-text="No such company, please add"
+          >
+            <el-option
+              v-for="item in companyOptionList"
+              :key="item.companyId"
+              :label="item.company"
+              :value="item"
+            />
+          </el-select>
         </el-form-item>
-      </el-form>
+      </el-form> -->
 
       <el-form
-        v-if="dialogStatus === 'Edit'"
         ref="dataForm"
         :rules="rules"
         :model="temp"
@@ -138,9 +185,9 @@
         label-position="left"
         style="width: 400px; margin-left: 50px"
       >
-        <el-form-item label="ID" prop="id" label-width="100px">
+        <!-- <el-form-item label="ID" prop="id" label-width="100px">
           <el-input v-model="temp.id" :disabled="true" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="Gender" prop="gender" label-width="100px">
           <el-select v-model="temp.gender">
             <el-option
@@ -159,7 +206,7 @@
           <el-input v-model="temp.lastname" />
         </el-form-item>
         <el-form-item label="Email" prop="email" label-width="100px">
-          <el-input v-model="temp.email" :disabled="true" />
+          <el-input v-model="temp.email"/>
         </el-form-item>
         <el-form-item label="Tel" label-width="100px">
           <el-input v-model="temp.tel" />
@@ -167,15 +214,35 @@
         <el-form-item label="Mobile" label-width="100px">
           <el-input v-model="temp.mobile" />
         </el-form-item>
-        <el-form-item label="Company" label-width="100px">
+        <!-- <el-form-item label="Company" label-width="100px">
           <el-input type="textarea" v-model="temp.company" />
+        </el-form-item> -->
+        <el-form-item label="Company" prop="company" label-width="100px">
+          <el-select
+            v-model="temp.company"
+            @change="selectCompany"
+            value-key="id"
+            filterable
+            remote
+            default-first-option
+            :remote-method="getCompanyList"
+            placeholder="Please select"
+            no-data-text="No such company, please add"
+          >
+            <el-option
+              v-for="item in companyOptionList"
+              :key="item.companyId"
+              :label="item.company"
+              :value="item"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeDialog"> Close </el-button>
         <el-button
           type="primary"
-          @click="dialogStatus === 'Create' ? createData() : updateData()"
+          @click="dialogStatus === 'Add' ? createData() : updateData()"
         >
           Confirm
         </el-button>
@@ -197,6 +264,8 @@ import {
   deleteContact,
   updateContact,
   createContact,
+  remoteSearchCompany,
+  remoteSearchContact,
 } from "@/api/customer";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
@@ -215,13 +284,27 @@ export default {
   },
   data() {
     return {
-      GenderList: [{ value: "Mr", label: "Mr" },{ value: "Ms", label: "Ms" },{ value: "x", label: "x" }],
+      isEdit : false,
+      companyOptionList: [],
+      listQuery: {
+        page: 1,
+        limit: 50,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: "+id",
+      },
+      GenderList: [
+        { value: "Mr", label: "Mr" },
+        { value: "Ms", label: "Ms" },
+        { value: "x", label: "x" },
+      ],
       list: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 50,
       },
       temp: {
         firstname: "",
@@ -231,17 +314,20 @@ export default {
         mobile: "",
         company: "",
         email: "",
+        companyId: "",
       },
-      tempPw: "",
       dialogFormVisible: false,
       dialogStatus: "Edit",
       textMap: {
-        update: "Edit",
-        create: "Create",
+        Edit: "Edit",
+        Add: "Add",
       },
       resetPassword: false,
       rules: {
         email: [
+          { required: true, message: "This is mandatory", trigger: "blur" },
+        ],
+        company: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
       },
@@ -263,7 +349,7 @@ export default {
     handleAdd() {
       this.resetTemp();
       this.temp.id = "";
-      this.dialogStatus = "Create";
+      this.dialogStatus = "Add";
       this.dialogFormVisible = true;
     },
 
@@ -277,7 +363,16 @@ export default {
     },
 
     resetTemp() {
-      this.temp = {};
+      this.temp = {
+        firstname: "",
+        lastname: "",
+        id: "",
+        tel: "",
+        mobile: "",
+        company: "",
+        email: "",
+        companyId: "",
+      };
     },
 
     closeDialog() {
@@ -341,6 +436,7 @@ export default {
     },
     async updContact() {
       try {
+        this.temp.company = this.temp.companyId;
         let res = await updateContact(this.temp);
         console.log(res);
         if (res.code === 200) {
@@ -374,6 +470,7 @@ export default {
     },
     async creContact() {
       try {
+        this.temp.company = this.temp.companyId;
         let res = await createContact(this.temp);
         if (res.code === 200) {
           this.$message({
@@ -394,6 +491,24 @@ export default {
       }
       this.getList();
       this.closeDialog();
+    },
+    getCompanyList(query) {
+      remoteSearchCompany(query)
+        .then((response) => {
+          if (!response.data) return;
+          this.companyOptionList = response.data.map((v) => ({
+            companyId: v.id,
+            company: v.company,
+          }));
+          console.log(this.companyOptionList);
+        })
+        .then((this.loading = false));
+    },
+    selectCompany(e) {
+      console.log(e);
+      this.temp.company = e.company;
+      this.temp.companyId = e.companyId;
+      console.log(this.temp);
     },
   },
 };

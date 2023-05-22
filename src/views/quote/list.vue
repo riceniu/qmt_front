@@ -13,6 +13,7 @@
         label="Quote No."
         align="center"
         width="120"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
@@ -20,12 +21,14 @@
         label="Date"
         align="center"
         width="120"
+        sortable
       />
       <el-table-column
         prop="currency"
         label="Currency"
         align="center"
         width="85"
+        sortable
       />
 
       <el-table-column
@@ -46,6 +49,7 @@
         label="Total"
         align="right"
         width="100"
+        sortable
         :formatter="totalFormat"
         show-overflow-tooltip
       />
@@ -54,6 +58,7 @@
         label="Contact"
         align="left"
         width="175"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
@@ -61,9 +66,10 @@
         label="Company"
         align="left"
         width="175"
+        sortable
         show-overflow-tooltip
       />
-      <el-table-column prop="owner" label="Owner" align="center" width="100" />
+      <el-table-column prop="owner" label="Owner" align="center" sortable width="100" />
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
@@ -111,7 +117,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 50,
       },
     };
   },

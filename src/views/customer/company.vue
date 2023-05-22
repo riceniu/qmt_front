@@ -8,22 +8,24 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column prop="id" label="ID" align="center" width="60" />
+      <!-- <el-table-column prop="id" label="ID" align="center" width="60" /> -->
       <el-table-column
         prop="company"
         label="Company Name"
         align="left"
         width="400"
+        sortable
         show-overflow-tooltip
       />
       <el-table-column
         prop="country"
         label="Country"
         align="left"
+        sortable
         width="200"
       />
       <!-- <el-table-column prop="city" label="City" align="center" width="100"/> -->
-      <el-table-column prop="domain" label="Domain" align="left" width="200" />
+      <el-table-column prop="domain" label="Domain" align="left" sortable width="200" />
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="{ row }">
@@ -182,7 +184,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 50,
       },
       temp: {
         company: "",
