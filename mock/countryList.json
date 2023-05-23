@@ -1,0 +1,1252 @@
+[
+    {
+        "country": "Afghanistan",
+        "region": "Central Asia",
+        "key": "AFG"
+    },
+    {
+        "country": "Aland Islands",
+        "region": "Scandinavia",
+        "key": "ALA"
+    },
+    {
+        "country": "Albania",
+        "region": "Balkans",
+        "key": "ALB"
+    },
+    {
+        "country": "Algeria",
+        "region": "Northern Africa",
+        "key": "DZA"
+    },
+    {
+        "country": "American Samoa",
+        "region": "American Samoa",
+        "key": "ASM"
+    },
+    {
+        "country": "Andorra",
+        "region": "Southern Europe",
+        "key": "AND"
+    },
+    {
+        "country": "Angola",
+        "region": "Central Africa",
+        "key": "AGO"
+    },
+    {
+        "country": "Anguilla",
+        "region": "Caribbean",
+        "key": "AIA"
+    },
+    {
+        "country": "Antarctica",
+        "region": "Antarctica",
+        "key": "ATA"
+    },
+    {
+        "country": "Antigua and Barbuda",
+        "region": "Caribbean",
+        "key": "ATG"
+    },
+    {
+        "country": "Argentina",
+        "region": "South America",
+        "key": "ARG"
+    },
+    {
+        "country": "Armenia",
+        "region": "Western Asia",
+        "key": "ARM"
+    },
+    {
+        "country": "Aruba",
+        "region": "Caribbean",
+        "key": "ABW"
+    },
+    {
+        "country": "Australia",
+        "region": "Oceania",
+        "key": "AUS"
+    },
+    {
+        "country": "Austria",
+        "region": "Western Europe",
+        "key": "AUT"
+    },
+    {
+        "country": "Azerbaijan",
+        "region": "Western Asia",
+        "key": "AZE"
+    },
+    {
+        "country": "Bahamas",
+        "region": "Caribbean",
+        "key": "BHS"
+    },
+    {
+        "country": "Bahrain",
+        "region": "Western Asia, Middle East",
+        "key": "BHR"
+    },
+    {
+        "country": "Bangladesh",
+        "region": "Southern Asia",
+        "key": "BGD"
+    },
+    {
+        "country": "Barbados",
+        "region": "Caribbean",
+        "key": "BRB"
+    },
+    {
+        "country": "Belarus",
+        "region": "Central Europe",
+        "key": "BLR"
+    },
+    {
+        "country": "Belgium",
+        "region": "Western Europe",
+        "key": "BEL"
+    },
+    {
+        "country": "Belize",
+        "region": "Caribbean",
+        "key": "BLZ"
+    },
+    {
+        "country": "Benin",
+        "region": "Western Africa",
+        "key": "BEN"
+    },
+    {
+        "country": "Bermuda",
+        "region": "Caribbean, North America",
+        "key": "BMU"
+    },
+    {
+        "country": "Bhutan",
+        "region": "Southern Asia",
+        "key": "BTN"
+    },
+    {
+        "country": "Bolivia",
+        "region": "South America",
+        "key": "BOL"
+    },
+    {
+        "country": "Bonaire, Saint Eustatius and Saba ",
+        "region": "Caribbean",
+        "key": "BES"
+    },
+    {
+        "country": "Bosnia and Herzegovina",
+        "region": "Balkans",
+        "key": "BIH"
+    },
+    {
+        "country": "Botswana",
+        "region": "Southern Africa",
+        "key": "BWA"
+    },
+    {
+        "country": "Bouvet Island",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "BVT"
+    },
+    {
+        "country": "Brazil",
+        "region": "South America",
+        "key": "BRA"
+    },
+    {
+        "country": "British Indian Ocean Territory",
+        "region": "Southern Asia",
+        "key": "IOT"
+    },
+    {
+        "country": "British Virgin Islands",
+        "region": "Caribbean",
+        "key": "VGB"
+    },
+    {
+        "country": "Brunei",
+        "region": "South-East Asia",
+        "key": "BRN"
+    },
+    {
+        "country": "Bulgaria",
+        "region": "Central Europe",
+        "key": "BGR"
+    },
+    {
+        "country": "Burkina Faso",
+        "region": "Western Africa",
+        "key": "BFA"
+    },
+    {
+        "country": "Burundi",
+        "region": "East Africa, Central Africa",
+        "key": "BDI"
+    },
+    {
+        "country": "Cambodia",
+        "region": "South-East Asia",
+        "key": "KHM"
+    },
+    {
+        "country": "Cameroon",
+        "region": "Central Africa",
+        "key": "CMR"
+    },
+    {
+        "country": "Canada",
+        "region": "North America",
+        "key": "CAN"
+    },
+    {
+        "country": "Cape Verde",
+        "region": "Western Africa",
+        "key": "CPV"
+    },
+    {
+        "country": "Cayman Islands",
+        "region": "Caribbean",
+        "key": "CYM"
+    },
+    {
+        "country": "Central African Republic",
+        "region": "Central Africa",
+        "key": "CAF"
+    },
+    {
+        "country": "Chad",
+        "region": "Central Africa",
+        "key": "TCD"
+    },
+    {
+        "country": "Chile",
+        "region": "South America",
+        "key": "CHL"
+    },
+    {
+        "country": "China",
+        "region": "East Asia",
+        "key": "CHN"
+    },
+    {
+        "country": "Christmas Island",
+        "region": "Oceania",
+        "key": "CXR"
+    },
+    {
+        "country": "Cocos Islands",
+        "region": "Central America",
+        "key": "CCK"
+    },
+    {
+        "country": "Colombia",
+        "region": "South America",
+        "key": "COL"
+    },
+    {
+        "country": "Comoros",
+        "region": "East Africa",
+        "key": "COM"
+    },
+    {
+        "country": "Cook Islands",
+        "region": "Oceania",
+        "key": "COK"
+    },
+    {
+        "country": "Costa Rica",
+        "region": "Central America",
+        "key": "CRI"
+    },
+    {
+        "country": "Croatia",
+        "region": "Balkans",
+        "key": "HRV"
+    },
+    {
+        "country": "Cuba",
+        "region": "Caribbean",
+        "key": "CUB"
+    },
+    {
+        "country": "Curacao",
+        "region": "Caribbean",
+        "key": "CUW"
+    },
+    {
+        "country": "Cyprus",
+        "region": "Western Asia",
+        "key": "CYP"
+    },
+    {
+        "country": "Czech Republic",
+        "region": "Central Europe",
+        "key": "CZE"
+    },
+    {
+        "country": "Democratic Republic of the Congo",
+        "region": "Central Africa",
+        "key": "COD"
+    },
+    {
+        "country": "Denmark",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "DNK"
+    },
+    {
+        "country": "Djibouti",
+        "region": "East Africa",
+        "key": "DJI"
+    },
+    {
+        "country": "Dominica",
+        "region": "Caribbean",
+        "key": "DMA"
+    },
+    {
+        "country": "Dominican Republic",
+        "region": "Caribbean",
+        "key": "DOM"
+    },
+    {
+        "country": "East Timor",
+        "region": "South-East Asia",
+        "key": "TLS"
+    },
+    {
+        "country": "Ecuador",
+        "region": "South America",
+        "key": "ECU"
+    },
+    {
+        "country": "Egypt",
+        "region": "Northern Africa",
+        "key": "EGY"
+    },
+    {
+        "country": "El Salvador",
+        "region": "Central America",
+        "key": "SLV"
+    },
+    {
+        "country": "Equatorial Guinea",
+        "region": "Central Africa",
+        "key": "GNQ"
+    },
+    {
+        "country": "Eritrea",
+        "region": "East Africa",
+        "key": "ERI"
+    },
+    {
+        "country": "Estonia",
+        "region": "Baltic Countries",
+        "key": "EST"
+    },
+    {
+        "country": "Ethiopia",
+        "region": "East Africa",
+        "key": "ETH"
+    },
+    {
+        "country": "Falkland Islands",
+        "region": "South America",
+        "key": "FLK"
+    },
+    {
+        "country": "Faroe Islands",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "FRO"
+    },
+    {
+        "country": "Fiji",
+        "region": "Oceania",
+        "key": "FJI"
+    },
+    {
+        "country": "Finland",
+        "region": "Nordic Countries",
+        "key": "FIN"
+    },
+    {
+        "country": "France",
+        "region": "Western Europe",
+        "key": "FRA"
+    },
+    {
+        "country": "French Guiana",
+        "region": "South America",
+        "key": "GUF"
+    },
+    {
+        "country": "French Polynesia",
+        "region": "Oceania",
+        "key": "PYF"
+    },
+    {
+        "country": "French Southern Territories",
+        "region": "Oceania",
+        "key": "ATF"
+    },
+    {
+        "country": "Gabon",
+        "region": "Central Africa",
+        "key": "GAB"
+    },
+    {
+        "country": "Gambia",
+        "region": "Western Africa",
+        "key": "GMB"
+    },
+    {
+        "country": "Georgia",
+        "region": "Western Asia",
+        "key": "GEO"
+    },
+    {
+        "country": "Germany",
+        "region": "Western Europe",
+        "key": "DEU"
+    },
+    {
+        "country": "Ghana",
+        "region": "Western African",
+        "key": "GHA"
+    },
+    {
+        "country": "Gibraltar",
+        "region": "Southern Europe",
+        "key": "GIB"
+    },
+    {
+        "country": "Greece",
+        "region": "Southern Europe",
+        "key": "GRC"
+    },
+    {
+        "country": "Greenland",
+        "region": "North America",
+        "key": "GRL"
+    },
+    {
+        "country": "Grenada",
+        "region": "Caribbean",
+        "key": "GRD"
+    },
+    {
+        "country": "Guadeloupe",
+        "region": "Caribbean",
+        "key": "GLP"
+    },
+    {
+        "country": "Guam",
+        "region": "Oceania",
+        "key": "GUM"
+    },
+    {
+        "country": "Guatemala",
+        "region": "Central America",
+        "key": "GTM"
+    },
+    {
+        "country": "Guernsey",
+        "region": "Western Europe",
+        "key": "GGY"
+    },
+    {
+        "country": "Guinea",
+        "region": "Western Africa",
+        "key": "GIN"
+    },
+    {
+        "country": "Guinea-Bissau",
+        "region": "Western Africa",
+        "key": "GNB"
+    },
+    {
+        "country": "Guyana",
+        "region": "Caribbean",
+        "key": "GUY"
+    },
+    {
+        "country": "Haiti",
+        "region": "Caribbean",
+        "key": "HTI"
+    },
+    {
+        "country": "Heard Island and McDonald Islands",
+        "region": "Oceania",
+        "key": "HMD"
+    },
+    {
+        "country": "Honduras",
+        "region": "Central America",
+        "key": "HND"
+    },
+    {
+        "country": "Hong Kong",
+        "region": "East Asia",
+        "key": "HKG"
+    },
+    {
+        "country": "Hungary",
+        "region": "Central Europe",
+        "key": "HUN"
+    },
+    {
+        "country": "Iceland",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "ISL"
+    },
+    {
+        "country": "India",
+        "region": "Southern Asia",
+        "key": "IND"
+    },
+    {
+        "country": "Indonesia",
+        "region": "South-East Asia, Oceania",
+        "key": "IDN"
+    },
+    {
+        "country": "Iran",
+        "region": "Western Asia, Middle East",
+        "key": "IRN"
+    },
+    {
+        "country": "Iraq",
+        "region": "Western Asia, Middle East",
+        "key": "IRQ"
+    },
+    {
+        "country": "Ireland",
+        "region": "Western Europe",
+        "key": "IRL"
+    },
+    {
+        "country": "Isle of Man",
+        "region": "Western Europe",
+        "key": "IMN"
+    },
+    {
+        "country": "Israel",
+        "region": "Western Asia, Middle East",
+        "key": "ISR"
+    },
+    {
+        "country": "Italy",
+        "region": "Southern Europe",
+        "key": "ITA"
+    },
+    {
+        "country": "Ivory Coast",
+        "region": "Western Africa",
+        "key": "CIV"
+    },
+    {
+        "country": "Jamaica",
+        "region": "Caribbean",
+        "key": "JAM"
+    },
+    {
+        "country": "Japan",
+        "region": "East Asia",
+        "key": "JPN"
+    },
+    {
+        "country": "Jersey",
+        "region": "Western Europe",
+        "key": "JEY"
+    },
+    {
+        "country": "Jordan",
+        "region": "Western Asia, Middle East",
+        "key": "JOR"
+    },
+    {
+        "country": "Kazakhstan",
+        "region": "Central Asia",
+        "key": "KAZ"
+    },
+    {
+        "country": "Kenya",
+        "region": "East Africa",
+        "key": "KEN"
+    },
+    {
+        "country": "Kiribati",
+        "region": "Oceania",
+        "key": "KIR"
+    },
+    {
+        "country": "Kosovo",
+        "region": "Balkans",
+        "key": "XKX"
+    },
+    {
+        "country": "Kuwait",
+        "region": "Western Asia, Middle East",
+        "key": "KWT"
+    },
+    {
+        "country": "Kyrgyzstan",
+        "region": "Central Asia",
+        "key": "KGZ"
+    },
+    {
+        "country": "Laos",
+        "region": "South-East Asia",
+        "key": "LAO"
+    },
+    {
+        "country": "Latvia",
+        "region": "Baltic Countries",
+        "key": "LVA"
+    },
+    {
+        "country": "Lebanon",
+        "region": "Western Asia, Middle East",
+        "key": "LBN"
+    },
+    {
+        "country": "Lesotho",
+        "region": "Southern Africa",
+        "key": "LSO"
+    },
+    {
+        "country": "Liberia",
+        "region": "Western Africa",
+        "key": "LBR"
+    },
+    {
+        "country": "Libya",
+        "region": "Northern Africa",
+        "key": "LBY"
+    },
+    {
+        "country": "Liechtenstein",
+        "region": "Western Europe",
+        "key": "LIE"
+    },
+    {
+        "country": "Lithuania",
+        "region": "Baltic Countries",
+        "key": "LTU"
+    },
+    {
+        "country": "Luxembourg",
+        "region": "Western Europe",
+        "key": "LUX"
+    },
+    {
+        "country": "Macao",
+        "region": "East Asia",
+        "key": "MAC"
+    },
+    {
+        "country": "Macedonia",
+        "region": "Balkans",
+        "key": "MKD"
+    },
+    {
+        "country": "Madagascar",
+        "region": "East Africa, Southern Africa",
+        "key": "MDG"
+    },
+    {
+        "country": "Malawi",
+        "region": "East Africa, Southern Africa",
+        "key": "MWI"
+    },
+    {
+        "country": "Malaysia",
+        "region": "South-East Asia",
+        "key": "MYS"
+    },
+    {
+        "country": "Maldives",
+        "region": "Southern Asia",
+        "key": "MDV"
+    },
+    {
+        "country": "Mali",
+        "region": "Western Africa",
+        "key": "MLI"
+    },
+    {
+        "country": "Malta",
+        "region": "Southern Europe",
+        "key": "MLT"
+    },
+    {
+        "country": "Marshall Islands",
+        "region": "Oceania",
+        "key": "MHL"
+    },
+    {
+        "country": "Martinique",
+        "region": "Caribbean",
+        "key": "MTQ"
+    },
+    {
+        "country": "Mauritania",
+        "region": "Western Africa",
+        "key": "MRT"
+    },
+    {
+        "country": "Mauritius",
+        "region": "East Africa",
+        "key": "MUS"
+    },
+    {
+        "country": "Mayotte",
+        "region": "East Africa",
+        "key": "MYT"
+    },
+    {
+        "country": "Mexico",
+        "region": "North America",
+        "key": "MEX"
+    },
+    {
+        "country": "Micronesia",
+        "region": "Oceania",
+        "key": "FSM"
+    },
+    {
+        "country": "Moldova",
+        "region": "Central Europe",
+        "key": "MDA"
+    },
+    {
+        "country": "Monaco",
+        "region": "Western Europe",
+        "key": "MCO"
+    },
+    {
+        "country": "Mongolia",
+        "region": "East Asia",
+        "key": "MNG"
+    },
+    {
+        "country": "Montenegro",
+        "region": "Balkans",
+        "key": "MNE"
+    },
+    {
+        "country": "Montserrat",
+        "region": "Caribbean",
+        "key": "MSR"
+    },
+    {
+        "country": "Morocco",
+        "region": "Northern Africa",
+        "key": "MAR"
+    },
+    {
+        "country": "Mozambique",
+        "region": "East Africa, Southern Africa",
+        "key": "MOZ"
+    },
+    {
+        "country": "Myanmar",
+        "region": "South-East Asia",
+        "key": "MMR"
+    },
+    {
+        "country": "Namibia",
+        "region": "Southern Africa",
+        "key": "NAM"
+    },
+    {
+        "country": "Nauru",
+        "region": "Oceania",
+        "key": "NRU"
+    },
+    {
+        "country": "Nepal",
+        "region": "Southern Asia",
+        "key": "NPL"
+    },
+    {
+        "country": "Netherlands",
+        "region": "Western Europe, Nordic Countries",
+        "key": "NLD"
+    },
+    {
+        "country": "New Caledonia",
+        "region": "Oceania",
+        "key": "NCL"
+    },
+    {
+        "country": "New Zealand",
+        "region": "Oceania",
+        "key": "NZL"
+    },
+    {
+        "country": "Nicaragua",
+        "region": "Central America",
+        "key": "NIC"
+    },
+    {
+        "country": "Niger",
+        "region": "Western Africa",
+        "key": "NER"
+    },
+    {
+        "country": "Nigeria",
+        "region": "Western Africa",
+        "key": "NGA"
+    },
+    {
+        "country": "Niue",
+        "region": "Oceania",
+        "key": "NIU"
+    },
+    {
+        "country": "Norfolk Island",
+        "region": "Oceania",
+        "key": "NFK"
+    },
+    {
+        "country": "North Korea",
+        "region": "East Asia",
+        "key": "PRK"
+    },
+    {
+        "country": "Northern Mariana Islands",
+        "region": "South-East Asia",
+        "key": "MNP"
+    },
+    {
+        "country": "Norway",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "NOR"
+    },
+    {
+        "country": "Oman",
+        "region": "Western Asia, Middle East",
+        "key": "OMN"
+    },
+    {
+        "country": "Pakistan",
+        "region": "Southern Asia",
+        "key": "PAK"
+    },
+    {
+        "country": "Palau",
+        "region": "Oceania",
+        "key": "PLW"
+    },
+    {
+        "country": "Palestinian Territory",
+        "region": "Western Asia, Middle East",
+        "key": "PSE"
+    },
+    {
+        "country": "Panama",
+        "region": "Central America",
+        "key": "PAN"
+    },
+    {
+        "country": "Papua New Guinea",
+        "region": "Oceania",
+        "key": "PNG"
+    },
+    {
+        "country": "Paraguay",
+        "region": "South America",
+        "key": "PRY"
+    },
+    {
+        "country": "Peru",
+        "region": "South America",
+        "key": "PER"
+    },
+    {
+        "country": "Philippines",
+        "region": "South-East Asia",
+        "key": "PHL"
+    },
+    {
+        "country": "Pitcairn",
+        "region": "Oceania",
+        "key": "PCN"
+    },
+    {
+        "country": "Poland",
+        "region": "Central Europe",
+        "key": "POL"
+    },
+    {
+        "country": "Portugal",
+        "region": "Southern Europe",
+        "key": "PRT"
+    },
+    {
+        "country": "Puerto Rico",
+        "region": "Caribbean",
+        "key": "PRI"
+    },
+    {
+        "country": "Qatar",
+        "region": "Western Asia, Middle East",
+        "key": "QAT"
+    },
+    {
+        "country": "Republic of the Congo",
+        "region": "Central Africa",
+        "key": "COG"
+    },
+    {
+        "country": "Reunion",
+        "region": "East Africa",
+        "key": "REU"
+    },
+    {
+        "country": "Romania",
+        "region": "Central Europe",
+        "key": "ROU"
+    },
+    {
+        "country": "Russia",
+        "region": "Eastern Europe",
+        "key": "RUS"
+    },
+    {
+        "country": "Rwanda",
+        "region": "East Africa, Central Africa",
+        "key": "RWA"
+    },
+    {
+        "country": "Saint Barthelemy",
+        "region": "Caribbean",
+        "key": "BLM"
+    },
+    {
+        "country": "Saint Helena",
+        "region": "Western Africa",
+        "key": "SHN"
+    },
+    {
+        "country": "Saint Kitts and Nevis",
+        "region": "Caribbean",
+        "key": "KNA"
+    },
+    {
+        "country": "Saint Lucia",
+        "region": "Caribbean",
+        "key": "LCA"
+    },
+    {
+        "country": "Saint Martin",
+        "region": "Caribbean",
+        "key": "MAF"
+    },
+    {
+        "country": "Saint Pierre and Miquelon",
+        "region": "North America",
+        "key": "SPM"
+    },
+    {
+        "country": "Saint Vincent and the Grenadines",
+        "region": "Caribbean",
+        "key": "VCT"
+    },
+    {
+        "country": "Samoa",
+        "region": "Oceania",
+        "key": "WSM"
+    },
+    {
+        "country": "San Marino",
+        "region": "Southern Europe",
+        "key": "SMR"
+    },
+    {
+        "country": "Sao Tome and Principe",
+        "region": "Central Africa",
+        "key": "STP"
+    },
+    {
+        "country": "Saudi Arabia",
+        "region": "Western Asia, Middle East",
+        "key": "SAU"
+    },
+    {
+        "country": "Senegal",
+        "region": "Western Africa",
+        "key": "SEN"
+    },
+    {
+        "country": "Serbia",
+        "region": "Balkans",
+        "key": "SRB"
+    },
+    {
+        "country": "Seychelles",
+        "region": "East Africa",
+        "key": "SYC"
+    },
+    {
+        "country": "Sierra Leone",
+        "region": "Western Africa",
+        "key": "SLE"
+    },
+    {
+        "country": "Singapore",
+        "region": "South-East Asia",
+        "key": "SGP"
+    },
+    {
+        "country": "Sint Maarten",
+        "region": "Caribbean",
+        "key": "SXM"
+    },
+    {
+        "country": "Slovakia",
+        "region": "Central Europe",
+        "key": "SVK"
+    },
+    {
+        "country": "Slovenia",
+        "region": "Balkans",
+        "key": "SVN"
+    },
+    {
+        "country": "Solomon Islands",
+        "region": "Oceania",
+        "key": "SLB"
+    },
+    {
+        "country": "Somalia",
+        "region": "East Africa",
+        "key": "SOM"
+    },
+    {
+        "country": "South Africa",
+        "region": "Southern Africa",
+        "key": "ZAF"
+    },
+    {
+        "country": "South Georgia and the South Sandwich Islands",
+        "region": "South America",
+        "key": "SGS"
+    },
+    {
+        "country": "South Korea",
+        "region": "East Asia",
+        "key": "KOR"
+    },
+    {
+        "country": "South Sudan",
+        "region": "East Africa, Northern Africa",
+        "key": "SSD"
+    },
+    {
+        "country": "Spain",
+        "region": "Southern Europe",
+        "key": "ESP"
+    },
+    {
+        "country": "Sri Lanka",
+        "region": "Southern Asia",
+        "key": "LKA"
+    },
+    {
+        "country": "Sudan",
+        "region": "Northern Africa, East Africa",
+        "key": "SDN"
+    },
+    {
+        "country": "Suriname",
+        "region": "South America",
+        "key": "SUR"
+    },
+    {
+        "country": "Svalbard and Jan Mayen",
+        "region": "Scandinavia",
+        "key": "SJM"
+    },
+    {
+        "country": "Swaziland",
+        "region": "Southern Africa",
+        "key": "SWZ"
+    },
+    {
+        "country": "Sweden",
+        "region": "Scandinavia, Nordic Countries",
+        "key": "SWE"
+    },
+    {
+        "country": "Switzerland",
+        "region": "Western Europe",
+        "key": "CHE"
+    },
+    {
+        "country": "Syria",
+        "region": "Western Asia, Middle East",
+        "key": "SYR"
+    },
+    {
+        "country": "Taiwan",
+        "region": "East Asia",
+        "key": "TWN"
+    },
+    {
+        "country": "Tajikistan",
+        "region": "Central Asia",
+        "key": "TJK"
+    },
+    {
+        "country": "Tanzania",
+        "region": "East Africa",
+        "key": "TZA"
+    },
+    {
+        "country": "Thailand",
+        "region": "South-East Asia",
+        "key": "THA"
+    },
+    {
+        "country": "Togo",
+        "region": "Western Africa",
+        "key": "TGO"
+    },
+    {
+        "country": "Tokelau",
+        "region": "Oceania",
+        "key": "TKL"
+    },
+    {
+        "country": "Tonga",
+        "region": "Oceania",
+        "key": "TON"
+    },
+    {
+        "country": "Trinidad and Tobago",
+        "region": "Caribbean",
+        "key": "TTO"
+    },
+    {
+        "country": "Tunisia",
+        "region": "Northern Africa",
+        "key": "TUN"
+    },
+    {
+        "country": "Turkey",
+        "region": "Western Asia, Middle East",
+        "key": "TUR"
+    },
+    {
+        "country": "Turkmenistan",
+        "region": "Central Asia",
+        "key": "TKM"
+    },
+    {
+        "country": "Turks and Caicos Islands",
+        "region": "Caribbean",
+        "key": "TCA"
+    },
+    {
+        "country": "Tuvalu",
+        "region": "Oceania",
+        "key": "TUV"
+    },
+    {
+        "country": "U.S. Virgin Islands",
+        "region": "Caribbean",
+        "key": "VIR"
+    },
+    {
+        "country": "Uganda",
+        "region": "East Africa",
+        "key": "UGA"
+    },
+    {
+        "country": "Ukraine",
+        "region": "Central Europe",
+        "key": "UKR"
+    },
+    {
+        "country": "United Arab Emirates",
+        "region": "Western Asia, Middle East",
+        "key": "ARE"
+    },
+    {
+        "country": "United Kingdom",
+        "region": "Western Europe",
+        "key": "GBR"
+    },
+    {
+        "country": "United States",
+        "region": "North America",
+        "key": "USA"
+    },
+    {
+        "country": "United States Minor Outlying Islands",
+        "region": "Oceania",
+        "key": "UMI"
+    },
+    {
+        "country": "Uruguay",
+        "region": "South America",
+        "key": "URY"
+    },
+    {
+        "country": "Uzbekistan",
+        "region": "Central Asia",
+        "key": "UZB"
+    },
+    {
+        "country": "Vanuatu",
+        "region": "Oceania",
+        "key": "VUT"
+    },
+    {
+        "country": "Vatican",
+        "region": "Southern Europe",
+        "key": "VAT"
+    },
+    {
+        "country": "Venezuela",
+        "region": "South America",
+        "key": "VEN"
+    },
+    {
+        "country": "Vietnam",
+        "region": "South-East Asia",
+        "key": "VNM"
+    },
+    {
+        "country": "Wallis and Futuna",
+        "region": "Oceania",
+        "key": "WLF"
+    },
+    {
+        "country": "Western Sahara",
+        "region": "Western Sahara",
+        "key": "ESH"
+    },
+    {
+        "country": "Yemen",
+        "region": "Western Asia, Middle East",
+        "key": "YEM"
+    },
+    {
+        "country": "Zambia",
+        "region": "East Africa, Southern Africa",
+        "key": "ZMB"
+    },
+    {
+        "country": "Zimbabwe",
+        "region": "East Africa, Southern Africa",
+        "key": "ZWE"
+    }
+]

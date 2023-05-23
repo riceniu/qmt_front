@@ -1,6 +1,8 @@
 const Mock = require("mockjs");
 
-const count = 30;
+const country = require("./countryList.json");
+
+const count = 300;
 
 const baseContent =
   '<p>Customer test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>';
@@ -262,10 +264,12 @@ for (let i = 0; i < count; i++) {
     {
     id: '@increment',
     'company|1': companyName,
-    'country|1': countries.split('\n'),
+    //'country|1': countries.split('\n'),
+    'area|1':country,
     domain:'@domain'
   }
-  ))
+  )
+  )
 }
 */
 //constant companyList
@@ -285,7 +289,7 @@ for (let i = 0; i < count; i++) {
   contactList.push(Mock.mock(
     {
     id: '@increment',
-    timestamp: +Mock.Random.date('T'),
+    'gender|1':["Mr","Ms",""],
     firstname: '@first',
     lastname: '@last',
     email: '@email',
@@ -295,8 +299,8 @@ for (let i = 0; i < count; i++) {
   }
   ))
 }
-}
-*/
+}*/
+
 //constant contactList
 contactList.push(...Mocked.contact_list);
 
@@ -304,50 +308,47 @@ contactList.push(...Mocked.contact_list);
 //List.push(...Mocked.contact_list)
 
 module.exports = [
-// useless
+  // useless
   {
-// {
-  //   url: "/vue-element-admin/customer/pv",
-  //   type: "get",
-  //   response: (_) => {
-  //     return {
-  //       code: 20000,
-  //       data: {
-  //         pvData: [
-  //           { key: "PC", pv: 1024 },
-  //           { key: "mobile", pv: 1024 },
-  //           { key: "ios", pv: 1024 },
-  //           { key: "android", pv: 1024 },
-  //         ],
-  //       },
-  //     };
-  //   },
-  // },
-
-  // {
-  //   url: "/vue-element-admin/customer/create",
-  //   type: "post",
-  //   response: (_) => {
-  //     return {
-  //       code: 20000,
-  //       data: "success",
-  //     };
-  //   },
-  // },
-
-  // {
-  //   url: "/vue-element-admin/customer/update",
-  //   type: "post",
-  //   response: (_) => {
-  //     return {
-  //       code: 20000,
-  //       data: "success",
-  //     };
-  //   },
-  // },
-
+    // {
+    //   url: "/vue-element-admin/customer/pv",
+    //   type: "get",
+    //   response: (_) => {
+    //     return {
+    //       code: 200,
+    //       data: {
+    //         pvData: [
+    //           { key: "PC", pv: 1024 },
+    //           { key: "mobile", pv: 1024 },
+    //           { key: "ios", pv: 1024 },
+    //           { key: "android", pv: 1024 },
+    //         ],
+    //       },
+    //     };
+    //   },
+    // },
+    // {
+    //   url: "/vue-element-admin/customer/create",
+    //   type: "post",
+    //   response: (_) => {
+    //     return {
+    //       code: 200,
+    //       data: "success",
+    //     };
+    //   },
+    // },
+    // {
+    //   url: "/vue-element-admin/customer/update",
+    //   type: "post",
+    //   response: (_) => {
+    //     return {
+    //       code: 200,
+    //       data: "success",
+    //     };
+    //   },
+    // },
   },
-  
+
   {
     url: "/vue-element-admin/customer/contact",
     type: "get",
@@ -360,6 +361,7 @@ module.exports = [
         page = 1,
         limit = 20,
         sort,
+        keyWords,
       } = config.query;
       //const customerList=[]
       //customerList.push(...Mocked.contact_list)
@@ -368,10 +370,20 @@ module.exports = [
         if (importance && item.importance !== +importance) return false;
         if (type && item.type !== type) return false;
         if (title && item.title.indexOf(title) < 0) return false;
+        if (
+          item.firstname.indexOf(keyWords) == -1 &&
+          item.lastname.indexOf(keyWords) == -1 &&
+          item.company.indexOf(keyWords) == -1 &&
+          item.email.indexOf(keyWords) == -1 &&
+          item.tel.indexOf(keyWords) == -1 &&
+          item.mobile.indexOf(keyWords) == -1
+        )
+          return false;
         return true;
       });
 
-      if (sort === "-id") {
+      // if (sort === "-id") {
+      if (true) {
         mockList = mockList.reverse();
       }
 
@@ -380,7 +392,7 @@ module.exports = [
       );
       //console.log(contactList)
       return {
-        code: 20000,
+        code: 200,
         data: {
           total: mockList.length,
           items: pageList,
@@ -399,16 +411,25 @@ module.exports = [
         page = 1,
         limit = 20,
         sort,
+        keyWords,
       } = config.query;
+
+      //add area
+      /*for(item of companyList){
+        item.country = item.area.country
+        item.area = item.area.region
+      }*/
 
       let mockList = companyList.filter((item) => {
         if (importance && item.importance !== +importance) return false;
         if (type && item.type !== type) return false;
         if (title && item.title.indexOf(title) < 0) return false;
+        if (item.company.indexOf(keyWords) == -1) return false;
         return true;
       });
 
-      if (sort === "-id") {
+      //if (sort === "-id") {
+      if (true) {
         mockList = mockList.reverse();
       }
 
@@ -419,7 +440,7 @@ module.exports = [
       console.log("mock/customer.js->customer/compmany");
       //console.log(companyList)
       return {
-        code: 20000,
+        code: 200,
         data: {
           total: mockList.length,
           items: pageList,
@@ -436,7 +457,7 @@ module.exports = [
       for (const customer of List) {
         if (customer.id === +id) {
           return {
-            code: 20000,
+            code: 200,
             data: customer,
           };
         }
@@ -444,7 +465,6 @@ module.exports = [
     },
   },
 
-  
   {
     url: "/vue-element-admin/customer/company/delete",
     type: "delete",
@@ -461,7 +481,7 @@ module.exports = [
         }
       }
       return {
-        code: 20000,
+        code: 200,
         data: "Company deleted",
       };
     },
@@ -483,7 +503,7 @@ module.exports = [
       }
 
       return {
-        code: 20000,
+        code: 200,
         data: "Product deleted",
       };
     },
@@ -501,7 +521,7 @@ module.exports = [
         }
       }
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -515,7 +535,7 @@ module.exports = [
       //console.log(config.body);
       companyList.push(config.body);
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -533,7 +553,7 @@ module.exports = [
         }
       }
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -547,8 +567,38 @@ module.exports = [
       //console.log(config.body);
       contactList.push(config.body);
       return {
-        code: 20000,
+        code: 200,
         data: "success",
+      };
+    },
+  },
+
+  {
+    url: "/vue-element-admin/customer/company/searchByName",
+    type: "get",
+    response: (config) => {
+      const {
+        importance,
+        type,
+        title,
+        page = 1,
+        limit = 20,
+        sort,
+        keyWords,
+      } = config.query;
+
+      let returnList = companyList.filter((item) => {
+        if (item.company.indexOf(keyWords) == -1) return false;
+        return true;
+      });
+      console.log(companyList)
+      console.log("mock/customer.js->customer/compmany/searchByName");
+      console.log(returnList)
+      return {
+        code: 200,
+        data: {
+          returnList
+        },
       };
     },
   },

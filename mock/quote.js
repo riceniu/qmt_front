@@ -1,18 +1,19 @@
 const Mock = require("mockjs");
 
 const List = [];
-const count = 50;
+const count = 120;
 const Mocked = require("./mocked_data");
-const TempItemList = [];
+const TempitemList = [];
 const ProductList = Mocked.product_list;
 const LIMIT = ProductList.length;
-const FinalItemList = [];
-const ItemList = [];
+const FinalitemList = [];
+const itemList = [];
 
 //dynamic quote
 /*
+const contact_list=[];
 {
-for(let i = 0 ; i<Mocked.contact_list.length;i++){
+for(let i = 0 ; i< Mocked.contact_list.length;i++){
   contact_list.push({
     contact: Mocked.contact_list[i].firstname + ' '+ Mocked.contact_list[i].lastname,
     company: Mocked.company_list[i].company,
@@ -22,17 +23,18 @@ for(let i = 0 ; i<Mocked.contact_list.length;i++){
 for (let i = 0; i < count; i++) {
   let mocked = Mock.mock(
     {
-    quote_number: 'ABC-'+'@increment',
-    quote_date: '@date',
-    'currency|1':['GBP','USD','EURO'],
-    vat:'@float(0,0.1,2,2)',
-    discount:'@float(0,0.3,2,2)',
-    discount_direct:'@float(0,500,0,0)',
+    quoteNumber: 'ABC-'+'@increment',
+    dateQuote: '@date',
+    'currency|1':['GBP','USD','Euro'],
+    'vat|1':["15","20","","","",""],
+    'discount|1':['','','','','','5','15','20','25'],
+        discountDirect:'@float(0,500,0,0)',
     total:'@float(800,50000,0,0)',
-    'contactid|1':'@integer(0,29)',
-    'owner|1':['Diane Gale','Zhan Niu'],
+    'contactid|1':'@integer(0,299)',
+    'owner|1':['Diane','Niu'],
     item_quantity:'@integer(1,5)',  
     company:"",
+    "category|1":["CFL","PU","DA","Motor"],
     contact:"",
     'price|1':["VAT exclusive",'VAT inclusive'],
     'trade_term|1':['EXW', 'CIF', 'FOB', 'CFR'],
@@ -46,8 +48,8 @@ for (let i = 0; i < count; i++) {
   mocked.contact=contact_list[mocked.contactid].contact
   List.push(mocked)
 }
-}
-*/
+}*/
+
 
 //constant quote
 List.push(...Mocked.quote_list);
@@ -55,21 +57,21 @@ List.push(...Mocked.quote_list);
 /*dynamic quote items*/
 /*
 {
-for (let i = 25; i < 50; i++) {
+for (let i = 25; i < count; i++) {
   let mocked = Mock.mock(
     {
-    quote_number: Mocked.quote_list[i].quote_number,
+      quoteNumber: Mocked.quote_list[i].quoteNumber,
     item_number:'@integer(1,5)'
   }
   )
-  TempItemList.push(mocked)
+  TempitemList.push(mocked)
 }
-for(let i = 0; i < TempItemList.length; i++){
-  for(let j = 0; j< TempItemList[i].item_number; j++){
+for(let i = 0; i < TempitemList.length; i++){
+  for(let j = 0; j< TempitemList[i].item_number; j++){
     let index = Math.floor(Math.random() * LIMIT)
-    FinalItemList.push(
+    FinalitemList.push(
       {
-        quote_number:TempItemList[i].quote_number,
+        quoteNumber:TempitemList[i].quoteNumber,
         item:ProductList[index].productname,
         price:ProductList[index].price,
         quantity:Math.floor(Math.random() * 9) + 1
@@ -81,7 +83,7 @@ for(let i = 0; i < TempItemList.length; i++){
 */
 
 //constant quote items
-FinalItemList.push(...Mocked.quote_items);
+FinalitemList.push(...Mocked.quote_items);
 
 //modification of mocked data
 /*
@@ -129,7 +131,7 @@ module.exports = [
   //   type: "get",
   //   response: (_) => {
   //     return {
-  //       code: 20000,
+  //       code: 200,
   //       data: {
   //         pvData: [
   //           { key: "PC", pv: 1024 },
@@ -148,10 +150,10 @@ module.exports = [
   //   response: (config) => {
   //     console.log("mock/quote.js->quote/items/list");
   //     //console.log(config.query)
-  //     //console.log(FinalItemList)
+  //     //console.log(FinalitemList)
   //     return {
-  //       code: 20000,
-  //       data: FinalItemList,
+  //       code: 200,
+  //       data: FinalitemList,
   //     };
   //   },
   // },
@@ -191,7 +193,7 @@ module.exports = [
       //console.log(contact_list)
       //console.log(product_list)
       return {
-        code: 20000,
+        code: 200,
         data: {
           total: mockList.length,
           items: pageList,
@@ -211,7 +213,7 @@ module.exports = [
       for (const quote of List) {
         if (quote.quote_number === config.query.quote_number) {
           return {
-            code: 20000,
+            code: 200,
             data: quote,
           };
           break;
@@ -230,12 +232,12 @@ module.exports = [
       // console.log(config.body.quote)
       // console.log(...config.body.items)
       List.push(config.body.quote);
-      FinalItemList.push(...config.body.items);
+      FinalitemList.push(...config.body.items);
       // for(const item of config.body.items){
       //   console.log(...config.body.items.i)
-      // ItemList.push(config.body.items.i)}
+      // itemList.push(config.body.items.i)}
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -255,21 +257,21 @@ module.exports = [
         }
       }
       let index = [];
-      for (const item of FinalItemList) {
+      for (const item of FinalitemList) {
         if (item.quote_number === changed.quote.quote_number) {
-          index.push(FinalItemList.indexOf(item));
+          index.push(FinalitemList.indexOf(item));
         }
       }
       for (let i = index.length - 1; i >= 0; i--) {
         //console.log(index);
-        //console.log(FinalItemList[index[i]]);
-        FinalItemList.splice(index[i], 1);
+        //console.log(FinalitemList[index[i]]);
+        FinalitemList.splice(index[i], 1);
       }
 
       //console.log(changed.items);
-      FinalItemList.push(...changed.items);
+      FinalitemList.push(...changed.items);
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -290,19 +292,19 @@ module.exports = [
         }
       }
       index = [];
-      for (const item of FinalItemList) {
+      for (const item of FinalitemList) {
         if (item.quote_number === config.body.quote_number) {
-          index.push(FinalItemList.indexOf(item));
+          index.push(FinalitemList.indexOf(item));
         }
       }
       for (let i = index.length - 1; i >= 0; i--) {
         console.log(index);
-        console.log(FinalItemList[index[i]]);
-        FinalItemList.splice(index[i], 1);
+        console.log(FinalitemList[index[i]]);
+        FinalitemList.splice(index[i], 1);
       }
 
       return {
-        code: 20000,
+        code: 200,
         data: "Product deleted",
       };
     },
@@ -313,23 +315,30 @@ module.exports = [
     url: "/vue-element-admin/quote/items",
     type: "get",
     response: (config) => {
+      const returnMsg={quote:"",itemList:""}
+      
       console.log("mock/quote.js->quote/items");
-      //console.log(config.query)
-      const requestedNumber = config.query.quote_number;
-      ItemList.length = 0;
+      console.log(config.query)
+      const requestedNumber = config.query.quotenumber;
+      for(item of List){
+        if(item.quoteNumber === requestedNumber)
+        returnMsg.quote = item
+
+      }
+      itemList.length = 0;
       //console.log(requestedNumber)
-      for (let i = 0; i < FinalItemList.length; i++) {
-        //console.log(FinalItemList[i])
-        if (FinalItemList[i].quote_number === requestedNumber) {
-          ItemList.push(FinalItemList[i]);
+      for (let i = 0; i < FinalitemList.length; i++) {
+        //console.log(FinalitemList[i])
+        if (FinalitemList[i].quoteNumber === requestedNumber) {
+          itemList.push(FinalitemList[i]);
         }
       }
       //console.log(correction)
-      //console.log(ItemList);
-
+      console.log(itemList);
+      returnMsg.itemList = itemList
       return {
-        code: 20000,
-        data: ItemList,
+        code: 200,
+        data: returnMsg,
       };
     },
   },

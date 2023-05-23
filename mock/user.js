@@ -3,8 +3,8 @@ const userList = []
 userList.push({ name:'Administrater', username:'admin', password:'111111'})
 userList.push({ name:'Normal Editor', username:'editor', password:'111111'})
 userList.push({ name:'Niu Zhan', username:'nz', password:'111111'})
-userList.push({ name:'Diane Gale', username:'diane', password:'111111'})
-userList.push({ name:'xxx', username:'x', password:'111111'})
+userList.push({ name:'Diane', username:'diane', password:'111111'})
+
 
 const tokens = {
   admin: {

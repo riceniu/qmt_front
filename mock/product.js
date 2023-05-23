@@ -1,28 +1,27 @@
 const Mock = require("mockjs");
 const Mocked = require("./mocked_data");
 const List = [];
-const count = 30;
+const count = 150;
 
 const baseContent =
   '<p>Product test data.</p><p><img src="https://wpimg.wallstcn.com/4c69009c-0fd4-4153-b112-6cb53d1cf943"></p>';
-const image_uri =
-  "";
+const image_uri = "";
 
 //dyanamic productList
 /*
 {
-for (let i = 0; i < count; i++) {
-  List.push(Mock.mock(
-    {
-    id: '@increment',
-    quote_text: '@title(5, 10)',
-    'currency|1':['CNY', 'USD', 'GBP', 'EUR'],
-    'category|1':['Type-A','Type-B','Type-C'],
-    price: '@float(100, 50000, 0, 0)',
-    productname:'@word(1)'+'-'+'@integer(1,1000)'
+  for (let i = 0; i < count; i++) {
+    List.push(
+      Mock.mock({
+        id: "@increment",
+        quotetext: "@title(5, 10)",
+        "currency|1": ["USD", "GBP", "Euro"],
+        "category|1": ["CFL", "PU", "DA", "MOTOR"],
+        price: "@float(100, 50000, 0, 0)",
+        productname: "@word(1)" + "-" + "@integer(1,1000)",
+      })
+    );
   }
-  ))
-}
 }
 */
 //constant productList
@@ -87,7 +86,7 @@ module.exports = [
     //     for (const product of List) {
     //       if (product.id === +id) {
     //         return {
-    //           code: 20000,
+    //           code: 200,
     //           data: product
     //         }
     //       }
@@ -99,7 +98,7 @@ module.exports = [
     //   type: 'get',
     //   response: _ => {
     //     return {
-    //       code: 20000,
+    //       code: 200,
     //       data: {
     //         pvData: [
     //           { key: 'PC', pv: 1024 },
@@ -116,7 +115,7 @@ module.exports = [
     //   type: 'post',
     //   response: _ => {
     //     return {
-    //       code: 20000,
+    //       code: 200,
     //       data: 'success'
     //     }
     //   }
@@ -126,7 +125,7 @@ module.exports = [
     //   type: 'post',
     //   response: _ => {
     //     return {
-    //       code: 20000,
+    //       code: 200,
     //       data: 'success'
     //     }
     //   }
@@ -144,28 +143,37 @@ module.exports = [
         limit = 20,
         sort,
       } = config.query;
+      //console.log(List)
 
+      console.log(config.query);
       let mockList = List.filter((item) => {
-        if (importance && item.importance !== +importance) return false;
-        if (type && item.type !== type) return false;
-        if (title && item.title.indexOf(title) < 0) return false;
+        if (type !== "ALL") {
+          if (importance && item.importance !== +importance) return false;
+          if (item.category !== type) return false;
+          if (title && item.title.indexOf(title) < 0) return false;
+        } else {
+          if (importance && item.importance !== +importance) return false;
+          if (title && item.title.indexOf(title) < 0) return false;
+        }
         return true;
       });
 
+      console.log(mockList);
       if (sort === "-id") {
         mockList = mockList.reverse();
       }
 
-      const pageList = mockList.filter(
+      console.log(limit + " " + page);
+       const pageList = mockList.filter(
         (item, index) => index < limit * page && index >= limit * (page - 1)
       );
 
       console.log("mock/product.js->product/list");
       console.log(`return
       pageList:`);
-      console.log(pageList);
+      //console.log(pageList);
       return {
-        code: 20000,
+        code: 200,
         data: {
           total: mockList.length,
           items: pageList,
@@ -180,10 +188,10 @@ module.exports = [
     response: (config) => {
       let lastId = List[List.length - 1].id;
       console.log(`return:
-      data:`)
-      console.log(lastId)
+      data:`);
+      console.log(lastId);
       return {
-        code: 20000,
+        code: 200,
         data: lastId,
       };
     },
@@ -194,11 +202,11 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/product.js->add");
-      console.log(`received: config.body`)
-      console.log(config.body)
+      console.log(`received: config.body`);
+      console.log(config.body);
       List.push(config.body);
       return {
-        code: 20000,
+        code: 200,
         data: "success",
       };
     },
@@ -209,22 +217,22 @@ module.exports = [
     type: "post",
     response: (config) => {
       console.log("mock/product.js->edit");
-      console.log(`received config.body`)
-      console.log(config.body)
+      console.log(`received config.body`);
+      console.log(config.body);
       const changed = config.body;
       for (const product of List) {
         if (product.id === changed.id) {
           List[List.indexOf(product)] = changed;
           //console.log(List)
           return {
-            code: 20000,
+            code: 200,
             data: "success",
           };
         }
       }
       // console.log(List)
       return {
-        code: 20000,
+        code: 200,
         data: "Name not found",
       };
     },
@@ -235,7 +243,7 @@ module.exports = [
     type: "delete",
     response: (config) => {
       console.log("mock/product.js->delete");
-      console.log(`received config.body`)
+      console.log(`received config.body`);
       console.log(config.body);
       let index;
       for (const product of List) {
@@ -247,7 +255,7 @@ module.exports = [
         }
       }
       return {
-        code: 20000,
+        code: 200,
         data: "Product deleted",
       };
     },
@@ -263,7 +271,7 @@ module.exports = [
       updateCategoryOptions();
       //console.log(optionList)
       return {
-        code: 20000,
+        code: 200,
         data: optionList,
       };
     },
