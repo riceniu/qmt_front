@@ -1,5 +1,64 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-input
+        v-model="listQuery.keyWords"
+        placeholder="Search QuoteNumber/company/contact"
+        style="width: 300px"
+        class="filter-item"
+        @input="handleFilter"
+      />
+      <el-date-picker
+        v-model="dateRange"
+        type="daterange"
+        align="right"
+        class="filter-item"
+        unlink-panels
+        range-separator="to"
+        start-placeholder="Start"
+        end-placeholder="End"
+        :picker-options="pickerOptions"
+        @change="dateSelection"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
+
+      <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
+      </el-select>
+      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
+        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
+      </el-select>
+      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
+      </el-select> -->
+      <el-button
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
+        Search
+      </el-button>
+      <router-link :to="'/quote/new'">
+        <el-button
+          class="filter-item"
+          style="margin-left: 10px"
+          type="primary"
+          icon="el-icon-edit"
+        >
+          Add
+        </el-button></router-link
+      >
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        @click="handleAll"
+      >
+        All
+      </el-button>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -69,12 +128,27 @@
         sortable
         show-overflow-tooltip
       />
-      <el-table-column prop="category" label="Cat." align="center" sortable width="80" />
-      <el-table-column prop="owner" label="Owner" align="center" sortable width="100" />
+      <el-table-column
+        prop="category"
+        label="Cat."
+        align="center"
+        sortable
+        width="80"
+      />
+      <el-table-column
+        prop="owner"
+        label="Owner"
+        align="center"
+        sortable
+        width="100"
+      />
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
-          <router-link  target="_blank" :to="'/quote/list/edit/' + scope.row.quoteNumber">
+          <router-link
+            target="_blank"
+            :to="'/quote/list/edit/' + scope.row.quoteNumber"
+          >
             <el-button type="primary" icon="el-icon-edit" size="mini" />
           </router-link>
           <el-button
@@ -90,7 +164,7 @@
 
     <div>
       <router-link :to="'/quote/new'">
-        <el-button type="success" @click="handleAdd">Add</el-button>
+        <el-button type="success">Add</el-button>
       </router-link>
     </div>
 
@@ -113,13 +187,49 @@ export default {
   components: { Pagination },
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "Last 30 days",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "Last 6 months",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "Last 1 year",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      },
       list: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 50,
+        keyWords: "",
+        orderBy: "",
+        start: "",
+        end: "",
       },
+      dateRange: [],
     };
   },
   created() {
@@ -128,17 +238,18 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
+      this.list = [];
       fetchList(this.listQuery).then((response) => {
         this.list = response.data.items;
         this.total = response.data.total;
         this.listLoading = false;
       });
     },
-    handleAdd() {
-      this.resetTemp();
-      this.dialogStatus = "Create";
-      this.dialogFormVisible = true;
-    },
+    // handleAdd() {
+    //   this.resetTemp();
+    //   this.dialogStatus = "Create";
+    //   this.dialogFormVisible = true;
+    // },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = "Edit";
@@ -153,17 +264,6 @@ export default {
         username: "",
         password: "",
       };
-    },
-    resetPw() {
-      if (this.resetPassword == false) {
-        this.resetPassword = true;
-        this.tempPw = this.temp.password;
-        this.temp.password = "";
-      } else {
-        this.resetPassword = false;
-        this.temp.password = this.tempPw;
-        this.tempPw = "";
-      }
     },
     closeDialog() {
       this.dialogFormVisible = false;
@@ -208,6 +308,28 @@ export default {
           return $1 + ",";
         })
         .replace(/\.$/, "");
+    },
+    handleFilter() {
+      this.listQuery.page = 1;
+      this.getList();
+    },
+    handleAll() {
+      this.listQuery = {
+        page: 1,
+        limit: 50,
+        keyWords: "",
+        orderBy: "",
+        start: "",
+        end: "",
+      };
+      this.dateRange=[];
+      this.getList();
+    },
+    dateSelection() {
+      this.listQuery.start = this.dateRange[0];
+      this.listQuery.end = this.dateRange[1];
+      this.getList();
+      console.log(this.dateRange);
     },
   },
 };

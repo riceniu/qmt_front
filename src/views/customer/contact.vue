@@ -1,8 +1,14 @@
 <template>
   <div class="app-container">
-    <!-- <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
+    <div class="filter-container">
+      <el-input
+        v-model="listQuery.keyWords"
+        placeholder="Search name/email/phone/company"
+        style="width: 300px"
+        class="filter-item"
+        @input="handleFilter"
+      />
+      <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
@@ -10,20 +16,52 @@
       </el-select>
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
+      </el-select> -->
+      <el-button
+        v-waves
+        class="filter-item"
+        type="primary"
+        icon="el-icon-search"
+        @click="handleFilter"
+      >
         Search
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleAdd"
+      >
         Add
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        Export
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px"
+        type="primary"
+        @click="handleAll"
+      >
+        All
       </el-button>
-      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
+      <!-- <el-button
+        v-waves
+        :loading="downloadLoading"
+        class="filter-item"
+        type="primary"
+        icon="el-icon-download"
+        @click="handleDownload"
+      >
+        Export
+      </el-button> -->
+      <!-- <el-checkbox
+        v-model="showReviewer"
+        class="filter-item"
+        style="margin-left: 15px"
+        @change="tableKey = tableKey + 1"
+      >
         reviewer
-      </el-checkbox>
-    </div> -->
+      </el-checkbox> -->
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -109,7 +147,13 @@
     <br />
 
     <div>
-      <el-button type="success" @click="handleAdd">Add</el-button>
+      <el-button
+        style="margin-left: 10px"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleAdd"
+        >Add</el-button
+      >
     </div>
 
     <el-dialog
@@ -117,66 +161,6 @@
       :visible.sync="dialogFormVisible"
       :close-on-click-modal="false"
     >
-      <!-- <el-form
-        v-if="dialogStatus === 'Create'"
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        :inline="true"
-        style="width: 400px; margin-left: 50px"
-      > -->
-        <!-- <el-form-item label="ID" prop="id" label-width="100px">
-          <el-input v-model="temp.id" :disabled="true" />
-        </el-form-item> -->
-        <!-- <el-form-item label="Gender" prop="gender" label-width="100px">
-          <el-select v-model="temp.gender">
-            <el-option
-              v-for="item in GenderList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option
-          ></el-select>
-        </el-form-item>
-        <el-form-item label="First name" prop="firstname" label-width="100px">
-          <el-input v-model="temp.firstname" />
-        </el-form-item>
-        <el-form-item label="Last name" label-width="100px">
-          <el-input v-model="temp.lastname" />
-        </el-form-item>
-        <el-form-item label="Email" prop="email" label-width="100px">
-          <el-input v-model="temp.email" />
-        </el-form-item>
-        <el-form-item label="Tel" label-width="100px">
-          <el-input v-model="temp.tel" />
-        </el-form-item>
-        <el-form-item label="Mobile" label-width="100px">
-          <el-input v-model="temp.mobile" />
-        </el-form-item>
-        <el-form-item label="Company" label-width="100px">
-          <el-select
-            v-model="temp.company"
-            @change="selectCompany"
-            value-key="id"
-            filterable
-            remote
-            default-first-option
-            :remote-method="getCompanyList"
-            placeholder="Please select"
-            no-data-text="No such company, please add"
-          >
-            <el-option
-              v-for="item in companyOptionList"
-              :key="item.companyId"
-              :label="item.company"
-              :value="item"
-            />
-          </el-select>
-        </el-form-item>
-      </el-form> -->
-
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -206,7 +190,7 @@
           <el-input v-model="temp.lastname" />
         </el-form-item>
         <el-form-item label="Email" prop="email" label-width="100px">
-          <el-input v-model="temp.email"/>
+          <el-input v-model="temp.email" />
         </el-form-item>
         <el-form-item label="Tel" label-width="100px">
           <el-input v-model="temp.tel" />
@@ -265,13 +249,14 @@ import {
   updateContact,
   createContact,
   remoteSearchCompany,
-  remoteSearchContact,
 } from "@/api/customer";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
+import waves from "@/directive/waves";
 
 export default {
   name: "ProductList",
   components: { Pagination },
+  directives: { waves },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -284,15 +269,13 @@ export default {
   },
   data() {
     return {
-      isEdit : false,
+      isEdit: false,
       companyOptionList: [],
       listQuery: {
         page: 1,
         limit: 50,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: "+id",
+        keyWords: "",
+        orderBy: "",
       },
       GenderList: [
         { value: "Mr", label: "Mr" },
@@ -302,10 +285,6 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 50,
-      },
       temp: {
         firstname: "",
         lastname: "",
@@ -509,6 +488,15 @@ export default {
       this.temp.company = e.company;
       this.temp.companyId = e.companyId;
       console.log(this.temp);
+    },
+    handleFilter(query) {
+      this.listQuery.page = 1;
+      this.getList();
+    },
+    handleAll() {
+      this.listQuery.page = 1;
+      this.listQuery.keyWords = "";
+      this.getList();
     },
   },
 };
