@@ -2,12 +2,13 @@ import Cookies from 'js-cookie'
 
 const state = {
   sidebar: {
-    opened: localStorage.getItem('sidebarStatus') ? !!+localStorage.getItem('sidebarStatus') : true,
-    //opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
+    //opened: localStorage.getItem('sidebarStatus') ? !!+localStorage.getItem('sidebarStatus') : true,
+    opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true,
     withoutAnimation: false
   },
   device: 'desktop',
-  size: localStorage.getItem('size') || 'medium'
+  //size: localStorage.getItem('size') || 'medium'
+  size: Cookies.get('size') || 'medium'
 }
 
 const mutations = {
@@ -15,16 +16,16 @@ const mutations = {
     state.sidebar.opened = !state.sidebar.opened
     state.sidebar.withoutAnimation = false
     if (state.sidebar.opened) {
-      //Cookies.set('sidebarStatus', 1)
-      localStorage.setItem('sidebarStatus', 1)
+      Cookies.set('sidebarStatus', 1)
+      // localStorage.setItem('sidebarStatus', 1)
     } else {
-      //Cookies.set('sidebarStatus', 0)
-      localStorage.setItem('sidebarStatus', 0)
+      Cookies.set('sidebarStatus', 0)
+      //localStorage.setItem('sidebarStatus', 0)
     }
   },
   CLOSE_SIDEBAR: (state, withoutAnimation) => {
-    //Cookies.set('sidebarStatus', 0)
-    localStorage.setItem('sidebarStatus', 0)
+    Cookies.set('sidebarStatus', 0)
+    // localStorage.setItem('sidebarStatus', 0)
     state.sidebar.opened = false
     state.sidebar.withoutAnimation = withoutAnimation
   },
@@ -33,8 +34,8 @@ const mutations = {
   },
   SET_SIZE: (state, size) => {
     state.size = size
-    //Cookies.set('size', size)
-    localStorage.setItem('size', size)
+    Cookies.set('size', size)
+    // localStorage.setItem('size', size)
   }
 }
 

@@ -26,8 +26,8 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  //publicPath: './',
- publicPath: process.env.NODE_ENV === 'production'
+  // publicPath: './',
+ publicPath: process.env.NODE_ENV !== 'production'
   ? '/qh-vue/'
   : './',
   outputDir: 'dist',

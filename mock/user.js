@@ -75,7 +75,7 @@ module.exports = [
       }
 
       return {
-        code: 20000,
+        code: 200,
         data: token
       }
     }
@@ -101,7 +101,7 @@ module.exports = [
       }
 
       return {
-        code: 20000,
+        code: 200,
         data: info
       }
     }
@@ -113,7 +113,7 @@ module.exports = [
     type: 'post',
     response: _ => {
       return {
-        code: 20000,
+        code: 200,
         data: 'success'
       }
     }
@@ -128,7 +128,7 @@ module.exports = [
       console.log('mock.js->user/list')
       console.log(userList)
       return{
-        code: 20000,
+        code: 200,
         data: userList
       }
     },
@@ -143,7 +143,7 @@ module.exports = [
       //console.log(config.body)
       userList.push(config.body)
       return {
-        code: 20000,
+        code: 200,
         data: 'success'
       }
     }
@@ -161,14 +161,14 @@ module.exports = [
           userList[userList.indexOf(user)].password = name.password
           console.log(userList)
           return {
-            code: 20000,
+            code: 200,
             data: name
           }
         }
       }
       console.log(userList)
       return {
-        code: 20000,
+        code: 200,
         data: 'Name not found'
       }
     }

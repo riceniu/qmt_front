@@ -51,9 +51,8 @@
         <div class="tips">
           <span>Username : admin</span>
           <span style="margin-right:10px;">Password : any</span>
-          <span>Can add/edit user</span>
         </div>
-        <div class="tips">
+        <!-- <div class="tips">
           <span style="margin-right:18px;">Username : editor</span>
           <span>Password : any</span>
         </div>
@@ -64,7 +63,7 @@
         <div class="tips">
           <span style="margin-right:20px;">Username : diane</span>
           <span>Password : any</span>
-        </div>
+        </div> -->
 
       </div>
     </el-form>

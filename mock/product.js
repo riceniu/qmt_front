@@ -8,7 +8,7 @@ const baseContent =
 const image_uri = "";
 
 //dyanamic productList
-/*
+
 {
   for (let i = 0; i < count; i++) {
     List.push(
@@ -23,10 +23,10 @@ const image_uri = "";
     );
   }
 }
-*/
+
 //constant productList
 
-List.push(...Mocked.product_list);
+//List.push(...Mocked.product_list);
 
 //product price optimization
 /*const correction=[]

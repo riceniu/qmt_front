@@ -145,8 +145,9 @@
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
+          <!-- target="_blank" -->
           <router-link
-            target="_blank"
+            
             :to="'/quote/list/edit/' + scope.row.quoteNumber"
           >
             <el-button type="primary" icon="el-icon-edit" size="mini" />
