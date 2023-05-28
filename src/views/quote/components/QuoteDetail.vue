@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
     <div class="float-button">
+      <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
+        >Save</el-button
+      >
+      <br />
+      <br />
       <el-tooltip
         v-if="isEdit && previousQuote != ''"
         :content="previousQuote"
@@ -34,7 +39,7 @@
       style="margin-right: 30px"
     >
       <el-row>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="Quote No.:" prop="quoteNumber">
             <el-input
               :disabled="isEdit"
@@ -43,7 +48,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="Quote date:" prop="dateQuote">
             <el-date-picker
               v-model="quote.dateQuote"
@@ -54,7 +59,7 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="4">
           <el-form-item label="Owner" prop="owner">
             <el-select
               v-model="quote.owner"
@@ -69,6 +74,22 @@
                 :key="item + index"
                 :label="item"
                 :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="Stage" prop="stage">
+            <el-select
+              v-model="quote.stage"
+              placeholder="Please select"
+              automatic-dropdown
+            >
+              <el-option
+                v-for="item in stageList"
+                :key="item + index"
+                :label="item.label"
+                :value="item.label"
               />
             </el-select>
           </el-form-item>
@@ -264,9 +285,12 @@
             <el-input v-model="quote.validity" />
           </el-form-item>
         </el-col>
-        <el-col :span="7" :offset="3">
+        <el-col :span="11" :offset="3">
           <el-form-item label="Category" class="narrow" prop="category">
-            <el-radio-group v-model="quote.category">
+            <el-radio-group
+              v-model="quote.category"
+              @change="handleCategoryChange"
+            >
               <el-radio
                 :label="item.value"
                 :key="item.value"
@@ -283,12 +307,48 @@
             <el-input v-model="quote.warranty" />
           </el-form-item>
         </el-col>
+        <el-col :span="11" :offset="3">
+          <el-checkbox-group
+            v-if="productList != null"
+            v-model="checkedProducts"
+            @change="handleCheckedProductChange"
+          >
+            <el-checkbox
+              v-for="product in productList"
+              :label="product"
+              :key="product"
+              >{{ product }}</el-checkbox
+            >
+          </el-checkbox-group>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-col
+            :span="12"
+            class="hidden-sm-and-down"
+            :md="6"
+            :lg="6"
+            :xl="6"
+            style="min-height: 1px"
+          ></el-col>
+        </el-col>
 
-        <el-col :span="7" :offset="4">
+        <!-- <el-col :span="7" :offset="4">
           <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
             >Save</el-button
           >
-        </el-col>
+        </el-col> -->
+      </el-row>
+      <el-row>
+        <el-col
+          :span="12"
+          class="hidden-sm-and-down"
+          :md="6"
+          :lg="6"
+          :xl="6"
+          style="min-height: 100px"
+        ></el-col>
       </el-row>
     </el-form>
   </div>
@@ -312,11 +372,21 @@ const CurrencyType = [
   { key: "Euro", value: "Euro" },
 ];
 const CategoryList = [
-  { key: "CFL", value: "CFL", label: "CFL" },
-  { key: "PU", value: "PU", label: "PU" },
-  { key: "DA", value: "DA", label: "DA" },
-  { key: "MOTOR", value: "MOTOR", label: "MOTOR" },
+  {
+    key: "CFL",
+    value: "CFL",
+    label: "CFL",
+    children: ["T-3xx", "T-5XX", "T-9XX", "T-P2X", "Other"],
+  },
+  { key: "PU", value: "PU", label: "PU", children: ["TWFL", "FTR", "GPS"] },
+  { key: "DA", value: "DA", label: "DA",children:["PZG"] },
+  { key: "MOTOR", value: "MOTOR", label: "MOTOR", children: ["SRM", "SyRM"] },
 ];
+const stageList =[
+  {label:"Quotation sent"},
+  {label:"Closed won"},
+  {label:"Closed lost"}
+]
 export default {
   name: "create",
 
@@ -331,6 +401,9 @@ export default {
   },
   data() {
     return {
+      //product & category
+      checkedProducts: [],
+      productList: null,
       //tip for previous/next quote number
       previousQuote: "",
       nextQuote: "",
@@ -338,6 +411,7 @@ export default {
       gotList: false,
       //postForm: Object.assign({}, defaultForm),
       CategoryList,
+      stageList,
       ownerList: [],
       contactOptionList: [],
       companyOptionList: [],
@@ -363,12 +437,16 @@ export default {
         validity: "",
         warranty: "",
         category: "",
+        product: [],
       },
       initQuoteVo: {},
       CurrencyType,
       items: [],
       rules: {
         quoteNumber: [
+          { required: true, message: "This is mandatory", trigger: "blur" },
+        ],
+        stage: [
           { required: true, message: "This is mandatory", trigger: "blur" },
         ],
         dateQuote: [
@@ -428,6 +506,7 @@ export default {
         .substring(0, 10);
       this.latestQuoteNumber();
       this.quote.currency = "USD";
+      this.quote.stage = "Quotation sent"
       console.log(this.quote);
     }
     this.initQuoteVo = Object.assign({}, this.tempQuoteItemQueryVO);
@@ -471,6 +550,16 @@ export default {
           this.items = response.data.itemList;
           this.PassQuoteNumber = this.quote.quoteNumber;
           this.gotList = true;
+
+          //initial productList
+          debugger
+          for (const item of CategoryList) {
+            if (item.value === this.quote.category)
+              this.productList = item.children;
+              this.checkedProducts = this.quote.product.split(",")
+          }
+
+
         })
         .catch((err) => {
           console.log(err);
@@ -651,6 +740,20 @@ export default {
     },
     jump(quote) {
       this.$router.push("/quote/list/edit/" + quote);
+    },
+    //Quote category
+    handleCategoryChange() {
+      for (const item of CategoryList) {
+        if (item.value == this.quote.category) 
+        this.productList = item.children;
+      }
+      console.log(this.CategoryList);
+    },
+    //Detailed product line
+    handleCheckedProductChange() {
+      console.log(this.checkedProducts)
+      this.quote.product = this.checkedProducts.toString()
+      console.log(this.quote.product)
     },
   },
 };

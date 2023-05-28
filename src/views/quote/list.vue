@@ -1,28 +1,89 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.keyWords"
-        placeholder="Search QuoteNumber/company/contact"
-        style="width: 300px"
-        class="filter-item"
-        @input="handleFilter"
-      />
-      <el-date-picker
-        v-model="dateRange"
-        type="daterange"
-        align="right"
-        class="filter-item"
-        unlink-panels
-        range-separator="to"
-        start-placeholder="Start"
-        end-placeholder="End"
-        :picker-options="pickerOptions"
-        @change="dateSelection"
-        value-format="yyyy-MM-dd"
-      >
-      </el-date-picker>
-
+      <el-row
+        ><el-input
+          v-model="listQuery.keyWords"
+          placeholder="Search QuoteNumber/company/contact"
+          style="width: 300px"
+          @input="handleFilter"
+        />
+        <el-date-picker
+          v-model="dateRange"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="to"
+          start-placeholder="Start"
+          end-placeholder="End"
+          :picker-options="pickerOptions"
+          @change="dateSelection"
+          value-format="yyyy-MM-dd"
+        >
+        </el-date-picker>
+        <el-cascader
+          :options="optionsSales"
+          :props="props"
+          collapse-tags
+          clearable
+          placeholder="Sales"
+          @change="handleSalesChange"
+        ></el-cascader>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <div class="block">
+            <el-cascader
+              ref="regionOption"
+              :options="optionsCountry"
+              :props="props"
+              collapse-tags
+              clearable
+              placeholder="Region & country"
+              @focus="fetchOptionsCountry"
+              @change="handelCountryChange"
+            ></el-cascader>
+            <el-cascader
+              ref="catOption"
+              :options="optionsCategory"
+              :props="props"
+              collapse-tags
+              clearable
+              placeholder="Category & product"
+              @change="handelCategoryChange"
+            ></el-cascader>
+            <el-cascader
+              :options="optionsStage"
+              :props="props"
+              collapse-tags
+              clearable
+              placeholder="Deal stage"
+              @change="handelStageChange"
+            ></el-cascader>
+          </div>
+        </el-col>
+        <el-col :span="6" :offset="2">
+          <el-button type="primary" icon="el-icon-search" @click="handleFilter">
+            Search
+          </el-button>
+          <router-link :to="'/quote/new'">
+            <el-button
+              style="margin-left: 10px"
+              type="primary"
+              icon="el-icon-edit"
+            >
+              Add
+            </el-button></router-link
+          >
+          <el-button
+            style="margin-left: 10px"
+            type="primary"
+            @click="handleAll"
+          >
+            Clear filter
+          </el-button></el-col
+        >
+      </el-row>
       <!-- <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
       </el-select>
@@ -32,33 +93,14 @@
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select> -->
-      <el-button
-        class="filter-item"
-        type="primary"
-        icon="el-icon-search"
-        @click="handleFilter"
-      >
-        Search
-      </el-button>
-      <router-link :to="'/quote/new'">
-        <el-button
-          class="filter-item"
-          style="margin-left: 10px"
-          type="primary"
-          icon="el-icon-edit"
-        >
-          Add
-        </el-button></router-link
-      >
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px"
-        type="primary"
-        @click="handleAll"
-      >
-        All
-      </el-button>
     </div>
+    <pagination
+      v-show="total > 0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getList"
+    />
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -113,6 +155,14 @@
         show-overflow-tooltip
       />
       <el-table-column
+        prop="stage"
+        label="Stage"
+        align="left"
+        width="100"
+        sortable
+        show-overflow-tooltip
+      />
+      <el-table-column
         prop="contact"
         label="Contact"
         align="left"
@@ -125,6 +175,22 @@
         label="Company"
         align="left"
         width="175"
+        sortable
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="region"
+        label="Region"
+        align="left"
+        width="120"
+        sortable
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="country"
+        label="Country"
+        align="left"
+        width="120"
         sortable
         show-overflow-tooltip
       />
@@ -145,10 +211,8 @@
 
       <el-table-column align="center" label="Actions" width="120">
         <template slot-scope="scope">
-          <router-link
-            target="_blank"
-            :to="'/quote/list/edit/' + scope.row.quoteNumber"
-          >
+          <!-- target="_blank" -->
+          <router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">
             <el-button type="primary" icon="el-icon-edit" size="mini" />
           </router-link>
           <el-button
@@ -179,7 +243,7 @@
 </template>
   
   <script>
-import { fetchList, deleteQuote } from "@/api/quote";
+import { fetchList, deleteQuote, optionsCountry } from "@/api/quote";
 import Pagination from "@/components/Pagination"; // Secondary package based on el-pagination
 
 export default {
@@ -187,6 +251,65 @@ export default {
   components: { Pagination },
   data() {
     return {
+      //filter related parameters
+      props: { multiple: true },
+      optionsCountry: [],
+      optionsSales: [
+        { value: "Diane", label: "Diane" },
+        { value: "Bill", label: "Bill" },
+        { value: "Rafik", label: "Rafik" },
+        { value: "Tarek", label: "Tarek" },
+        { value: "Syed", label: "Syed" },
+      ],
+      optionsCategory: [
+        {
+          value: "CFL",
+          label: "CFL",
+          children: [
+            {
+              value: "CFL-set",
+              label: "CFL-set",
+              children: [
+                { value: "T-305E", label: "T-305E" },
+                { value: "T-506", label: "T-506" },
+                { value: "T-907", label: "T-907" },
+              ],
+            },
+            {
+              value: "T-P2x",
+              label: "T-P2x",
+              children: [
+                { value: "T-P22", label: "T-P22" },
+                { value: "T-P23", label: "T-P23" },
+                { value: "Accesories", label: "Accesories" },
+              ],
+            },
+          ],
+        },
+        {
+          value: "PU",
+          label: "PU",
+          children: [
+            { value: "TWFL", label: "TWFL" },
+            { value: "FTR", label: "FTR" },
+            { value: "GPS", label: "GPS" },
+          ],
+        },
+        { value: "DA", label: "DA" },
+        {
+          value: "MOTOR",
+          label: "MOTOR",
+          children: [
+            { value: "SRD", label: "SRD" },
+            { value: "SyRM", label: "SyRM" },
+          ],
+        },
+      ],
+      optionsStage: [
+        { value: "Win", label: "Win" },
+        { value: "Lost", label: "Lost" },
+        { value: "Quotation sent", label: "Quotation sent" },
+      ],
       pickerOptions: {
         shortcuts: [
           {
@@ -228,6 +351,10 @@ export default {
         orderBy: "",
         start: "",
         end: "",
+        owner: "",
+        stage: "",
+        product: "",
+        region: "",
       },
       dateRange: [],
     };
@@ -321,8 +448,12 @@ export default {
         orderBy: "",
         start: "",
         end: "",
+        owner: "",
+        stage: "",
+        product: "",
+        region: "",
       };
-      this.dateRange=[];
+      this.dateRange = [];
       this.getList();
     },
     dateSelection() {
@@ -330,6 +461,54 @@ export default {
       this.listQuery.end = this.dateRange[1];
       this.getList();
       console.log(this.dateRange);
+    },
+    //fetch filter options
+    async fetchOptionsCountry() {
+      const res = await optionsCountry();
+      let area = res.data;
+
+      for (let key in area) {
+        //console.log(key,area[key])
+        this.optionsCountry.push({ label: key, value: key, children: [] });
+        let countries = [];
+        for (let country of area[key]) {
+          countries.push({
+            label: country,
+            value: country,
+          });
+        }
+        this.optionsCountry[this.optionsCountry.length - 1].children = [
+          ...countries,
+        ];
+      }
+      console.log(this.optionsCountry);
+      //console.log(res.data);
+      //this.optionsCountry
+    },
+    //handle filter
+    handelCountryChange(val) {
+      this.listQuery.region = val.toString();
+      this.getList();
+      console.log(val);
+    },
+    handelCategoryChange() {
+      //console.log(this.$refs.catOption.getCheckedNodes().map(v=>v.value));
+      this.listQuery.product = this.$refs.catOption
+        .getCheckedNodes()
+        .map((v) => v.value)
+        .toString();
+      console.log(this.listQuery.product);
+      this.getList();
+    },
+    handelStageChange(val) {
+      this.listQuery.stage = val.toString()
+      this.getList()
+      console.log(val)
+    },
+    handleSalesChange(val) {
+      this.listQuery.owner = val.toString();
+      this.getList();
+      console.log(val);
     },
   },
 };
