@@ -1,16 +1,16 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout'
+import Layout from "@/layout";
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+import componentsRouter from "./modules/components";
+import chartsRouter from "./modules/charts";
+import tableRouter from "./modules/table";
+import nestedRouter from "./modules/nested";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -40,122 +40,136 @@ import nestedRouter from './modules/nested'
  */
 export const constantRoutes = [
   {
-    path: '/redirect',
+    path: "/redirect",
     component: Layout,
     hidden: true,
     children: [
       {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
+        path: "/redirect/:path(.*)",
+        component: () => import("@/views/redirect/index"),
+      },
+    ],
   },
   {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
+    path: "/login",
+    component: () => import("@/views/login/index"),
+    hidden: true,
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
+    path: "/auth-redirect",
+    component: () => import("@/views/login/auth-redirect"),
+    hidden: true,
   },
   {
-    path: '/404',
-    component: () => import('@/views/error-page/404'),
-    hidden: true
+    path: "/404",
+    component: () => import("@/views/error-page/404"),
+    hidden: true,
   },
   {
-    path: '/401',
-    component: () => import('@/views/error-page/401'),
-    hidden: true
+    path: "/401",
+    component: () => import("@/views/error-page/401"),
+    hidden: true,
   },
   {
-    path: '',
+    path: "",
     component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Home page', icon: 'dashboard' }
-    }]
+    redirect: "/dashboard",
+    children: [
+      {
+        path: "dashboard",
+        name: "Dashboard",
+        component: () => import("@/views/dashboard/index"),
+        meta: { title: "Home page", icon: "dashboard" },
+      },
+    ],
   },
 
   {
-    path: '/quote/new',
+    path: "/quote/new",
     component: Layout,
     children: [
       {
-        path: '',
-        name: 'CreateQuote',
-        component: () => import('@/views/quote/create'),
-        meta: { title: 'New quote', icon: 'el-icon-document' }
-      }
-    ]
+        path: "",
+        name: "CreateQuote",
+        component: () => import("@/views/quote/create"),
+        meta: { title: "New quote", icon: "el-icon-document" },
+      },
+    ],
   },
   {
-    path: '/quote/list',
+    path: "/quote/list",
     component: Layout,
     children: [
       {
-        path: '',
-        name: 'QuoteList',
-        component: () => import('@/views/quote/list'),
-        meta: { title: 'Quotes', icon: 'list'  },
+        path: "",
+        name: "QuoteList",
+        component: () => import("@/views/quote/list"),
+        meta: { title: "Quotes", icon: "list" },
       },
       {
-        path: 'edit/:id',
-        name: 'EditQuote',
-        component: () => import('@/views/quote/edit'),
-        meta: { title: 'Edit', icon: 'el-icon-document'},
-        hidden:true
-      }
-    ]
+        path: "edit/:id",
+        name: "EditQuote",
+        component: () => import("@/views/quote/edit"),
+        meta: { title: "Edit", icon: "el-icon-document" },
+        hidden: true,
+      },
+    ],
   },
-  
-
   {
-    path: '/customer',
+    path: "/quote/print",
     component: Layout,
-    name: 'Customer',
-    meta: { title: 'Customer', icon: 'el-icon-connection' },
-    alwaysShow:true,
     children: [
       {
-        path: 'company',
-        name: 'Company',
-        component: () => import('@/views/customer/company'),
-        meta: { title: 'Company', icon: 'el-icon-office-building' }
+        path: ":id",
+        name: "Print",
+        component: () => import("@/views/print/index"),
+        meta: { title: "Print", icon: "el-icon-document" },
+        hidden: true,
       },
-      {
-        path: 'contact',
-        name: 'Contact',
-        component: () => import('@/views/customer/contact'),
-        meta: { title: 'Contact', icon: 'el-icon-user' }
-      }
-    ]
+    ],
   },
 
   {
-    path: '/product',
+    path: "/customer",
     component: Layout,
-    redirect: '/product/list',
-    name: 'Product',
+    name: "Customer",
+    meta: { title: "Customer", icon: "el-icon-connection" },
+    alwaysShow: true,
+    children: [
+      {
+        path: "company",
+        name: "Company",
+        component: () => import("@/views/customer/company"),
+        meta: { title: "Company", icon: "el-icon-office-building" },
+      },
+      {
+        path: "contact",
+        name: "Contact",
+        component: () => import("@/views/customer/contact"),
+        meta: { title: "Contact", icon: "el-icon-user" },
+      },
+    ],
+  },
+
+  {
+    path: "/product",
+    component: Layout,
+    redirect: "/product/list",
+    name: "Product",
     meta: {
-      title: 'Product',
-      icon: 'el-icon-collection'
+      title: "Product",
+      icon: "el-icon-collection",
     },
     children: [
       {
-        path: 'list',
-        component: () => import('@/views/product/list'),
-        name: 'ProductList',
-        meta: { title: 'Product list', icon: 'el-icon-collection' }
-      }
-    ]
+        path: "list",
+        component: () => import("@/views/product/list"),
+        name: "ProductList",
+        meta: { title: "Product list", icon: "el-icon-collection" },
+      },
+    ],
   },
-]
+];
 
 /**
  * asyncRoutes
@@ -163,16 +177,16 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
-    path: '/user',
+    path: "/user",
     component: Layout,
-    meta:{roles:['admin']},
+    meta: { roles: ["admin"] },
     children: [
       {
-        path: 'list',
-        component: () => import('@/views/user/list'),
-        name: 'UserLIst',
-        meta: { title: 'User List', icon: 'el-icon-service' },
-       }
+        path: "list",
+        component: () => import("@/views/user/list"),
+        name: "UserLIst",
+        meta: { title: "User List", icon: "el-icon-service" },
+      },
       // {
       //   path: 'edit/:id(\\d+)',
       //   component: () => import('@/views/user/edit'),
@@ -186,7 +200,7 @@ export const asyncRoutes = [
       //   name: 'UserList',
       //   meta: { title: 'User List', icon: 'list' }
       // }
-    ]
+    ],
   },
 
   // {
@@ -444,22 +458,23 @@ export const asyncRoutes = [
   // },
 
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
-]
+  { path: "*", redirect: "/404", hidden: true },
+];
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  mode :'hash',
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    mode: "hash",
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes,
+  });
 
-const router = createRouter()
+const router = createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;

@@ -209,11 +209,14 @@
         width="100"
       />
 
-      <el-table-column align="center" label="Actions" width="120">
+      <el-table-column align="center" label="Actions" width="180">
         <template slot-scope="scope">
           <!-- target="_blank" -->
           <router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">
             <el-button type="primary" icon="el-icon-edit" size="mini" />
+          </router-link>
+          <router-link :to="'/quote/print/' + scope.row.quoteNumber">
+            <el-button type="success" icon="el-icon-printer" size="mini" />
           </router-link>
           <el-button
             type="danger"

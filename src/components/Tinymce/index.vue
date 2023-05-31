@@ -133,6 +133,8 @@ export default {
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        visual:false,
+        fontsize_formats: '11px 12px 14px 16px 18px 24px 36px 48px',
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)
