@@ -4,6 +4,7 @@
       <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
         >Save</el-button
       >
+      
       <br />
       <br />
       <el-tooltip
@@ -86,7 +87,7 @@
               automatic-dropdown
             >
               <el-option
-                v-for="item in stageList"
+                v-for="(item, index) in stageList"
                 :key="item + index"
                 :label="item.label"
                 :value="item.label"
@@ -365,7 +366,10 @@ import {
   checkContext,
 } from "@/api/quote";
 import { remoteSearch as remoteSearchUser } from "@/api/user";
-import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
+//import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
+import {checkExisting} from "@/api/customer";
+import { remoteSearchCompany, remoteSearchContact } from "@/api/hubspot";
+
 const CurrencyType = [
   { key: "USD", value: "USD" },
   { key: "GBP", value: "GBP" },
@@ -379,14 +383,14 @@ const CategoryList = [
     children: ["T-3xx", "T-5XX", "T-9XX", "T-P2X", "Other"],
   },
   { key: "PU", value: "PU", label: "PU", children: ["TWFL", "FTR", "GPS"] },
-  { key: "DA", value: "DA", label: "DA",children:["PZG"] },
+  { key: "DA", value: "DA", label: "DA", children: ["PZG"] },
   { key: "MOTOR", value: "MOTOR", label: "MOTOR", children: ["SRM", "SyRM"] },
 ];
-const stageList =[
-  {label:"Quotation sent"},
-  {label:"Closed won"},
-  {label:"Closed lost"}
-]
+const stageList = [
+  { label: "Quotation sent" },
+  { label: "Closed won" },
+  { label: "Closed lost" },
+];
 export default {
   name: "create",
 
@@ -481,6 +485,8 @@ export default {
       quoteItem: {
         quotenumber: "",
       },
+      contact:{},
+      company:{},
       PassQuoteNumber: "",
       subtotal: 0,
       tempQuoteItemQueryVO: "",
@@ -506,7 +512,7 @@ export default {
         .substring(0, 10);
       this.latestQuoteNumber();
       this.quote.currency = "USD";
-      this.quote.stage = "Quotation sent"
+      this.quote.stage = "Quotation sent";
       console.log(this.quote);
     }
     this.initQuoteVo = Object.assign({}, this.tempQuoteItemQueryVO);
@@ -552,14 +558,11 @@ export default {
           this.gotList = true;
 
           //initial productList
-          debugger
           for (const item of CategoryList) {
             if (item.value === this.quote.category)
               this.productList = item.children;
-              this.checkedProducts = this.quote.product.split(",")
+            this.checkedProducts = this.quote.product.split(",");
           }
-
-
         })
         .catch((err) => {
           console.log(err);
@@ -575,6 +578,7 @@ export default {
       });
     },
     async addQuote() {
+      //check if quote number already exists
       let res = await checkQuoteNumber({ quotenumber: this.quote.quoteNumber });
       let exist = res.data === "EXIST" ? true : false;
       console.log(exist);
@@ -588,8 +592,7 @@ export default {
         this.$refs["quote"].validate((valid) => {
           console.log(valid);
           if (valid) {
-            //check if quote number already exists
-
+            this.checkCustomerIfExisting();
             this.quote.company = this.quote.companyId;
             this.quote.contact = this.quote.contactId;
             let quotedata = {
@@ -618,6 +621,7 @@ export default {
         if (valid) {
           console.log("editQuote");
           console.log(this.quote);
+          this.checkCustomerIfExisting();
           this.quote.company = this.quote.companyId;
           this.quote.contact = this.quote.contactId;
           let quotedata = {
@@ -684,11 +688,21 @@ export default {
       this.loading = true;
       remoteSearchContact(query)
         .then((response) => {
+          //local research
+          //if (!response.data) return;
+          // this.contactOptionList = response.data.map((v) => ({
+          //   contactId: v.id,
+          //   contactName: v.firstname + " " + v.lastname,
+          // }));
+
+          //remote Search
           if (!response.data) return;
-          this.contactOptionList = response.data.map((v) => ({
+          this.contactOptionList = response.data.results.map((v) => ({
             contactId: v.id,
-            contactName: v.firstname + " " + v.lastname,
+            contactName: v.properties.firstname + " " + v.properties.lastname + " " +v.properties.email,
+            contactItem : v.properties
           }));
+          
           console.log(this.contactOptionList);
         })
         .then((this.loading = false));
@@ -698,9 +712,18 @@ export default {
       remoteSearchCompany(query)
         .then((response) => {
           if (!response.data) return;
-          this.companyOptionList = response.data.map((v) => ({
+
+          // local database
+          // this.companyOptionList = response.data.map((v) => ({
+          //   companyId: v.id,
+          //   company: v.company,
+          // }));
+
+          //Remote from HubSpot
+          this.companyOptionList = response.data.results.map((v) => ({
             companyId: v.id,
-            company: v.company,
+            company: v.properties.name,
+            companyItem : v.properties
           }));
           console.log(this.companyOptionList);
         })
@@ -721,12 +744,14 @@ export default {
       console.log(e);
       this.quote.contact = e.contactName;
       this.quote.contactId = e.contactId;
+      this.contact = e.contactItem;
       console.log(this.quote);
     },
     selectCompany(e) {
       console.log(e);
       this.quote.company = e.company;
       this.quote.companyId = e.companyId;
+      this.company = e.companyItem
       console.log(this.quote);
     },
     async remoteCheckContext(quotenumber) {
@@ -744,17 +769,25 @@ export default {
     //Quote category
     handleCategoryChange() {
       for (const item of CategoryList) {
-        if (item.value == this.quote.category) 
-        this.productList = item.children;
+        if (item.value == this.quote.category) this.productList = item.children;
       }
       console.log(this.CategoryList);
     },
     //Detailed product line
     handleCheckedProductChange() {
-      console.log(this.checkedProducts)
-      this.quote.product = this.checkedProducts.toString()
-      console.log(this.quote.product)
+      console.log(this.checkedProducts);
+      this.quote.product = this.checkedProducts.toString();
+      console.log(this.quote.product);
     },
+    //check if customer information is already instored in Local DB
+    checkCustomerIfExisting(){
+      let query = {
+        company:this.company,
+        contact:this.contact
+      }
+      console.log(query)
+      const res = checkExisting(query);
+    }
   },
 };
 </script>
