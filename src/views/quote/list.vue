@@ -460,10 +460,15 @@ export default {
       this.getList();
     },
     dateSelection() {
-      this.listQuery.start = this.dateRange[0];
-      this.listQuery.end = this.dateRange[1];
+      if (this.dateRange) {
+        this.listQuery.start = this.dateRange[0];
+        this.listQuery.end = this.dateRange[1];
+      } else {
+        this.listQuery.start = "";
+        this.listQuery.end = "";
+      }
       this.getList();
-      console.log(this.dateRange);
+      //console.log(this.dateRange);
     },
     //fetch filter options
     async fetchOptionsCountry() {
@@ -504,9 +509,9 @@ export default {
       this.getList();
     },
     handelStageChange(val) {
-      this.listQuery.stage = val.toString()
-      this.getList()
-      console.log(val)
+      this.listQuery.stage = val.toString();
+      this.getList();
+      console.log(val);
     },
     handleSalesChange(val) {
       this.listQuery.owner = val.toString();
