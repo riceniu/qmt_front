@@ -86,3 +86,19 @@ export function checkContext(query) {
     params: query
   })
 }
+
+export function optionsCountry() {
+  return request({
+    url: '/vue-element-admin/quote/optionsCountry',
+    method: 'get', 
+  })
+}
+
+//HubSpot API, failed cause Hubspot can not access AJAX request
+export default function HubSpotAPItest(query){
+  return serviceHS.request({
+    url: '/v3/objects/contacts',
+    method: 'get',
+    params: query
+  });
+}
