@@ -4,9 +4,8 @@ export default function getContent(VO) {
   //console.log(quoteItems[0]);
   console.log(quote);
 
-  let returnMsg = `<p style="text-align: right;"><span style="font-family: arial, helvetica, sans-serif;"><img
-    src="https://kehui.wpenginepowered.com/wp-content/uploads/2018/08/kehuilogo2.svg" width="130" /></span></p>
-    <hr />
+  let returnMsg = `
+    <div class="box" ref="box">
     <table style="border-collapse: collapse; width: 100%; height: 22.3281px; border-style: hidden;" border="0">
     <tbody>
     <tr >
@@ -170,26 +169,11 @@ export default function getContent(VO) {
     </tbody>
   </table>
   <p><span style="font-family: arial, helvetica, sans-serif;">${quote.ending}</span></p>
-  <img
-    src="https://fraguru.com/mdimg/dizajneri/o.4091.jpg" width="130" />
     
   <div><span style="font-family: arial, helvetica, sans-serif; ">${quote.owner}</span></div>
   <div><span style="font-family: arial, helvetica, sans-serif; ">International Sales Support | Kehui International</span></div>
-  <hr />
-  <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;"><strong>Kehui
-              International Ltd</strong></span></div>
-  <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">2 Centrus,
-          Mead
-          Lane, Hertford, Hertfordshire, SG13 7GX, UK</span></div>
-  <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">Tel: +44 (0)
-          1920 358990&nbsp;&nbsp;&nbsp; Email: <a style ="color: #0000ff;" href="mailto:info@kehui.com">info@kehui.com</a>&nbsp;&nbsp;&nbsp;&nbsp;
-          <a style ="color: #0000ff;" href="http://www.kehui.com">www.kehui.com</a></span></div>
-  <div style="text-align: center"><span style="font-family: arial, helvetica, sans-serif ;font-size: 10px;">Company Reg
-          No.
-          10283200&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-          &nbsp; &nbsp; &nbsp; VAT No. 287095855</span>
-  </div>`
+  </div>
+ `
   
   ;
 

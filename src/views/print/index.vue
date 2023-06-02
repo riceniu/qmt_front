@@ -1,7 +1,11 @@
 <template>
   <div class="components-container">
+    <!-- <div>
+      <Editor v-model="content"></Editor>
+    </div> -->
+    <div><APP v-model="content" :QN='QN'></APP></div>
     <div>
-      <tinymce v-model="content" :height="300" />
+      <tinymce v-model="tinycontent" :height="300" />
     </div>
     <!-- <div class="editor-content" v-html="content"></div> -->
   </div>
@@ -9,17 +13,20 @@
 
 <script>
 import Tinymce from "@/components/Tinymce";
-import getContent from "../print/2Html"
-import {
-  fetchQuoteItems,
-} from "@/api/quote";
+import Editor from "@/components/canvas-editor";
+import getContent from "../print/2Html";
+import APP from "@/components/jsdocx";
+import { fetchQuoteItems } from "@/api/quote";
+import "./HtmlExportToWord";
 
 export default {
-  name: "TinymceDemo",
-  components: { Tinymce },
+  name: "PrintEditor",
+  components: { Tinymce, Editor, APP },
   data() {
     return {
-      content:"",
+      content: "",
+      tinycontent: "",
+      QN: "",
       quote: {
         quoteNumber: "",
         currency: "",
@@ -47,14 +54,15 @@ export default {
       quoteItem: {
         quotenumber: "",
       },
-      tempQuoteItemQueryVO:""
-    }
+      tempQuoteItemQueryVO: "",
+    };
   },
-  created(){
-    this.fetchDate(this.$route.params.id)
+  created() {
+    this.QN = this.$route.params.id;
+    this.fetchDate(this.QN);
     //console.log(this.content)
   },
-  methods:{
+  methods: {
     fetchDate(quotenumber) {
       console.log("fetch");
       console.log(quotenumber);
@@ -67,7 +75,27 @@ export default {
           // this.items = response.data.itemList;
           // this.PassQuoteNumber = this.quote.quoteNumber;
           // this.gotList = true;
-          this.content=getContent(response.data)
+          this.content = getContent(response.data);
+          this.tinycontent =
+            `<p style="text-align: right;"><span style="font-family: arial, helvetica, sans-serif;"><img
+            src="https://kehui.wpenginepowered.com/wp-content/uploads/2018/08/kehuilogo2.svg" width="130" /></span></p>
+            <hr />` +
+            this.content +
+            `<hr />
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;"><strong>Kehui
+                        International Ltd</strong></span></div>
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">2 Centrus,
+                    Mead
+                    Lane, Hertford, Hertfordshire, SG13 7GX, UK</span></div>
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">Tel: +44 (0)
+                    1920 358990&nbsp;&nbsp;&nbsp; Email: <a style ="color: #0000ff;" href="mailto:info@kehui.com">info@kehui.com</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a style ="color: #0000ff;" href="http://www.kehui.com">www.kehui.com</a></span></div>
+            <div style="text-align: center"><span style="font-family: arial, helvetica, sans-serif ;font-size: 10px;">Company Reg
+                    No.
+                    10283200&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; VAT No. 287095855</span>
+            </div>`;
           //initial productList
 
           // for (const item of CategoryList) {
@@ -80,12 +108,12 @@ export default {
           console.log(err);
         });
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
-.editor-content{
+.editor-content {
   margin-top: 20px;
 }
 </style>
