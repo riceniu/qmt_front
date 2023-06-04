@@ -1,12 +1,22 @@
 <template>
   <div class="app-container">
     <div class="float-button">
-      <el-button type="success" @click="isEdit ? editQuote() : addQuote()"
+      <el-button
+        type="primary"
+        icon="el-icon-edit"
+        @click="isEdit ? editQuote() : addQuote()"
         >Save</el-button
       >
-      
+      <router-link v-if="isEdit" :to="'/quote/print/'+$route.params.id"
+        ><el-button
+          type="success"
+          icon="el-icon-printer"
+          >Print</el-button
+        ></router-link
+      >
       <br />
       <br />
+
       <el-tooltip
         v-if="isEdit && previousQuote != ''"
         :content="previousQuote"
@@ -14,7 +24,7 @@
       >
         <el-button
           icon="el-icon-arrow-left"
-          type="primary"
+          type=""
           @click="jump(previousQuote)"
           >Previous</el-button
         >
@@ -24,10 +34,7 @@
         :content="nextQuote"
         placement="top-end"
       >
-        <el-button
-          icon="el-icon-arrow-right"
-          type="primary"
-          @click="jump(nextQuote)"
+        <el-button icon="el-icon-arrow-right" type="" @click="jump(nextQuote)"
           >Next</el-button
         >
       </el-tooltip>
@@ -367,7 +374,7 @@ import {
 } from "@/api/quote";
 import { remoteSearch as remoteSearchUser } from "@/api/user";
 //import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
-import {checkExisting} from "@/api/customer";
+import { checkExisting } from "@/api/customer";
 import { remoteSearchCompany, remoteSearchContact } from "@/api/hubspot";
 
 const CurrencyType = [
@@ -485,8 +492,8 @@ export default {
       quoteItem: {
         quotenumber: "",
       },
-      contact:{},
-      company:{},
+      contact: {},
+      company: {},
       PassQuoteNumber: "",
       subtotal: 0,
       tempQuoteItemQueryVO: "",
@@ -699,10 +706,15 @@ export default {
           if (!response.data) return;
           this.contactOptionList = response.data.results.map((v) => ({
             contactId: v.id,
-            contactName: v.properties.firstname + " " + v.properties.lastname + " " +v.properties.email,
-            contactItem : v.properties
+            contactName:
+              v.properties.firstname +
+              " " +
+              v.properties.lastname +
+              " " +
+              v.properties.email,
+            contactItem: v.properties,
           }));
-          
+
           console.log(this.contactOptionList);
         })
         .then((this.loading = false));
@@ -723,7 +735,7 @@ export default {
           this.companyOptionList = response.data.results.map((v) => ({
             companyId: v.id,
             company: v.properties.name,
-            companyItem : v.properties
+            companyItem: v.properties,
           }));
           console.log(this.companyOptionList);
         })
@@ -751,7 +763,7 @@ export default {
       console.log(e);
       this.quote.company = e.company;
       this.quote.companyId = e.companyId;
-      this.company = e.companyItem
+      this.company = e.companyItem;
       console.log(this.quote);
     },
     async remoteCheckContext(quotenumber) {
@@ -780,14 +792,14 @@ export default {
       console.log(this.quote.product);
     },
     //check if customer information is already instored in Local DB
-    checkCustomerIfExisting(){
+    checkCustomerIfExisting() {
       let query = {
-        company:this.company,
-        contact:this.contact
-      }
-      console.log(query)
+        company: this.company,
+        contact: this.contact,
+      };
+      console.log(query);
       const res = checkExisting(query);
-    }
+    },
   },
 };
 </script>

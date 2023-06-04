@@ -3,7 +3,14 @@
     <!-- <div>
       <Editor v-model="content"></Editor>
     </div> -->
-    <div><APP v-model="content" :QN='QN'></APP></div>
+    <div class="float-button">
+      <el-tooltip content="Back to Quote List" placement="top-end">
+        <el-button icon="el-icon-arrow-left" type="primary" @click="jump()"
+          >Back </el-button
+        >
+      </el-tooltip>
+    </div>
+    <div><APP v-model="content" :QN="QN"></APP></div>
     <div>
       <tinymce v-model="tinycontent" :height="300" />
     </div>
@@ -108,11 +115,21 @@ export default {
           console.log(err);
         });
     },
+    jump() {
+    this.$router.push("/quote/list/");
   },
+  },
+
 };
 </script>
 
 <style scoped>
+.float-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+}
 .editor-content {
   margin-top: 20px;
 }

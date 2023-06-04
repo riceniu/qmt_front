@@ -116,7 +116,11 @@
         width="120"
         sortable
         show-overflow-tooltip
-      />
+        ><template slot-scope="scope"
+          ><router-link
+            :to="'/quote/list/edit/' + scope.row.quoteNumber"
+          >{{ scope.row.quoteNumber }}</router-link></template
+      ></el-table-column>
       <el-table-column
         prop="dateQuote"
         label="Date"
@@ -213,17 +217,22 @@
         <template slot-scope="scope">
           <!-- target="_blank" -->
           <router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">
-            <el-button type="primary" icon="el-icon-edit" size="mini" />
+            <el-tooltip content="Edit" placement="top-end">
+              <el-button type="primary" icon="el-icon-edit" size="mini" />
+            </el-tooltip>
           </router-link>
           <router-link :to="'/quote/print/' + scope.row.quoteNumber">
-            <el-button type="success" icon="el-icon-printer" size="mini" />
+            <el-tooltip content="Print" placement="top-end">
+              <el-button type="success" icon="el-icon-printer" size="mini" />
+            </el-tooltip>
           </router-link>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="handleDelete(scope.row)"
-          />
+          <el-tooltip content="Delete" placement="top-end"
+            ><el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="handleDelete(scope.row)"
+          /></el-tooltip>
         </template>
       </el-table-column>
     </el-table>
