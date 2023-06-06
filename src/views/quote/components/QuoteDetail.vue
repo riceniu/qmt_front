@@ -5,18 +5,22 @@
         type="primary"
         icon="el-icon-edit"
         @click="isEdit ? editQuote() : addQuote()"
+        :disabled="!dataChanged"
         >Save</el-button
       >
-      <router-link v-if="isEdit" :to="'/quote/print/'+$route.params.id"
-        ><el-button
-          type="success"
-          icon="el-icon-printer"
-          >Print</el-button
-        ></router-link
+      <el-button
+        v-if="isEdit"
+        type="success"
+        icon="el-icon-printer"
+        :disabled="dataChanged"
+        @click="jumpToPrint"
+        >Print</el-button
       >
       <br />
       <br />
-
+      <el-tooltip content="Back to list" placement="top-end">
+        <el-button type="" @click="jumpToList()">Back</el-button>
+      </el-tooltip>
       <el-tooltip
         v-if="isEdit && previousQuote != ''"
         :content="previousQuote"
@@ -67,37 +71,23 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="8">
           <el-form-item label="Owner" prop="owner">
             <el-select
               v-model="quote.owner"
               filterable
               remote
+              loading-text="loading from HubSpot"
               :remote-method="getUserList"
               placeholder="Please select"
+              @change="updateOwner"
               automatic-dropdown
             >
               <el-option
-                v-for="(item, index) in ownerList"
-                :key="item + index"
-                :label="item"
+                v-for="item in ownerList"
+                :key="item.id"
+                :label="item.firstName + ' ' + item.lastName"
                 :value="item"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="Stage" prop="stage">
-            <el-select
-              v-model="quote.stage"
-              placeholder="Please select"
-              automatic-dropdown
-            >
-              <el-option
-                v-for="(item, index) in stageList"
-                :key="item + index"
-                :label="item.label"
-                :value="item.label"
               />
             </el-select>
           </el-form-item>
@@ -105,17 +95,19 @@
       </el-row>
 
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <!-- <el-form-item label="Contact" prop="contact">
             <el-input v-model="quote.contact" />
           </el-form-item> -->
           <el-form-item label="Contact" prop="contact">
             <el-select
+              :clearable="true"
               v-model="quote.contact"
               @change="selectContact"
               value-key="id"
               filterable
               remote
+              :loading="loading"
               :remote-method="getContactList"
               placeholder="Please select"
               default-first-option
@@ -131,7 +123,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
+        <el-col :span="6">
           <!-- <el-form-item label="Company" prop="company">
             <el-input type="textarea" v-model="quote.company" />
           </el-form-item> -->
@@ -152,6 +144,22 @@
                 :key="item.companyId"
                 :label="item.company"
                 :value="item"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="Stage" prop="stage">
+            <el-select
+              v-model="quote.stage"
+              placeholder="Please select"
+              automatic-dropdown
+            >
+              <el-option
+                v-for="(item, index) in stageList"
+                :key="item + index"
+                :label="item.label"
+                :value="item.label"
               />
             </el-select>
           </el-form-item>
@@ -294,7 +302,33 @@
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="3">
-          <el-form-item label="Category" class="narrow" prop="category">
+          <el-form-item label="Product" prop="product">
+            <el-select
+              multiple
+              collapse-tags
+              filterable
+              clearable
+              v-model="checkedProduct"
+              placeholder=""
+              @focus="fetchCatalog"
+              @change="handleSelectProduct"
+            >
+              <el-checkbox-group v-model="checkedProduct">
+                <el-option
+                  v-for="item in HS_Products"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value"
+                >
+                  <el-checkbox
+                    style="pointer-events: none"
+                    :label="item.value"
+                  ></el-checkbox>
+                </el-option>
+              </el-checkbox-group> </el-select
+          ></el-form-item>
+
+          <!-- <el-form-item label="Category" class="narrow" prop="category">
             <el-radio-group
               v-model="quote.category"
               @change="handleCategoryChange"
@@ -306,7 +340,7 @@
                 >{{ item.label }}</el-radio
               >
             </el-radio-group>
-          </el-form-item>
+          </el-form-item> -->
         </el-col>
       </el-row>
       <el-row>
@@ -316,7 +350,32 @@
           </el-form-item>
         </el-col>
         <el-col :span="11" :offset="3">
-          <el-checkbox-group
+          <el-form-item label="Group" class="narrow" prop="category">
+            <el-select
+              multiple
+              collapse-tags
+              filterable
+              clearable
+              v-model="checkedGroup"
+              placeholder=""
+              @focus="fetchCatalog"
+              @change="handleSelectGroup"
+            >
+              <el-checkbox-group v-model="checkedGroup">
+                <el-option
+                  v-for="item in HS_Product_Group"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.label"
+                >
+                  <el-checkbox
+                    style="pointer-events: none"
+                    :label="item.value"
+                  ></el-checkbox>
+                </el-option>
+              </el-checkbox-group> </el-select
+          ></el-form-item>
+          <!-- <el-checkbox-group
             v-if="productList != null"
             v-model="checkedProducts"
             @change="handleCheckedProductChange"
@@ -327,7 +386,7 @@
               :key="product"
               >{{ product }}</el-checkbox
             >
-          </el-checkbox-group>
+          </el-checkbox-group> -->
         </el-col>
       </el-row>
       <el-row>
@@ -339,7 +398,28 @@
             :lg="6"
             :xl="6"
             style="min-height: 1px"
-          ></el-col>
+          >
+            <el-form-item
+              label="Deal in HubSpot?"
+              label-width="200px"
+              v-if="isEdit"
+            >
+              <el-button
+                v-if="quote.inHubSpotDeal != 0"
+                type="primary"
+                :disabled="true"
+                >Yes, HubSpot id {{ quote.inHubSpotDeal }}</el-button
+              >
+              <el-button
+                v-if="quote.inHubSpotDeal == 0"
+                type="success"
+                :disabled="dataChanged"
+                @click="uploadDeal"
+              >
+                Not yet, click to upload</el-button
+              >
+            </el-form-item></el-col
+          >
         </el-col>
 
         <!-- <el-col :span="7" :offset="4">
@@ -373,30 +453,39 @@ import {
   checkContext,
 } from "@/api/quote";
 import { remoteSearch as remoteSearchUser } from "@/api/user";
-//import { remoteSearchCompany, remoteSearchContact } from "@/api/customer";
-import { checkExisting } from "@/api/customer";
-import { remoteSearchCompany, remoteSearchContact } from "@/api/hubspot";
+import {
+  remoteSearchCompany,
+  remoteSearchContact,
+  productCatalog,
+  getHSOwnerList,
+  checkExisting,
+  postDeal,
+  
+} from "@/api/hubspot";
+
+import getContent from "../../print/2Html";
 
 const CurrencyType = [
   { key: "USD", value: "USD" },
   { key: "GBP", value: "GBP" },
   { key: "Euro", value: "Euro" },
 ];
-const CategoryList = [
-  {
-    key: "CFL",
-    value: "CFL",
-    label: "CFL",
-    children: ["T-3xx", "T-5XX", "T-9XX", "T-P2X", "Other"],
-  },
-  { key: "PU", value: "PU", label: "PU", children: ["TWFL", "FTR", "GPS"] },
-  { key: "DA", value: "DA", label: "DA", children: ["PZG"] },
-  { key: "MOTOR", value: "MOTOR", label: "MOTOR", children: ["SRM", "SyRM"] },
-];
+
+// const CategoryList = [
+//   {
+//     key: "CFL",
+//     value: "CFL",
+//     label: "CFL",
+//     children: ["T-3xx", "T-5XX", "T-9XX", "T-P2X", "Other"],
+//   },
+//   { key: "PU", value: "PU", label: "PU", children: ["TWFL", "FTR", "GPS"] },
+//   { key: "DA", value: "DA", label: "DA", children: ["PZG"] },
+//   { key: "MOTOR", value: "MOTOR", label: "MOTOR", children: ["SRM", "SyRM"] },
+// ];
 const stageList = [
   { label: "Quotation sent" },
-  { label: "Closed won" },
-  { label: "Closed lost" },
+  // { label: "Closed won" },
+  // { label: "Closed lost" },
 ];
 export default {
   name: "create",
@@ -412,16 +501,25 @@ export default {
   },
   data() {
     return {
+      //data changed
+      dataChanged: false,
+      savedQuote: {},
+      savedQuoteItem: [],
+
       //product & category
-      checkedProducts: [],
+      //checkedProducts: [],
       productList: null,
+      HS_Product_Group: [],
+      checkedGroup: [],
+      HS_Products: [],
+      checkedProduct: [],
+
       //tip for previous/next quote number
       previousQuote: "",
       nextQuote: "",
       //flag if got data from database
       gotList: false,
-      //postForm: Object.assign({}, defaultForm),
-      CategoryList,
+      //CategoryList,
       stageList,
       ownerList: [],
       contactOptionList: [],
@@ -437,18 +535,21 @@ export default {
         companyId: "",
         contact: "",
         contactId: "",
-        greeting: "",
+        greeting:
+          "Thank you for your enquiry. Please find below our quotation as requested.",
         owner: "",
+        ownerId: "",
         dateQuote: "",
-        ending: "",
+        ending:
+          "Thank you for the opportunity to submit a quotation to you. If you have any queries or require further information please do not hesitate to contact us.",
         price: "",
-        tradeTerm: "",
-        delivery: "",
+        tradeTerm: "Ex Works",
+        delivery: "5-6 weeks from formal purchase order",
         payment: "",
-        validity: "",
-        warranty: "",
+        validity: "90 days",
+        warranty: "18 months from delivery ",
         category: "",
-        product: [],
+        product: "",
       },
       initQuoteVo: {},
       CurrencyType,
@@ -497,17 +598,27 @@ export default {
       PassQuoteNumber: "",
       subtotal: 0,
       tempQuoteItemQueryVO: "",
+      loading: false,
     };
   },
   created() {
     console.log("created");
-    remoteSearchUser("").then((response) => {
-      if (!response.data) return;
-      this.ownerList = response.data.map((v) => v.name);
-      //console.log(this.ownerList);
+
+    // Initial ownerlist local
+    // remoteSearchUser("").then((response) => {
+    //   if (!response.data) return;
+    //   this.ownerList = response.data.map((v) => v.name);
+    //   //console.log(this.ownerList);
+    // });
+
+    //Initial ownerlist HubSpot
+    getHSOwnerList().then((res) => {
+      if (!res.data) return;
+      this.ownerList = res.data.results.map((v) => v);
     });
+
     if (this.isEdit) {
-      this.fetchDate(this.$route.params.id);
+      this.fetchData(this.$route.params.id);
       this.remoteCheckContext(this.$route.params.id);
     } else {
       //this.quote.quoteNumber = 'KI'+ new Date((new Date).getTime() + 8*60*60*1000);
@@ -528,10 +639,53 @@ export default {
   beforeDestroy() {},
   updated() {},
   watch: {
-    quote: function (val) {
-      console.log(val);
+    dynamicQuote: {
+      handler(newVal, oldVal) {
+        console.log("++++++++++++++++++++watch Quote+++++++++++++++++++++++++");
+        if (JSON.stringify(newVal) === JSON.stringify(this.savedQuote)) {
+          this.dataChanged = false;
+        } else {
+          this.dataChanged = true;
+        }
+      },
     },
-    deep: true,
+    dynamicQuoteItems: {
+      handler(newVal, oldVal) {
+        console.log("++++++++++++++++++++watch QuoteItems++++++++++++++++++++");
+        if (this.savedQuoteItem.length == newVal.length) {
+          for (let i = 0; i < this.savedQuoteItem.length; i++) {
+            //console.log(newVal[i], this.savedQuoteItem[i]);
+            newVal[i].quantity = newVal[i].quantity.toString();
+            // console.log(
+            //   JSON.stringify(newVal[i]) ===
+            //     JSON.stringify(this.savedQuoteItem[i])
+            // );
+            if (
+              JSON.stringify(newVal[i]) !==
+              JSON.stringify(this.savedQuoteItem[i])
+            ) {
+              this.dataChanged = true;
+              break;
+            }
+          }
+        }
+        if (JSON.stringify(newVal) === JSON.stringify(this.savedQuoteItem)) {
+          this.dataChanged = false;
+        } else {
+          this.dataChanged = true;
+        }
+      },
+    },
+    //deep: true,
+    //immediate: true
+  },
+  computed: {
+    dynamicQuote() {
+      return JSON.parse(JSON.stringify(this.quote));
+    },
+    dynamicQuoteItems() {
+      return JSON.parse(JSON.stringify(this.items));
+    },
   },
   methods: {
     async latestQuoteNumber() {
@@ -551,25 +705,33 @@ export default {
         this.quote.quoteNumber = "";
       }
     },
-    fetchDate(quotenumber) {
+    fetchData(quotenumber) {
       console.log("fetch");
       console.log(quotenumber);
       this.quoteItem.quotenumber = quotenumber;
       fetchQuoteItems(this.quoteItem)
         .then((response) => {
           this.tempQuoteItemQueryVO = response.data;
-          console.log(this.tempQuoteItemQueryVO);
+          //console.log(this.tempQuoteItemQueryVO);
           this.quote = response.data.quote;
           this.items = response.data.itemList;
           this.PassQuoteNumber = this.quote.quoteNumber;
           this.gotList = true;
 
-          //initial productList
-          for (const item of CategoryList) {
-            if (item.value === this.quote.category)
-              this.productList = item.children;
-            this.checkedProducts = this.quote.product.split(",");
-          }
+          this.savedQuote = JSON.parse(JSON.stringify(this.quote));
+          this.savedQuoteItem = JSON.parse(JSON.stringify(this.items));
+
+          //initial productList local
+          // for (const item of CategoryList) {
+          //   if (item.value === this.quote.category)
+          //     this.productList = item.children;
+          //   this.checkedProducts = this.quote.product.split(",");
+          // }
+
+          //initial productList remote
+
+          this.fetchCatalog();
+          // debugger
         })
         .catch((err) => {
           console.log(err);
@@ -596,9 +758,52 @@ export default {
           duration: 3000,
         });
       } else {
+        if (this.items.length === 0) {
+          this.$message({
+            type: "error",
+            message: "No items added",
+          });
+        } else {
+          this.$refs["quote"].validate((valid) => {
+            console.log(valid);
+            if (valid) {
+              //debugger;
+              this.checkCustomerIfExisting();
+              this.quote.company = this.quote.companyId;
+              this.quote.contact = this.quote.contactId;
+              let quotedata = {
+                quote: this.quote,
+                itemList: this.items,
+              };
+              console.log("adddQuote");
+              console.log(quotedata);
+              createQuote(quotedata).then(
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //router only direct to list when respose code = 200 or 20000
+                //////////////////////////////////////////////////////////////
+                this.$message({
+                  type: "success",
+                  message: "Quote successfully added",
+                })
+              );
+              this.$router.push({ path: "/quote/list" });
+            }
+          });
+        }
+      }
+    },
+    editQuote() {
+      if (this.items.length === 0) {
+        this.$message({
+          type: "error",
+          message: "No items added",
+        });
+      } else {
         this.$refs["quote"].validate((valid) => {
           console.log(valid);
           if (valid) {
+            //console.log("editQuote");
+            //console.log(this.quote);
             this.checkCustomerIfExisting();
             this.quote.company = this.quote.companyId;
             this.quote.contact = this.quote.contactId;
@@ -606,45 +811,21 @@ export default {
               quote: this.quote,
               itemList: this.items,
             };
-            console.log("adddQuote");
             console.log(quotedata);
-            createQuote(quotedata).then(
-              //////////////////////////////////////////////////////////////////////////////////////////
-              //router only direct to list when respose code = 200 or 20000
-              //////////////////////////////////////////////////////////////
-              this.$message({
-                type: "success",
-                message: "Quote successfully added",
-              })
-            );
-            this.$router.push({ path: "/quote/list" });
+            updateQuote(quotedata)
+              .then(
+                this.$message({
+                  type: "success",
+                  message: "Successfully saved",
+                })
+              )
+              .then(location.reload());
+            //this.$router.push({ path: "/quote/"+this.$route.params });
+            //location.reload();
+            //this.dataChanged = false;
           }
         });
       }
-    },
-    editQuote() {
-      this.$refs["quote"].validate((valid) => {
-        console.log(valid);
-        if (valid) {
-          console.log("editQuote");
-          console.log(this.quote);
-          this.checkCustomerIfExisting();
-          this.quote.company = this.quote.companyId;
-          this.quote.contact = this.quote.contactId;
-          let quotedata = {
-            quote: this.quote,
-            itemList: this.items,
-          };
-          console.log(quotedata);
-          updateQuote(quotedata).then(
-            this.$message({
-              type: "success",
-              message: "Successfully saved",
-            })
-          );
-          //this.$router.push({ path: "/quote/list" });
-        }
-      });
     },
 
     itemChange: function (itemchange) {
@@ -655,9 +836,9 @@ export default {
         let cal = 0;
         for (const item of itemchange) {
           cal += item.price * (item.quantity * 1);
+          item.quantity = item.quantity.toString();
         }
-        ``;
-        console.log(cal);
+        //console.log(cal);
         this.subtotal = cal;
         this.quote.total =
           (cal - this.quote.discountDirect) *
@@ -753,52 +934,181 @@ export default {
       });
     },
     selectContact(e) {
-      console.log(e);
+      //console.log(e);
       this.quote.contact = e.contactName;
       this.quote.contactId = e.contactId;
       this.contact = e.contactItem;
-      console.log(this.quote);
+      //console.log(this.quote);
     },
     selectCompany(e) {
-      console.log(e);
+      //console.log(e);
       this.quote.company = e.company;
       this.quote.companyId = e.companyId;
       this.company = e.companyItem;
-      console.log(this.quote);
+      //console.log(this.quote);
     },
     async remoteCheckContext(quotenumber) {
       let query = { quotenumber: quotenumber };
       let res = await checkContext(query);
-      console.log(res);
+      //console.log(res);
       this.previousQuote = res.data.previousQuote ? res.data.previousQuote : "";
       this.nextQuote = res.data.nextQuote ? res.data.nextQuote : "";
-      console.log(this.previousQuote);
-      console.log(this.nextQuote);
+      //console.log(this.previousQuote);
+      //console.log(this.nextQuote);
     },
     jump(quote) {
       this.$router.push("/quote/list/edit/" + quote);
+    },
+    jumpToList() {
+      this.$router.push("/quote/list/");
+    },
+    jumpToPrint() {
+      this.$router.push("/quote/print/" + this.$route.params.id);
     },
     //Quote category
     handleCategoryChange() {
       for (const item of CategoryList) {
         if (item.value == this.quote.category) this.productList = item.children;
       }
-      console.log(this.CategoryList);
+      //console.log(this.CategoryList);
     },
     //Detailed product line
     handleCheckedProductChange() {
-      console.log(this.checkedProducts);
+      //console.log(this.checkedProducts);
       this.quote.product = this.checkedProducts.toString();
-      console.log(this.quote.product);
+      //console.log(this.quote.product);
     },
     //check if customer information is already instored in Local DB
     checkCustomerIfExisting() {
+      //debugger;
       let query = {
         company: this.company,
         contact: this.contact,
       };
-      console.log(query);
+      //console.log(query);
       const res = checkExisting(query);
+    },
+    // Category select
+    fetchCatalog() {
+      console.log("fetchCatalog");
+      if (this.HS_Product_Group.length !== 0 && this.HS_Products.length !== 0) {
+      } else {
+        productCatalog().then((response) => {
+          this.HS_Product_Group = response.data[1].options;
+          this.HS_Products = response.data[0].options;
+        });
+      }
+      //debugger
+      if (this.quote.category.length !== 0) {
+        this.checkedGroup = this.quote.category.split(",");
+      }
+      if (this.quote.product.length !== 0) {
+        this.checkedProduct = this.quote.product.split(",");
+      }
+    },
+    handleSelectGroup(value) {
+      console.log(this.checkedGroup);
+      this.quote.category = this.checkedGroup.toString();
+      console.log(this.quote.category);
+    },
+    handleSelectProduct(value) {
+      this.quote.product = this.checkedProduct.toString();
+      console.log(this.quote.product);
+    },
+    updateOwner(val) {
+      console.log(val);
+      this.quote.owner = val.firstName + " " + val.lastName;
+      this.quote.ownerId = val.id;
+    },
+    uploadDeal() {
+      let richtext =
+        `<p style="text-align: right;"><span style="font-family: arial, helvetica, sans-serif;"><img
+            src="https://kehui.wpenginepowered.com/wp-content/uploads/2018/08/kehuilogo2.svg" width="130" /></span></p>
+            <hr />` +
+        getContent(this.tempQuoteItemQueryVO) +
+        `<hr />
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;"><strong>Kehui
+                        International Ltd</strong></span></div>
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">2 Centrus,
+                    Mead
+                    Lane, Hertford, Hertfordshire, SG13 7GX, UK</span></div>
+            <div style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif; font-size: 10px;">Tel: +44 (0)
+                    1920 358990&nbsp;&nbsp;&nbsp; Email: <a style ="color: #0000ff;" href="mailto:info@kehui.com">info@kehui.com</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a style ="color: #0000ff;" href="http://www.kehui.com">www.kehui.com</a></span></div>
+            <div style="text-align: center"><span style="font-family: arial, helvetica, sans-serif ;font-size: 10px;">Company Reg
+                    No.
+                    10283200&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; VAT No. 287095855</span>
+            </div>`;
+      let closedate = new Date(
+        Date.parse(this.quote.dateQuote) + 90 * 1000 * 60 * 60 * 24
+      )
+        .toJSON()
+        .split("T")
+        .join(" ")
+        .substring(0, 10);
+
+      let deal = {
+        properties: {
+          amount: this.quote.total,
+          closedate: closedate,
+          dealname:
+            "APItest " +
+            this.quote.category +
+            " " +
+            this.quote.product +
+            " " +
+            this.quote.company,
+          dealstage: "contractsent",
+          hubspot_owner_id: this.quote.ownerId,
+          pipeline: "default",
+          product: this.quote.product.replaceAll(",", ";"),
+          product_group: this.quote.category.replace(",", ";"),
+          quote_richtext: richtext,
+        },
+        associations: [],
+      };
+      //debugger;
+      if (this.quote.companyId > 1000) {
+        deal.associations.push({
+          to: {
+            id: this.quote.companyId,
+          },
+          types: [
+            {
+              associationCategory: "HUBSPOT_DEFINED",
+              associationTypeId: 5,
+            },
+          ],
+        });
+      }
+      if (this.quote.contactId != null) {
+        deal.associations.push({
+          to: {
+            id: this.quote.contactId,
+          },
+          types: [
+            {
+              associationCategory: "HUBSPOT_DEFINED",
+              associationTypeId: 3,
+            },
+          ],
+        });
+      }
+      postDeal(deal)
+        .then((res) => {
+          this.quote.inHubSpotDeal = res.data.id;
+        })
+        .then(() => {
+          this.quote.company = this.quote.companyId;
+          this.quote.contact = this.quote.contactId;
+          let quotedata = {
+            quote: this.quote,
+            itemList: this.items,
+          };
+          updateQuote(quotedata).then(location.reload());
+        });
     },
   },
 };

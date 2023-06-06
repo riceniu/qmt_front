@@ -117,10 +117,11 @@
         sortable
         show-overflow-tooltip
         ><template slot-scope="scope"
-          ><router-link
-            :to="'/quote/list/edit/' + scope.row.quoteNumber"
-          >{{ scope.row.quoteNumber }}</router-link></template
-      ></el-table-column>
+          ><router-link :to="'/quote/list/edit/' + scope.row.quoteNumber">{{
+            scope.row.quoteNumber
+          }}</router-link></template
+        ></el-table-column
+      >
       <el-table-column
         prop="dateQuote"
         label="Date"
@@ -158,14 +159,14 @@
         :formatter="totalFormat"
         show-overflow-tooltip
       />
-      <el-table-column
+      <!-- <el-table-column
         prop="stage"
         label="Stage"
         align="left"
         width="100"
         sortable
         show-overflow-tooltip
-      />
+      /> -->
       <el-table-column
         prop="contact"
         label="Contact"
@@ -182,14 +183,29 @@
         sortable
         show-overflow-tooltip
       />
-      <el-table-column
+      <!-- <el-table-column
         prop="region"
         label="Region"
         align="left"
         width="120"
         sortable
         show-overflow-tooltip
-      />
+      /> -->
+      <el-table-column
+        prop="inHubSpotDeal"
+        label="In HubSpot"
+        align="center"
+        width="100"
+        sortable
+        show-overflow-tooltip
+      >
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.inHubSpotDeal | statusFilter">
+            <span v-if="scope.row.inHubSpotDeal > 0">Yes</span>
+            <span v-if="scope.row.inHubSpotDeal == 0">No</span>
+          </el-tag>
+        </template></el-table-column
+      >
       <el-table-column
         prop="country"
         label="Country"
@@ -261,6 +277,20 @@ import Pagination from "@/components/Pagination"; // Secondary package based on 
 export default {
   name: "ProductList",
   components: { Pagination },
+  filters: {
+    statusFilter(status) {
+      if (status == 0) {
+        status = "draft";
+      } else {
+        status = "published";
+      }
+      const statusMap = {
+        published: "success",
+        draft: "info",
+      };
+      return statusMap[status];
+    },
+  },
   data() {
     return {
       //filter related parameters

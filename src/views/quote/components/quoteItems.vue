@@ -384,7 +384,7 @@ export default {
       this.temp.id = row.id;
       this.temp.quotetext = row.text;
       //this.temp.currency = row.currency;
-      this.temp.quantity = row.quantity;
+      this.temp.quantity = row.quantity.toString();
       this.temp.price = row.price;
       this.temp.comments = row.comments;
       if (row.pic) this.picList[0] = row.pic;

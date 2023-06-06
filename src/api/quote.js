@@ -102,3 +102,11 @@ export default function HubSpotAPItest(query){
     params: query
   });
 }
+
+
+export function getReportData() {
+  return request({
+    url: '/vue-element-admin/quote/reportData',
+    method: 'get',
+  })
+}

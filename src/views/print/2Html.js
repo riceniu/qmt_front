@@ -2,7 +2,7 @@ export default function getContent(VO) {
   const quote = VO.quote;
   const quoteItems = VO.itemList;
   //console.log(quoteItems[0]);
-  console.log(quote);
+  //console.log(quote);
 
   let returnMsg = `
     <div class="box" ref="box">
@@ -139,7 +139,7 @@ export default function getContent(VO) {
   if (quote.payment !== "") arr.push(["Payment Term", quote.payment]);
   if (quote.validity !== "") arr.push(["Validity", quote.validity]);
   if (quote.warranty !== "") arr.push(["Warranty", quote.warranty]);
-  console.log(arr);
+  //console.log(arr);
   for (let i = 0; i < arr.length; i++) {
     if (i % 2 != 0) {
       returnMsg += `

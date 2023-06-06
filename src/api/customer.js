@@ -110,10 +110,3 @@ export function remoteSearchContact(name) {
   })
 }
 
-export function checkExisting(data) {
-  return request({
-    url: "/vue-element-admin/customer/checkExisting",
-    method: "post",
-    data,
-  });
-}
